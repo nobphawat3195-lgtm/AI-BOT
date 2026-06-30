@@ -1,0 +1,63 @@
+/* ============================================================
+   SCENE 4 — PAYMENT CENTER
+============================================================= */
+.payment-console{
+  max-width:980px;margin:0 auto;width:100%;
+  display:grid;grid-template-columns:1fr 360px;gap:40px;align-items:center;
+}
+.payment-summary{
+  background:linear-gradient(160deg,rgba(4,16,6,.78),rgba(2,8,4,.92));
+  border:1px solid var(--glass-border-soft);border-radius:var(--radius-md);
+  padding:30px 32px;
+}
+.summary-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:13px 0;border-bottom:1px solid var(--glass-border-soft);
+  font-family:var(--font-mono);font-size:12px;color:rgba(232,255,240,.55);
+}
+.summary-row strong{color:var(--white);font-family:var(--font-display);font-size:13px;letter-spacing:1px}
+.summary-row.total{border-bottom:none;padding-top:18px}
+.summary-row.total strong{color:var(--gold);font-size:22px;text-shadow:0 0 16px var(--gold-glow)}
+.payment-hint{margin-top:16px;font-size:11.5px;line-height:1.7;color:rgba(232,255,240,.4)}
+
+.hologram-stage{
+  position:relative;height:320px;
+  display:flex;align-items:center;justify-content:center;
+}
+.beam{
+  position:absolute;top:0;left:50%;width:130px;height:100%;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg,rgba(0,255,65,.22),rgba(0,255,65,.02) 70%,transparent);
+  clip-path:polygon(40% 0,60% 0,100% 100%,0% 100%);
+  animation:beamFlicker 2.4s ease-in-out infinite;
+}
+@keyframes beamFlicker{0%,100%{opacity:.6}50%{opacity:1}}
+
+.qr-ring{
+  position:absolute;width:270px;height:270px;border-radius:50%;
+  border:1px solid rgba(0,255,65,.3);
+  animation:ringSpin 14s linear infinite;
+}
+.qr-ring.r2{width:310px;height:310px;border-color:rgba(255,215,0,.2);animation-duration:22s;animation-direction:reverse}
+
+.qr-canvas{
+  position:relative;z-index:2;border-radius:10px;
+  background:rgba(2,10,4,.6);
+  box-shadow:0 0 40px rgba(0,255,65,.3), 0 0 0 1px var(--glass-border);
+  animation:qrFloat 3.4s ease-in-out infinite;
+}
+@keyframes qrFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.qr-caption{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--gold);
+}
+
+.payment-actions{
+  max-width:980px;margin:46px auto 0;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+.payment-status{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:2px;color:rgba(232,255,240,.5);
+}
+.payment-status.success{color:var(--bright-green);text-shadow:0 0 10px var(--neon-green-dim)}

@@ -1,0 +1,158 @@
+/* ============================================================
+   RESET + BASE
+============================================================= */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{background:var(--bg);overflow-x:hidden}
+body{
+  font-family:var(--font-body);
+  color:var(--white);
+  min-height:100vh;
+  cursor:none;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:none}
+ul{list-style:none}
+::selection{background:var(--neon-green);color:#000}
+
+/* Hide native cursor only on capable (non-touch) pointers */
+@media (hover:none){
+  body{cursor:auto}
+  .cursor{display:none}
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--bg-deep)}
+::-webkit-scrollbar-thumb{background:var(--dark-gold);border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
+/* ============================================================
+   BACKGROUND CANVAS + OVERLAYS
+============================================================= */
+#space-canvas{
+  position:fixed;inset:0;
+  width:100%;height:100%;
+  z-index:0;
+  background:radial-gradient(ellipse at 50% 30%,var(--bg-dark-green) 0%,var(--bg-deep) 70%);
+}
+.scan-overlay{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,255,65,.025) 0px,rgba(0,255,65,.025) 1px,transparent 1px,transparent 3px);
+  mix-blend-mode:overlay;
+}
+.vignette{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 40%,rgba(0,3,1,.75) 100%);
+}
+
+.site{position:relative;z-index:3}
+
+/* ============================================================
+   GLASS PANEL UTILITY
+============================================================= */
+.panel{
+  background:linear-gradient(160deg,rgba(4,16,6,.78),rgba(2,8,4,.92));
+  border:1px solid var(--glass-border-soft);
+  border-radius:var(--radius-md);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  box-shadow:inset 0 1px 0 rgba(0,255,65,.06), var(--shadow-deep);
+  position:relative;
+}
+.panel::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(135deg,rgba(0,255,65,.06),transparent 50%);
+}
+.panel-head{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--font-display);font-size:11px;letter-spacing:3px;
+  color:var(--neon-green);text-transform:uppercase;
+  padding:16px 18px;border-bottom:1px solid var(--glass-border-soft);
+}
+.panel-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--neon-green);
+  box-shadow:0 0 8px var(--neon-green-glow);
+  animation:dotPulse 1.6s ease-in-out infinite;
+}
+@keyframes dotPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+/* ============================================================
+   SECTION SCAFFOLDING
+============================================================= */
+.scene{
+  position:relative;
+  padding:120px 6vw;
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.section-head{max-width:760px;margin:0 auto 56px;text-align:center}
+.section-eyebrow{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:4px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:14px;
+  opacity:.85;
+}
+.section-title{
+  font-family:var(--font-display);font-weight:900;
+  font-size:clamp(28px,4.5vw,52px);letter-spacing:3px;
+  background:linear-gradient(135deg,var(--white) 10%,var(--neon-green) 60%,var(--bright-green) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:0 0 40px rgba(0,255,65,.18);
+  margin-bottom:14px;
+}
+.section-desc{font-size:15px;line-height:1.8;color:rgba(232,255,240,.65);font-weight:300}
+
+/* ============================================================
+   BUTTONS — EXTREME HOVER FX
+============================================================= */
+.btn{
+  position:relative;overflow:hidden;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:16px 34px;border-radius:10px;
+  font-family:var(--font-display);font-weight:700;font-size:12px;letter-spacing:3px;
+  text-transform:uppercase;
+  transition:transform .25s var(--ease-out), box-shadow .25s var(--ease-out), border-color .25s;
+  isolation:isolate;
+}
+.btn:active{transform:scale(.96)}
+.btn .btn-sweep{
+  position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);
+  transform:translateX(-120%);
+}
+.btn:hover .btn-sweep{animation:sweep .9s var(--ease-out)}
+@keyframes sweep{to{transform:translateX(120%)}}
+
+.btn-primary{
+  background:linear-gradient(135deg,var(--dark-gold),var(--gold));
+  color:#0a0700;
+  box-shadow:0 0 0 1px rgba(255,215,0,.4), 0 8px 24px rgba(255,215,0,.18);
+}
+.btn-primary:hover{box-shadow:0 0 0 1px var(--gold), 0 0 36px var(--gold-glow), 0 8px 30px rgba(255,215,0,.3);transform:translateY(-2px)}
+.btn-primary:disabled{opacity:.35;pointer-events:none}
+
+.btn-ghost{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  color:var(--neon-green);
+}
+.btn-ghost:hover{box-shadow:0 0 24px rgba(0,255,65,.25);border-color:var(--neon-green);transform:translateY(-2px)}
+
+.btn-mission{
+  width:100%;margin-top:18px;
+  background:transparent;border:1px solid var(--glass-border);
+  color:var(--neon-green);padding:14px;font-size:11px;
+}
+.btn-mission:hover{
+  background:rgba(0,255,65,.08);
+  border-color:var(--neon-green);
+  box-shadow:0 0 26px rgba(0,255,65,.25);
+}
+
+/* ============================================================
+   MISC UTILITIES
+============================================================= */
+.gold-text{color:var(--gold)}
+.lazy-bg{content-visibility:auto}

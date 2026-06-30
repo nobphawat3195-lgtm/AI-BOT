@@ -1,0 +1,95 @@
+/* ============================================================
+   SCENE 3 — MISSION CENTER
+============================================================= */
+.mission-grid{
+  max-width:var(--maxw);margin:0 auto;width:100%;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:26px;
+  perspective:1400px;
+}
+.mission-card{
+  position:relative;overflow:hidden;
+  background:linear-gradient(160deg,rgba(4,16,6,.82),rgba(2,8,4,.95));
+  border:1px solid var(--glass-border-soft);border-radius:var(--radius-md);
+  padding:28px 26px 26px;
+  transform-style:preserve-3d;
+  transition:transform .35s var(--ease-out),box-shadow .35s var(--ease-out),border-color .35s;
+  will-change:transform;
+}
+.mission-card:hover{
+  border-color:var(--glass-border);
+  box-shadow:0 30px 60px rgba(0,0,0,.5), 0 0 40px rgba(0,255,65,.12);
+}
+.mission-card.featured{
+  border-color:rgba(255,215,0,.35);
+  background:linear-gradient(160deg,rgba(20,16,2,.85),rgba(2,8,4,.95));
+}
+.mission-card.featured:hover{box-shadow:0 30px 60px rgba(0,0,0,.5), 0 0 50px rgba(255,215,0,.18)}
+
+.featured-ribbon{
+  position:absolute;top:18px;right:-34px;transform:rotate(40deg);
+  background:linear-gradient(135deg,var(--dark-gold),var(--gold));
+  color:#0a0700;font-family:var(--font-display);font-size:9px;font-weight:800;letter-spacing:2px;
+  padding:5px 40px;box-shadow:0 4px 14px rgba(255,215,0,.3);
+}
+
+/* Scanner sweep line */
+.mission-scanner{
+  position:absolute;left:0;right:0;height:2px;top:-10%;
+  background:linear-gradient(90deg,transparent,var(--neon-green),transparent);
+  box-shadow:0 0 14px var(--neon-green-glow);
+  animation:scannerMove 4.5s ease-in-out infinite;
+  opacity:.7;pointer-events:none;
+}
+@keyframes scannerMove{0%{top:-2%}50%{top:100%}100%{top:-2%}}
+
+.mission-glow{
+  position:absolute;inset:-2px;border-radius:inherit;pointer-events:none;
+  opacity:0;transition:opacity .35s;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(0,255,65,.16),transparent 60%);
+}
+.mission-card:hover .mission-glow{opacity:1}
+
+.mission-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.mission-particles::before,.mission-particles::after{
+  content:'';position:absolute;width:3px;height:3px;border-radius:50%;
+  background:var(--neon-green);box-shadow:0 0 8px var(--neon-green);
+  animation:floatParticle 6s linear infinite;
+}
+.mission-particles::before{left:18%;animation-duration:7s}
+.mission-particles::after{left:72%;animation-duration:9s;animation-delay:2s}
+@keyframes floatParticle{0%{bottom:-5%;opacity:0}10%{opacity:1}90%{opacity:1}100%{bottom:105%;opacity:0}}
+
+.mission-head{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.mission-tag{font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:rgba(232,255,240,.5)}
+.mission-status{font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;padding:3px 10px;border-radius:20px}
+.mission-status.ready{color:var(--bright-green);border:1px solid rgba(0,255,65,.35);background:rgba(0,255,65,.08)}
+
+.mission-name{
+  position:relative;z-index:2;font-family:var(--font-display);font-weight:800;
+  font-size:24px;letter-spacing:2px;color:var(--white);margin-bottom:10px;
+}
+.mission-desc{position:relative;z-index:2;font-size:13px;line-height:1.7;color:rgba(232,255,240,.6);min-height:66px}
+
+.mission-meta{position:relative;z-index:2;margin-top:18px;display:flex;flex-direction:column;gap:9px}
+.meta-row{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:rgba(232,255,240,.5)}
+.meta-row .stars{color:var(--gold);letter-spacing:1px}
+.meta-row .reward{color:var(--neon-green)}
+
+.mission-price{
+  position:relative;z-index:2;margin-top:18px;
+  font-family:var(--font-display);font-weight:900;font-size:26px;color:var(--gold);
+  text-shadow:0 0 18px var(--gold-glow);
+}
+.mission-price span{font-family:var(--font-body);font-size:12px;font-weight:300;color:rgba(232,255,240,.5)}
+
+/* Mission accepted flash */
+.mission-card.accepted{border-color:var(--neon-green);box-shadow:0 0 60px rgba(0,255,65,.35)}
+.mission-card.accepted::after{
+  content:'MISSION ACCEPTED';
+  position:absolute;inset:0;z-index:5;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:16px;letter-spacing:3px;color:var(--neon-green);
+  background:rgba(0,8,3,.88);
+  animation:acceptFlash .6s var(--ease-out);
+}
+@keyframes acceptFlash{from{opacity:0;backdrop-filter:blur(0)}to{opacity:1;backdrop-filter:blur(3px)}}

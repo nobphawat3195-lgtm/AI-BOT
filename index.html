@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>YOUNGYUU AI COMMAND CENTER — Neural Trading Headquarters</title>
+<meta name="description" content="YOUNGYUU AI COMMAND CENTER — ศูนย์บัญชาการ AI สำหรับระบบเทรดอัตโนมัติ Gold AI, Premium AI, Institution AI">
+<meta name="theme-color" content="#020804">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23020804'/%3E%3Cpath d='M50 12 L82 30 V70 L50 88 L18 70 V30 Z' fill='none' stroke='%2300ff41' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='14' fill='%2300ff41'/%3E%3C/svg%3E">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Kanit:wght@200;300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<!-- Styles -->
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/cursor.css">
+<link rel="stylesheet" href="css/boot.css">
+<link rel="stylesheet" href="css/hero.css">
+<link rel="stylesheet" href="css/missions.css">
+<link rel="stylesheet" href="css/payment.css">
+<link rel="stylesheet" href="css/download.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<!-- ============================================================
+     CUSTOM TARGETING CURSOR
+============================================================= -->
+<div class="cursor" id="cursor">
+  <div class="cursor-ring"></div>
+  <div class="cursor-dot"></div>
+  <div class="cursor-tick t"></div>
+  <div class="cursor-tick r"></div>
+  <div class="cursor-tick b"></div>
+  <div class="cursor-tick l"></div>
+</div>
+
+<!-- ============================================================
+     PERSISTENT 3D SPACE / AI ROBOT BACKGROUND (THREE.JS CANVAS)
+============================================================= -->
+<canvas id="space-canvas"></canvas>
+<div class="scan-overlay"></div>
+<div class="vignette"></div>
+
+<!-- ============================================================
+     SCENE 1 — BOOT SEQUENCE
+============================================================= -->
+<section id="boot-sequence" class="boot-sequence" aria-label="AI Boot Sequence">
+  <canvas id="noise-canvas"></canvas>
+
+  <div class="boot-grid"></div>
+
+  <div class="boot-content">
+    <div class="boot-logo">
+      <svg viewBox="0 0 64 64" class="boot-logo-mark"><path d="M32 4 L58 18 V46 L32 60 L6 46 V18 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M32 14 L48 23 V41 L32 50 L16 41 V23 Z" fill="currentColor" opacity=".15"/></svg>
+      <div class="boot-logo-text">YOUNGYUU</div>
+    </div>
+
+    <div class="boot-terminal" id="bootTerminal" aria-live="polite"></div>
+
+    <div class="boot-bar-wrap">
+      <div class="boot-bar"><div class="boot-bar-fill" id="bootBarFill"></div></div>
+      <div class="boot-pct" id="bootPct">0%</div>
+    </div>
+
+    <div class="boot-status" id="bootStatus">INITIALIZING</div>
+  </div>
+
+  <!-- Blast door -->
+  <div class="door door-left" id="doorLeft">
+    <div class="door-panel">
+      <div class="door-rivets"></div>
+      <div class="door-emblem"><span>YA</span></div>
+    </div>
+  </div>
+  <div class="door door-right" id="doorRight">
+    <div class="door-panel">
+      <div class="door-rivets"></div>
+    </div>
+  </div>
+  <div class="door-light" id="doorLight"></div>
+</section>
+
+<!-- ============================================================
+     MAIN SITE
+============================================================= -->
+<div id="site" class="site">
+
+  <!-- NAV -->
+  <header class="hud-nav" id="hudNav">
+    <div class="hud-nav-inner">
+      <a href="#command-center" class="brand" data-cursor-hover>
+        <svg viewBox="0 0 64 64" class="brand-mark"><path d="M32 4 L58 18 V46 L32 60 L6 46 V18 Z" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+        <span class="brand-text">YOUNGYUU<em>AI</em></span>
+      </a>
+      <nav class="hud-links">
+        <a href="#command-center" data-cursor-hover>COMMAND</a>
+        <a href="#mission-center" data-cursor-hover>MISSIONS</a>
+        <a href="#payment-center" data-cursor-hover>PAYMENT</a>
+        <a href="#download-center" data-cursor-hover>DOWNLOAD</a>
+      </nav>
+      <div class="hud-clock" id="hudClock">00:00:00</div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       SCENE 2 — AI COMMAND CENTER (HERO)
+  ============================================================= -->
+  <section id="command-center" class="scene hero-scene">
+
+    <div class="radar-widget" aria-hidden="true">
+      <div class="radar-ring r1"></div>
+      <div class="radar-ring r2"></div>
+      <div class="radar-ring r3"></div>
+      <div class="radar-sweep"></div>
+      <div class="radar-blip b1"></div>
+      <div class="radar-blip b2"></div>
+      <div class="radar-blip b3"></div>
+    </div>
+
+    <div class="hero-grid">
+
+      <!-- LEFT TERMINAL -->
+      <aside class="panel terminal-panel" data-cursor-hover>
+        <div class="panel-head"><span class="panel-dot"></span>NEURAL CORE LOG</div>
+        <div class="terminal-body" id="terminalBody"></div>
+      </aside>
+
+      <!-- CENTER — ROBOT STAGE -->
+      <div class="robot-stage">
+        <div class="hologram-ring hr1"></div>
+        <div class="hologram-ring hr2"></div>
+        <div class="energy-base"></div>
+
+        <h1 class="hero-title">
+          <span class="hero-title-line">AI COMMAND CENTER</span>
+          <span class="hero-title-sub">NEURAL TRADING HEADQUARTERS</span>
+        </h1>
+
+        <div class="robot-speech" id="robotSpeech">
+          <span class="speech-text" id="robotSpeechText"></span>
+        </div>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-cursor-hover onclick="document.getElementById('mission-center').scrollIntoView({behavior:'smooth'})">
+            <span>ENTER MISSION CENTER</span>
+            <i class="btn-sweep"></i>
+          </button>
+          <button class="btn btn-ghost" data-cursor-hover onclick="document.getElementById('command-center').scrollIntoView({behavior:'smooth'})">
+            <span>SYSTEM STATUS</span>
+            <i class="btn-sweep"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- RIGHT DASHBOARD -->
+      <aside class="panel dashboard-panel" data-cursor-hover>
+        <div class="panel-head"><span class="panel-dot"></span>AI DASHBOARD</div>
+        <div class="dash-grid">
+          <div class="dash-item"><div class="dash-label">CPU</div><div class="dash-bar"><div class="dash-bar-fill" id="d-cpu"></div></div><div class="dash-val" id="d-cpu-val">0%</div></div>
+          <div class="dash-item"><div class="dash-label">GPU</div><div class="dash-bar"><div class="dash-bar-fill" id="d-gpu"></div></div><div class="dash-val" id="d-gpu-val">0%</div></div>
+          <div class="dash-item"><div class="dash-label">RAM</div><div class="dash-bar"><div class="dash-bar-fill" id="d-ram"></div></div><div class="dash-val" id="d-ram-val">0%</div></div>
+          <div class="dash-item"><div class="dash-label">LATENCY</div><div class="dash-bar"><div class="dash-bar-fill" id="d-lat"></div></div><div class="dash-val" id="d-lat-val">0ms</div></div>
+        </div>
+        <div class="dash-stats">
+          <div class="stat-cell"><div class="stat-label">KELLY</div><div class="stat-val" id="s-kelly">0.00</div></div>
+          <div class="stat-cell"><div class="stat-label">ATR</div><div class="stat-val" id="s-atr">0.00</div></div>
+          <div class="stat-cell"><div class="stat-label">WIN RATE</div><div class="stat-val gold" id="s-winrate">0%</div></div>
+          <div class="stat-cell"><div class="stat-label">RISK</div><div class="stat-val" id="s-risk">0%</div></div>
+          <div class="stat-cell"><div class="stat-label">SPREAD</div><div class="stat-val" id="s-spread">0.0</div></div>
+          <div class="stat-cell"><div class="stat-label">SIGNAL</div><div class="stat-val" id="s-signal">0%</div></div>
+        </div>
+        <div class="dash-regime">
+          <div class="regime-label">MARKET REGIME</div>
+          <div class="regime-value" id="s-regime">SCANNING…</div>
+        </div>
+        <div class="dash-confidence">
+          <div class="conf-row"><span>AI CONFIDENCE</span><span id="s-conf-pct">0%</span></div>
+          <div class="conf-track"><div class="conf-fill" id="s-conf-fill"></div></div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="scroll-cue" data-cursor-hover><span></span>SCROLL</div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 3 — MISSION CENTER
+  ============================================================= -->
+  <section id="mission-center" class="scene mission-scene">
+    <div class="section-head">
+      <div class="section-eyebrow">SCENE 03 // MISSION SELECTION</div>
+      <h2 class="section-title">MISSION CENTER</h2>
+      <p class="section-desc">เลือกภารกิจ AI ที่เหมาะกับระดับการเทรดของคุณ ระบบประมวลผลด้วย Neural Core แบบเรียลไทม์</p>
+    </div>
+
+    <div class="mission-grid">
+
+      <!-- MISSION 01 -->
+      <article class="mission-card" data-mission="01" data-name="GOLD AI" data-price="฿2,990" data-cursor-hover>
+        <div class="mission-scanner"></div>
+        <div class="mission-glow"></div>
+        <div class="mission-particles"></div>
+        <div class="mission-head">
+          <span class="mission-tag">MISSION 01</span>
+          <span class="mission-status ready">READY</span>
+        </div>
+        <h3 class="mission-name">GOLD AI</h3>
+        <p class="mission-desc">วิเคราะห์ XAUUSD เฉพาะทาง ด้วย ATR Engine และ Kelly Capital Allocation แม่นยำสูง</p>
+        <div class="mission-meta">
+          <div class="meta-row"><span>DIFFICULTY</span><span class="stars">★★★☆☆</span></div>
+          <div class="meta-row"><span>REWARD</span><span class="reward">HIGH</span></div>
+          <div class="meta-row"><span>WIN RATE</span><span class="gold-text">87.4%</span></div>
+        </div>
+        <div class="mission-price">฿2,990 <span>/ เดือน</span></div>
+        <button class="btn btn-mission" data-cursor-hover>
+          <span>ACCEPT MISSION</span>
+          <i class="btn-sweep"></i>
+        </button>
+      </article>
+
+      <!-- MISSION 02 -->
+      <article class="mission-card featured" data-mission="02" data-name="PREMIUM AI" data-price="฿5,990" data-cursor-hover>
+        <div class="mission-scanner"></div>
+        <div class="mission-glow"></div>
+        <div class="mission-particles"></div>
+        <div class="featured-ribbon">RECOMMENDED</div>
+        <div class="mission-head">
+          <span class="mission-tag">MISSION 02</span>
+          <span class="mission-status ready">READY</span>
+        </div>
+        <h3 class="mission-name">PREMIUM AI</h3>
+        <p class="mission-desc">Multi-Pair Neural Trading ครอบคลุม Forex หลัก พร้อม AI Market Regime Detection</p>
+        <div class="mission-meta">
+          <div class="meta-row"><span>DIFFICULTY</span><span class="stars">★★★★☆</span></div>
+          <div class="meta-row"><span>REWARD</span><span class="reward">VERY HIGH</span></div>
+          <div class="meta-row"><span>WIN RATE</span><span class="gold-text">91.2%</span></div>
+        </div>
+        <div class="mission-price">฿5,990 <span>/ เดือน</span></div>
+        <button class="btn btn-mission" data-cursor-hover>
+          <span>ACCEPT MISSION</span>
+          <i class="btn-sweep"></i>
+        </button>
+      </article>
+
+      <!-- MISSION 03 -->
+      <article class="mission-card" data-mission="03" data-name="INSTITUTION AI" data-price="฿14,990" data-cursor-hover>
+        <div class="mission-scanner"></div>
+        <div class="mission-glow"></div>
+        <div class="mission-particles"></div>
+        <div class="mission-head">
+          <span class="mission-tag">MISSION 03</span>
+          <span class="mission-status ready">READY</span>
+        </div>
+        <h3 class="mission-name">INSTITUTION AI</h3>
+        <p class="mission-desc">ระดับสถาบัน — Unlimited Pairs, Custom Risk Engine, Priority Neural Compute</p>
+        <div class="mission-meta">
+          <div class="meta-row"><span>DIFFICULTY</span><span class="stars">★★★★★</span></div>
+          <div class="meta-row"><span>REWARD</span><span class="reward">UNLIMITED</span></div>
+          <div class="meta-row"><span>WIN RATE</span><span class="gold-text">94.8%</span></div>
+        </div>
+        <div class="mission-price">฿14,990 <span>/ เดือน</span></div>
+        <button class="btn btn-mission" data-cursor-hover>
+          <span>ACCEPT MISSION</span>
+          <i class="btn-sweep"></i>
+        </button>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 4 — PAYMENT CENTER
+  ============================================================= -->
+  <section id="payment-center" class="scene payment-scene">
+    <div class="section-head">
+      <div class="section-eyebrow">SCENE 04 // SECURE TRANSACTION</div>
+      <h2 class="section-title">PAYMENT CENTER</h2>
+      <p class="section-desc">โปรเจกชันโฮโลแกรมยืนยันภารกิจที่เลือก สแกนเพื่อดำเนินการชำระเงินอย่างปลอดภัย</p>
+    </div>
+
+    <div class="payment-console">
+      <div class="payment-summary">
+        <div class="summary-row"><span>SELECTED MISSION</span><strong id="paySelMission">— NONE —</strong></div>
+        <div class="summary-row"><span>ACCESS LEVEL</span><strong id="paySelLevel">—</strong></div>
+        <div class="summary-row"><span>BILLING CYCLE</span><strong>MONTHLY</strong></div>
+        <div class="summary-row total"><span>TOTAL</span><strong id="paySelPrice">฿0</strong></div>
+        <div class="payment-hint">เลือกภารกิจจาก MISSION CENTER ด้านบนก่อนดำเนินการชำระเงิน</div>
+      </div>
+
+      <div class="hologram-stage">
+        <div class="beam"></div>
+        <div class="qr-ring"></div>
+        <div class="qr-ring r2"></div>
+        <canvas id="qrCanvas" class="qr-canvas" width="220" height="220"></canvas>
+        <div class="qr-caption">SECURE PAYMENT CHANNEL · PREVIEW</div>
+      </div>
+    </div>
+
+    <div class="payment-actions">
+      <button class="btn btn-primary" id="confirmPayBtn" data-cursor-hover disabled>
+        <span>CONFIRM TRANSMISSION</span>
+        <i class="btn-sweep"></i>
+      </button>
+      <div class="payment-status" id="paymentStatus">AWAITING MISSION SELECTION</div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 5 — DOWNLOAD CENTER
+  ============================================================= -->
+  <section id="download-center" class="scene download-scene">
+    <div class="section-head">
+      <div class="section-eyebrow">SCENE 05 // DEPLOYMENT</div>
+      <h2 class="section-title">DOWNLOAD CENTER</h2>
+      <p class="section-desc">โดรนขนส่งกำลังนำส่งแพ็กเกจ AI ของคุณ พร้อมเปิดใช้งานไลเซนส์อัตโนมัติ</p>
+    </div>
+
+    <div class="drone-stage">
+      <div class="drone" id="drone">
+        <div class="drone-body"></div>
+        <div class="drone-arm a1"></div><div class="drone-arm a2"></div>
+        <div class="drone-arm a3"></div><div class="drone-arm a4"></div>
+        <div class="drone-rotor r1"></div><div class="drone-rotor r2"></div>
+        <div class="drone-rotor r3"></div><div class="drone-rotor r4"></div>
+        <div class="drone-package" id="dronePackage"></div>
+        <div class="drone-beam"></div>
+      </div>
+
+      <div class="download-console">
+        <div class="ai-line" id="downloadAiLine">รอการยืนยันการชำระเงิน…</div>
+        <div class="license-box">
+          <div class="license-row"><span>LICENSE KEY</span><span class="license-key" id="licenseKey">XXXX-XXXX-XXXX-XXXX</span></div>
+          <div class="license-row"><span>ACTIVATION</span><span class="license-state" id="licenseState">PENDING</span></div>
+        </div>
+        <div class="dl-bar-wrap">
+          <div class="dl-bar"><div class="dl-bar-fill" id="dlBarFill"></div></div>
+          <div class="dl-pct" id="dlPct">0%</div>
+        </div>
+        <button class="btn btn-primary" id="downloadBtn" data-cursor-hover disabled>
+          <span>DOWNLOAD MISSION PACKAGE</span>
+          <i class="btn-sweep"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 6 — FOOTER / COMMAND CENTER STATUS
+  ============================================================= -->
+  <footer class="footer">
+    <div class="footer-status">
+      <div class="status-grid">
+        <div class="status-item"><span class="status-dot online"></span><div><div class="status-label">SYSTEM STATUS</div><div class="status-val">ALL SYSTEMS ONLINE</div></div></div>
+        <div class="status-item"><span class="status-dot online"></span><div><div class="status-label">NEURAL CORE</div><div class="status-val">ACTIVE</div></div></div>
+        <div class="status-item"><span class="status-dot gold"></span><div><div class="status-label">SECURITY LEVEL</div><div class="status-val">OMEGA</div></div></div>
+        <div class="status-item"><span class="status-dot online"></span><div><div class="status-label">AI VERSION</div><div class="status-val">YOUNGYUU v3.0</div></div></div>
+      </div>
+    </div>
+
+    <div class="footer-main">
+      <div class="footer-brand">
+        <svg viewBox="0 0 64 64" class="brand-mark"><path d="M32 4 L58 18 V46 L32 60 L6 46 V18 Z" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+        <span class="brand-text">YOUNGYUU<em>AI</em></span>
+      </div>
+      <nav class="footer-links">
+        <a href="#command-center" data-cursor-hover>COMMAND CENTER</a>
+        <a href="#mission-center" data-cursor-hover>MISSIONS</a>
+        <a href="#payment-center" data-cursor-hover>PAYMENT</a>
+        <a href="#download-center" data-cursor-hover>DOWNLOAD</a>
+      </nav>
+      <div class="footer-meta">
+        <div>POWERED BY YOUNGYUU AI</div>
+        <div id="footerClock">00:00:00 UTC+7</div>
+      </div>
+    </div>
+    <div class="footer-bottom">© <span id="yearNow"></span> YOUNGYUU AI COMMAND CENTER. ALL RIGHTS RESERVED.</div>
+  </footer>
+
+</div><!-- /site -->
+
+<!-- ============================================================
+     LIBRARIES (CDN)
+============================================================= -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<!-- ============================================================
+     APP SCRIPTS
+============================================================= -->
+<script src="js/cursor.js"></script>
+<script src="js/noise.js"></script>
+<script src="js/boot.js"></script>
+<script src="js/scene.js"></script>
+<script src="js/terminal.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/missions.js"></script>
+<script src="js/payment.js"></script>
+<script src="js/download.js"></script>
+<script src="js/footer.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
