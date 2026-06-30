@@ -85,6 +85,11 @@
   <div class="door-light" id="doorLight"></div>
 </section>
 
+<!-- If JavaScript can't run (disabled, or a restrictive file-preview
+     viewer), the boot overlay would otherwise stay on screen forever
+     since only boot.js ever removes it. -->
+<noscript><style>#boot-sequence{display:none !important}</style></noscript>
+
 <!-- ============================================================
      MAIN SITE
 ============================================================= -->
