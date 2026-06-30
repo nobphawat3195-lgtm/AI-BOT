@@ -954,10 +954,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
             <div class="co-product__price" id="coPrice"></div>
           </div>
         </div>
-        <div class="seg" id="methodSeg">
-          <button type="button" data-m="promptpay" class="on">PromptPay (THB)</button>
-          <button type="button" data-m="crypto">Crypto (USDT)</button>
-        </div>
         <label class="field">
           <span class="field__label"><span>></span> TradingView Username</span>
           <input class="input" id="coUser" placeholder="YourTVname" autocomplete="off" spellcheck="false"/>
@@ -3345,8 +3341,6 @@ var qrcode = function() {
 ═══════════════════════════════════ */
 var CFG={
   promptpayPhone:"0984743195",          // เบอร์พร้อมเพย์
-  cryptoAddr:"TXxxxxxxxxxxxxxxxxxxxxxxx", // USDT address
-  cryptoNet:"USDT · TRC20",
   lineUrl:"https://line.me/R/ti/p/@816ibvwo", // LINE OA
   delivTime:"ภายใน 24 ชม. (ปกติ <1 ชม.)"
 };
@@ -3364,19 +3358,19 @@ var chk='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width
 var PRODUCTS=[
   {id:"lite",name:"YOUNGYUU Lite",tag:"Free Tier · Signal Only",thb:0,icon:"labels",free:true,
    feat:["สัญญาณ BUY/SELL จาก Engulfing","ยืนยันเมื่อแท่งปิด · ไม่รีเพนต์","TP/SL · Alert 🔒 (Pro only)","Dashboard 🔒 (Pro only)"]},
-  {id:"master",name:"YOUNGYUU Master v3",tag:"Gold Edition · Multi-Mode Engine",thb:2100,usdt:60,icon:"foundation",hot:true,
+  {id:"master",name:"YOUNGYUU Master v3",tag:"Gold Edition · Multi-Mode Engine",thb:2100,icon:"foundation",hot:true,
    feat:["แกน Supertrend สัญญาณ BUY/SELL","Auto-Sensitivity ตาม Timeframe","Sideways Scalp + TSF Filter","SL 3 แบบ · TP1/TP2/TP3","Dashboard Real-time"]},
-  {id:"spdm",name:"SPDM | YOUNGYUU",tag:"Supply & Demand Zones",thb:1000,usdt:29,icon:"radar",
+  {id:"spdm",name:"SPDM | YOUNGYUU",tag:"Supply & Demand Zones",thb:1000,icon:"radar",
    feat:["ตรวจจับโซน Supply/Demand อัตโนมัติ","Multi-timeframe สูงสุด 3 TF","Retest + Break alerts","BUY/SELL เมื่อแตะโซน"]},
-  {id:"visual",name:"YOUNGYUU Visual Pro",tag:"On-Chart TP/SL Boxes",thb:1500,usdt:43,icon:"tpsl",
+  {id:"visual",name:"YOUNGYUU Visual Pro",tag:"On-Chart TP/SL Boxes",thb:1500,icon:"tpsl",
    feat:["สัญญาณ Engulfing BUY/SELL","กล่อง TP/SL บนกราฟอัตโนมัติ","ปรับ R:R + ATR · ไม่รีเพนต์"]},
-  {id:"prov57",name:"YOUNGYUU PRO V5.7",tag:"Confirmed Price Action",thb:1000,usdt:29,icon:"candles",
+  {id:"prov57",name:"YOUNGYUU PRO V5.7",tag:"Confirmed Price Action",thb:1000,icon:"candles",
    feat:["สัญญาณ Engulfing + กรอง RSI","ยืนยันเมื่อแท่งปิด ไม่รีเพนต์","Dashboard Signal/TP/SL"]},
-  {id:"core",name:"YOUNGYUU Core Signals",tag:"Base Engine",thb:1000,usdt:29,icon:"labels",
+  {id:"core",name:"YOUNGYUU Core Signals",tag:"Base Engine",thb:1000,icon:"labels",
    feat:["สัญญาณ BUY/SELL","แสดงราคา TP/SL ทุกสัญญาณ","เลือก R:R · ปรับสไตล์ป้าย"]}
 ];
 
-var state={email:"",product:null,method:"promptpay",ref:""};
+var state={email:"",product:null,ref:""};
 var $=function(s){return document.querySelector(s);};
 function money(n){return n.toLocaleString("en-US");}
 
@@ -3531,19 +3525,9 @@ function selectProduct(p){
 function updatePrice(){
   if(!state.product){$('#coPrice').textContent='';return;}
   var p=state.product;
-  $('#coPrice').textContent=state.method==='crypto'?p.usdt+' USDT':'฿'+money(p.thb)+' · PromptPay';
-  $('#coPrice').style.color=state.method==='crypto'?'var(--gold)':'var(--green)';
+  $('#coPrice').textContent='฿'+money(p.thb)+' · PromptPay';
+  $('#coPrice').style.color='var(--green)';
 }
-
-/* ═══ METHOD SEG ═══ */
-$('#methodSeg').addEventListener('click',function(e){
-  var b=e.target.closest('button[data-m]');if(!b)return;
-  [].forEach.call(this.children,function(c){c.classList.remove('on');});
-  b.classList.add('on');state.method=b.getAttribute('data-m');
-  updatePrice();resetScan();
-  var step1=document.querySelector('.steps-list li[data-n="1"]');
-  if(step1)step1.textContent=state.method==='crypto'?'สแกน QR หรือคัดลอกที่อยู่ Wallet แล้วโอน USDT':'สแกน QR จ่ายด้วยแอปธนาคาร (ยอดตรงอัตโนมัติ)';
-});
 
 /* ═══ PROMPTPAY PAYLOAD ═══ */
 function tlv(id,v){return id+String(v.length).padStart(2,'0')+v;}
@@ -3562,9 +3546,8 @@ $('#genBtn').addEventListener('click',function(){
   if(!u){err.textContent='> ERROR: enter TradingView username';$('#coUser').focus();return;}
   err.textContent='';
   state.ref=newRef();
-  var payload=state.method==='crypto'?CFG.cryptoAddr:ppPayload(CFG.promptpayPhone,state.product.thb);
-  $('#qrBox').innerHTML=renderQR(payload);
-  $('#payAmt').textContent=state.method==='crypto'?(state.product.usdt+' USDT'):('฿'+money(state.product.thb));
+  $('#qrBox').innerHTML=renderQR(ppPayload(CFG.promptpayPhone,state.product.thb));
+  $('#payAmt').textContent='฿'+money(state.product.thb);
   $('#payRef').textContent=state.ref;
   $('#delivTime').textContent=CFG.delivTime;
   $('#scanIdle').style.display='none';
