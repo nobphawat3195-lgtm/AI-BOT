@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ระบบใบเสนอราคาอะไหล่รถยนต์</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy0:#0b1a2e; --navy1:#0f2a4a; --navy2:#12345f;
+  --blue:#1e6fff; --blue2:#4d9fff;
+  --amber:#ff8a1e; --amber2:#ffb26b;
+  --ink:#0f1e33; --sub:#5b7290; --line:#dbe4f0; --line2:#eef2f8;
+  --bg:#eef2f7; --card:#ffffff;
+  --green:#0fa968; --red:#e0334f;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:18px 14px 60px}
+
+/* TOOLBAR */
+.toolbar{
+  position:sticky;top:0;z-index:20;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  background:rgba(238,242,247,.92);backdrop-filter:blur(10px);
+  padding:12px 4px;margin-bottom:14px;border-bottom:1px solid var(--line);
+}
+.tb-title{font-weight:600;font-size:15px;color:var(--navy1);display:flex;align-items:center;gap:8px}
+.tb-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{
+  border:none;border-radius:9px;padding:9px 16px;font-family:'Kanit',sans-serif;
+  font-weight:500;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;
+  transition:transform .12s,box-shadow .12s;
+}
+.btn:active{transform:scale(.96)}
+.btn-print{background:linear-gradient(135deg,var(--navy2),var(--blue));color:#fff;box-shadow:0 4px 14px rgba(30,111,255,.3)}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--navy1)}
+.btn-danger{background:#fff;border:1px solid rgba(224,51,79,.35);color:var(--red)}
+.save-note{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:5px}
+.save-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+/* DOCUMENT CARD */
+.doc{
+  background:var(--card);border-radius:16px;overflow:hidden;
+  box-shadow:0 10px 40px rgba(15,42,74,.12);border:1px solid var(--line2);
+}
+
+/* BANNER */
+.banner{
+  background:linear-gradient(120deg,var(--navy0) 0%,var(--navy2) 55%,var(--blue) 130%);
+  color:#fff;padding:26px 28px 22px;position:relative;overflow:hidden;
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.banner::before{content:'';position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,138,30,.25),transparent 70%)}
+.banner::after{content:'';position:absolute;left:-40px;bottom:-80px;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(77,159,255,.2),transparent 70%)}
+.brand{display:flex;gap:14px;align-items:flex-start;position:relative;z-index:1;min-width:0}
+.brand-logo{
+  width:56px;height:56px;flex-shrink:0;border-radius:14px;
+  background:linear-gradient(135deg,var(--amber),#ff5f6d);
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  box-shadow:0 6px 18px rgba(255,138,30,.35);overflow:hidden;position:relative;
+}
+.brand-logo img{width:100%;height:100%;object-fit:cover}
+.logo-text{font-size:13px;font-weight:800;line-height:1.1;text-align:center;color:#fff;letter-spacing:.5px}
+.logo-edit{font-size:10px;color:#bcd3f7;margin-top:5px;cursor:pointer;text-decoration:underline;display:inline-block}
+.brand-name{font-size:20px;font-weight:700;outline:none;line-height:1.3;min-width:120px}
+.brand-tag{font-size:12px;color:#bcd3f7;margin-top:2px;outline:none}
+.brand-name:empty::before,.brand-tag:empty::before{content:attr(data-ph);color:#7f9ac2}
+.branch-info{font-size:11px;color:#cfe0fb;margin-bottom:8px}
+.branch-info span[contenteditable]{outline:none}
+.branch-info span[contenteditable]:empty::before{content:attr(data-ph);color:#8fa9d1}
+
+/* FROM / TO */
+.fromto-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.party-card{padding:20px 28px}
+.party-card + .party-card{border-left:1px solid var(--line2)}
+.party-label{font-size:10.5px;font-weight:600;letter-spacing:1.5px;color:var(--amber);text-transform:uppercase;margin-bottom:12px}
+.doc-meta{position:relative;z-index:1;text-align:right;flex-shrink:0}
+.doc-title{font-size:22px;font-weight:700;letter-spacing:1px}
+.doc-title small{display:block;font-size:10px;letter-spacing:3px;color:#a9c6f2;font-weight:400;margin-top:2px}
+.doc-fields{margin-top:10px;font-size:11px;color:#cfe0fb}
+.doc-fields .dfrow{display:flex;justify-content:flex-end;gap:6px;margin-top:4px;align-items:center}
+.doc-fields input{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:6px;
+  color:#fff;font-family:'Kanit',sans-serif;font-size:11px;padding:3px 7px;text-align:right;outline:none;
+}
+.doc-fields input::placeholder{color:#9fb8dd}
+
+/* CUSTOMER */
+.section{padding:20px 28px;border-bottom:1px solid var(--line2)}
+.section-title{font-size:11px;letter-spacing:2px;color:var(--sub);text-transform:uppercase;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.section-title .bar{width:4px;height:12px;background:var(--amber);border-radius:2px}
+.field{margin-bottom:12px}
+.field-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field label{font-size:11px;color:var(--sub);display:block;margin-bottom:5px}
+.field input,.field textarea{
+  width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;
+  font-family:'Kanit',sans-serif;font-size:13px;color:var(--ink);outline:none;background:#fbfcfe;
+}
+.field input:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,111,255,.1)}
+
+.car-photo-row{display:flex;gap:16px;align-items:center;margin-top:14px}
+.photo-box{
+  width:120px;height:80px;border-radius:10px;border:1.5px dashed var(--line);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;
+  background:#f6f8fb;position:relative;
+}
+.photo-box img{width:100%;height:100%;object-fit:cover}
+.photo-empty{font-size:10px;color:var(--sub);text-align:center;padding:6px}
+.photo-controls{display:flex;flex-direction:column;gap:8px}
+.upload-btn{
+  display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);
+  border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer;color:var(--navy1);width:fit-content;
+}
+.remove-photo{background:none;border:none;color:var(--red);font-size:11px;cursor:pointer;text-align:left;padding:0}
+
+/* ROW COUNT CONTROL */
+.rowcount-bar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:#f6f9ff;border:1px solid #e1ebff;border-radius:10px;padding:10px 14px;margin-bottom:14px;
+}
+.rowcount-bar label{font-size:12px;color:var(--navy1);font-weight:500;display:flex;align-items:center;gap:6px}
+.rowcount-bar input[type=number]{
+  width:70px;border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-family:'Kanit',sans-serif;font-size:13px;text-align:center;
+}
+.rowcount-bar .hint{font-size:10.5px;color:var(--sub);flex:1;min-width:180px}
+
+/* PASTE-TO-PARSE */
+.paste-bar{background:#f6f9ff;border:1px solid #e1ebff;border-radius:10px;padding:10px 14px;margin-bottom:10px}
+.paste-label{font-size:11px;color:var(--navy1);font-weight:500;margin-bottom:8px;display:block}
+.paste-row{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.paste-row textarea{
+  flex:1;min-width:220px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;
+  font-family:'Kanit',sans-serif;font-size:12.5px;resize:vertical;background:#fff;
+}
+.show-total-toggle{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px;margin:4px 0 10px;cursor:pointer}
+
+/* TABLE */
+table.items{width:100%;border-collapse:collapse;font-size:12.5px}
+table.items th{
+  background:#f6f9ff;color:var(--navy1);font-weight:600;font-size:10.5px;letter-spacing:.5px;
+  text-transform:uppercase;padding:9px 8px;text-align:left;border-bottom:1px solid var(--line);
+}
+table.items td{padding:6px 6px;border-bottom:1px solid var(--line2);vertical-align:middle}
+table.items th.num,table.items td.num{text-align:right}
+table.items th.center,table.items td.center{text-align:center}
+table.items input{
+  width:100%;border:1px solid transparent;background:transparent;border-radius:6px;
+  padding:6px 7px;font-family:'Kanit',sans-serif;font-size:12.5px;color:var(--ink);outline:none;
+}
+table.items input:hover{border-color:var(--line)}
+table.items input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 2px rgba(30,111,255,.1)}
+table.items input.num{text-align:right}
+table.items input.qty,table.items input.unit{text-align:center}
+.row-total{font-weight:600;text-align:right;padding-right:10px;white-space:nowrap}
+.del-btn{background:none;border:none;color:var(--red);font-size:15px;cursor:pointer;opacity:.6;padding:4px}
+.del-btn:hover{opacity:1}
+.add-row-btn{
+  margin-top:10px;background:#fff;border:1px dashed var(--blue2);color:var(--blue);
+  border-radius:9px;padding:9px 14px;font-size:12.5px;cursor:pointer;width:100%;font-family:'Kanit',sans-serif;font-weight:500;
+}
+
+/* TOTALS */
+.totals-wrap{display:flex;justify-content:flex-end}
+.totals{width:100%;max-width:320px;margin-top:6px}
+.trow{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;color:var(--sub)}
+.trow input{width:90px;border:1px solid var(--line);border-radius:7px;padding:5px 8px;text-align:right;font-family:'Kanit',sans-serif;font-size:12px}
+.trow.vat label{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--sub)}
+.grand{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:12px;border-top:2px solid var(--navy1)}
+.grand .gl{font-size:13px;font-weight:600;color:var(--navy1)}
+.grand .gv{font-size:22px;font-weight:700;color:var(--navy1)}
+.bahttext{font-size:11px;color:var(--sub);text-align:right;margin-top:4px;font-style:italic}
+
+/* FOOTER / NOTES */
+textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
+.sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:22px}
+.sign-box{text-align:center}
+.sign-line{border-bottom:1px dashed var(--sub);height:52px;margin-bottom:8px}
+.sign-label{font-size:11.5px;color:var(--sub)}
+
+/* RESPONSIVE */
+@media (max-width:640px){
+  .field-row2{grid-template-columns:1fr}
+  .fromto-grid{grid-template-columns:1fr}
+  .party-card + .party-card{border-left:none;border-top:1px solid var(--line2)}
+  .banner{flex-direction:column}
+  .doc-meta{text-align:left}
+  .doc-fields .dfrow{justify-content:flex-start}
+  .sign-grid{grid-template-columns:1fr}
+  table.items{font-size:11.5px}
+  .section{padding:16px}
+}
+
+/* PRINT */
+@media print{
+  body{background:#fff}
+  .no-print{display:none!important}
+  .wrap{max-width:none;padding:0}
+  .doc{box-shadow:none;border:none;border-radius:0}
+  .section{padding:14px 6px}
+  .banner{padding:18px 6px}
+  table.items input,.field input,.field textarea,.trow input{border-color:transparent!important;background:transparent!important;box-shadow:none!important}
+  .del-btn,.add-row-btn,.upload-btn,.remove-photo,.logo-edit{display:none!important}
+  .party-card + .party-card{border-left:1px solid #ccc}
+  @page{size:A4;margin:12mm}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="toolbar no-print">
+    <div class="tb-title">🔧 ระบบสร้างใบเสนอราคาอะไหล่รถยนต์</div>
+    <div class="tb-actions">
+      <span class="save-note"><span class="save-dot"></span><span id="saveNote">บันทึกอัตโนมัติ</span></span>
+      <button class="btn btn-ghost" onclick="resetForm()">🗑️ ล้างฟอร์ม</button>
+      <button class="btn btn-print" onclick="window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
+    </div>
+  </div>
+
+  <div class="doc" id="doc">
+
+    <!-- BANNER -->
+    <div class="banner">
+      <div class="brand">
+        <div class="brand-logo" id="logoBox">
+          <span id="logoPlaceholder" class="logo-text">AUTO<br>1</span>
+          <img id="logoImg" style="display:none">
+        </div>
+        <div style="min-width:0">
+          <div class="brand-name" id="shopName" contenteditable="true" data-ph="ชื่อร้านอะไหล่รถยนต์ของคุณ"></div>
+          <div class="brand-tag" id="shopTag" contenteditable="true" data-ph="อะไหล่แท้ - อะไหล่เทียบ คุณภาพมั่นใจ"></div>
+          <label class="logo-edit no-print">🖼 เปลี่ยนโลโก้ร้าน<input type="file" accept="image/*" style="display:none" id="logoInput" onchange="handleLogo(event)"></label>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div class="branch-info">
+          <span id="shopBranch" contenteditable="true" data-ph="ชื่อสาขา"></span> ·
+          โทร <span id="shopBranchPhone" contenteditable="true" data-ph="เบอร์โทรสาขา"></span>
+        </div>
+        <div class="doc-title">ใบเสนอราคา<small>QUOTATION</small></div>
+        <div class="doc-fields">
+          <div class="dfrow">เลขที่ <input id="docNo" placeholder="QT-00000000-001"></div>
+          <div class="dfrow">วันที่ <input id="docDate" type="date"></div>
+          <div class="dfrow">ยืนราคา <input id="docValid" style="width:40px" value="7"> วัน</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FROM / TO -->
+    <div class="fromto-grid">
+      <div class="party-card">
+        <div class="party-label">ผู้เสนอราคา (ร้านค้า)</div>
+        <div class="field"><label>ที่อยู่ร้าน</label><textarea id="shopAddress" rows="2" placeholder="เลขที่ / ถนน / ตำบล / อำเภอ / จังหวัด"></textarea></div>
+        <div class="field-row2">
+          <div class="field"><label>เบอร์โทร</label><input id="shopPhone" placeholder="08x-xxx-xxxx" inputmode="tel"></div>
+          <div class="field"><label>เลขผู้เสียภาษี</label><input id="shopTaxId" placeholder="เลข 13 หลัก (ถ้ามี)"></div>
+        </div>
+      </div>
+      <div class="party-card">
+        <div class="party-label">เสนอราคาถึง (ลูกค้า)</div>
+        <div class="field"><label>ชื่อลูกค้า</label><input id="custName" placeholder="ชื่อ-นามสกุล / ชื่อร้าน"></div>
+        <div class="field-row2">
+          <div class="field"><label>เบอร์โทร</label><input id="custPhone" placeholder="08x-xxx-xxxx" inputmode="tel"></div>
+          <div class="field"><label>รุ่นรถ / ทะเบียน</label><input id="custCar" placeholder="เช่น Vios กข 1234"></div>
+        </div>
+        <div class="car-photo-row">
+          <div class="photo-box" id="photoBox">
+            <div class="photo-empty" id="photoEmpty">รูปรถ<br>(ยังไม่ได้อัพโหลด)</div>
+            <img id="photoImg" style="display:none">
+          </div>
+          <div class="photo-controls no-print">
+            <label class="upload-btn">📷 อัพโหลดรูปรถ<input type="file" accept="image/*" style="display:none" id="photoInput" onchange="handlePhoto(event)"></label>
+            <button class="remove-photo" id="removePhotoBtn" style="display:none" onclick="removePhoto()">✕ ลบรูป</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ITEMS -->
+    <div class="section">
+      <div class="section-title"><span class="bar"></span>รายการสินค้า/อะไหล่</div>
+
+      <div class="paste-bar no-print">
+        <label class="paste-label">📥 วางข้อความราคาที่ได้มา (เช่น "โช๊คอัพหน้า อันละ 1480 TOKICO") แล้วกดปุ่มเพื่อแปลงเป็นรายการอัตโนมัติ</label>
+        <div class="paste-row">
+          <textarea id="pasteBox" rows="3" placeholder="วางข้อความที่นี่ บรรทัดละ 1 รายการ"></textarea>
+          <button class="btn btn-ghost" onclick="parsePasteText()">➕ แปลงเป็นรายการ</button>
+        </div>
+      </div>
+
+      <div class="rowcount-bar no-print">
+        <label>จำนวนรายการ <input type="number" id="rowCountInput" min="1" max="200" value="11"></label>
+        <button class="btn btn-ghost" onclick="applyRowCount()">✅ ตั้งค่าทั้งหมด</button>
+        <button class="btn btn-ghost" onclick="copyItemsText()">📋 คัดลอกข้อความ</button>
+        <span class="hint">พิมพ์จำนวนแล้วกดปุ่มเดียว ระบบจะปรับแถวให้ครบทันที</span>
+      </div>
+
+      <div class="rowcount-bar no-print">
+        <label>จำนวนต่อชิ้น (ทุกแถว) <input type="number" id="qtyAllInput" min="0" step="1" value="1"></label>
+        <button class="btn btn-ghost" onclick="applyQtyAll()">✅ ตั้งจำนวนทั้งหมด</button>
+        <span class="hint">ใช้เมื่อทุกชิ้นต้องการจำนวนเท่ากันในคราวเดียว เช่น ทำ 2 คัน</span>
+      </div>
+
+      <table class="items">
+        <thead>
+          <tr>
+            <th style="width:26px">#</th>
+            <th class="center" style="width:100px">SKU</th>
+            <th>รายการสินค้า</th>
+            <th class="center" style="width:56px">จำนวน</th>
+            <th class="center" style="width:58px">หน่วย</th>
+            <th class="num no-print" style="width:80px">ราคาทุน</th>
+            <th class="num" style="width:86px">ราคาขาย/หน่วย</th>
+            <th class="num" style="width:100px">รวม (บาท)</th>
+            <th class="no-print" style="width:28px"></th>
+          </tr>
+        </thead>
+        <tbody id="itemsBody"></tbody>
+      </table>
+      <button class="add-row-btn no-print" onclick="addRow()">+ เพิ่มรายการ</button>
+      <div style="font-size:10.5px;color:var(--sub);margin-top:6px" class="no-print">💡 ราคาทุนใช้คำนวณภายในเท่านั้น ราคาขาย = ทุน + 50% จะถูกปัดเศษและแสดงในใบเสนอราคา (คอลัมน์ราคาทุนจะไม่ปรากฏตอนพิมพ์)</div>
+
+      <label class="show-total-toggle no-print">
+        <input type="checkbox" id="showTotalToggle" checked onchange="toggleShowTotal()"> แสดงยอดรวมสุทธิตอนพิมพ์ใบเสนอราคา
+      </label>
+      <div class="totals-wrap" id="totalsWrap">
+        <div class="totals">
+          <div class="trow"><span>รวมเป็นเงิน</span><span id="tSubtotal">0.00</span></div>
+          <div class="trow">
+            <span>ส่วนลด</span>
+            <span><input type="number" id="discountInput" value="0" min="0" oninput="recalc()"> บาท</span>
+          </div>
+          <div class="trow vat">
+            <label><input type="checkbox" id="vatToggle" onchange="recalc()"> คิดภาษีมูลค่าเพิ่ม (VAT 7%)</label>
+            <span id="tVat">0.00</span>
+          </div>
+          <div class="grand"><span class="gl">ยอดรวมสุทธิ</span><span class="gv" id="tGrand">0.00</span></div>
+          <div class="bahttext" id="tBahttext">(-)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTES / SIGNATURE -->
+    <div class="section" style="border-bottom:none">
+      <div class="section-title"><span class="bar"></span>หมายเหตุ / เงื่อนไข</div>
+      <div class="field">
+        <textarea class="notes" id="notes" placeholder="เช่น ราคานี้มีผล 7 วันนับจากวันที่ออกใบเสนอราคา / ชำระเงินสดหรือโอนก่อนเริ่มงาน 50%"></textarea>
+      </div>
+      <div class="sign-grid">
+        <div class="sign-box">
+          <div class="sign-line"></div>
+          <div class="sign-label">ผู้เสนอราคา / วันที่</div>
+        </div>
+        <div class="sign-box">
+          <div class="sign-line"></div>
+          <div class="sign-label">ผู้อนุมัติ / ลูกค้า / วันที่</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'autoPartsQuotationDraft';
+let items = [];
+let photoDataUrl = null;
+let logoDataUrl = null;
+
+const MARKUP = 1.5;
+
+function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', cost:'' }; }
+
+function defaultCatalog(){
+  return [
+    { sku:'', name:'โช๊คอัพหน้า TOKICO', qty:1, unit:'อัน', cost:1480 },
+    { sku:'', name:'โช๊คอัพหลัง TOKICO', qty:1, unit:'อัน', cost:1100 },
+    { sku:'', name:'เบ้าโช๊คอัพหน้า แท้', qty:1, unit:'อัน', cost:880 },
+    { sku:'', name:'ยางกันฝุ่นกันกระแทกโช๊คอัพหน้า IR', qty:1, unit:'อัน', cost:350 },
+    { sku:'', name:'ลูกปืนเบ้าโช้คอัพ แท้', qty:1, unit:'อัน', cost:280 },
+    { sku:'', name:'เหล็กรองเบ้าโช๊คบน แท้', qty:1, unit:'อัน', cost:280 },
+    { sku:'', name:'ยางรองสปริงหน้าล่าง TW', qty:1, unit:'อัน', cost:200 },
+    { sku:'', name:'ยางเบ้าโช๊คหลัง RBI', qty:4, unit:'อัน', cost:120 },
+    { sku:'', name:'ยางกันฝุ่นกันกระแทกโช๊คอัพหลัง IR', qty:1, unit:'อัน', cost:360 },
+    { sku:'', name:'ปีกนกล่าง TRW', qty:1, unit:'อัน', cost:1700 },
+    { sku:'', name:'สกรูกันโคลงหน้า RBI', qty:1, unit:'อัน', cost:280 },
+  ];
+}
+
+function sellPrice(it){ return (parseFloat(it.cost)||0) * MARKUP; }
+function rowTotal(it){ return (parseFloat(it.qty)||0) * sellPrice(it); }
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmt(n){ return (n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+const SKU_MAX_LEN = 20;
+function digitsOnly(s){ return (s||'').replace(/\D/g,'').slice(0,SKU_MAX_LEN); }
+
+function renderItems(){
+  const body = document.getElementById('itemsBody');
+  body.innerHTML = items.map((it,i)=>`
+    <tr>
+      <td class="center">${i+1}</td>
+      <td class="center"><input type="text" inputmode="numeric" maxlength="${SKU_MAX_LEN}" placeholder="รหัสสินค้า (ตัวเลข)" value="${escapeHtml(it.sku)}" oninput="updateSku(${i},this)"></td>
+      <td><input type="text" placeholder="ระบุชื่อสินค้า/อะไหล่" value="${escapeHtml(it.name)}" oninput="updateItem(${i},'name',this.value)"></td>
+      <td class="center"><input class="qty" type="number" min="0" step="1" value="${it.qty}" oninput="updateItem(${i},'qty',this.value)"></td>
+      <td class="center"><input class="unit" type="text" value="${escapeHtml(it.unit)}" oninput="updateItem(${i},'unit',this.value)"></td>
+      <td class="num no-print"><input class="num" type="number" min="0" step="0.01" placeholder="0.00" value="${it.cost}" oninput="updateItem(${i},'cost',this.value)"></td>
+      <td class="num sell-price">${fmt(sellPrice(it))}</td>
+      <td class="row-total">${fmt(rowTotal(it))}</td>
+      <td class="no-print center"><button class="del-btn" onclick="removeRow(${i})" title="ลบแถวนี้">✕</button></td>
+    </tr>
+  `).join('');
+}
+
+function updateItem(i,field,val){
+  items[i][field] = val;
+  renderRowValuesOnly(i);
+  recalc();
+  save();
+}
+function updateSku(i,el){
+  const clean = digitsOnly(el.value);
+  el.value = clean;
+  items[i].sku = clean;
+  save();
+}
+function renderRowValuesOnly(i){
+  const rows = document.getElementById('itemsBody').children;
+  if(!rows[i]) return;
+  rows[i].querySelector('.sell-price').textContent = fmt(sellPrice(items[i]));
+  rows[i].querySelector('.row-total').textContent = fmt(rowTotal(items[i]));
+}
+
+function copyItemsText(){
+  const lines = items
+    .filter(it => it.name.trim())
+    .map((it,i) => `${i+1}. ${it.sku ? '['+it.sku+'] ' : ''}${it.name} x${it.qty||0} ${it.unit} @${fmt(sellPrice(it))} = ${fmt(rowTotal(it))} บาท`);
+  lines.push('รวมทั้งหมด: ' + document.getElementById('tGrand').textContent + ' บาท');
+  const text = lines.join('\n');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>flashCopyNote('คัดลอกข้อความแล้ว')).catch(()=>flashCopyNote('คัดลอกไม่สำเร็จ'));
+  } else {
+    flashCopyNote('เบราว์เซอร์นี้ไม่รองรับการคัดลอกอัตโนมัติ');
+  }
+}
+function flashCopyNote(msg){
+  const note = document.getElementById('saveNote');
+  const prev = note.textContent;
+  note.textContent = msg;
+  setTimeout(()=>{ note.textContent = prev; }, 1800);
+}
+
+function addRow(){
+  items.push(blankRow());
+  renderItems();
+  save();
+  const rows = document.getElementById('itemsBody').children;
+  const last = rows[rows.length-1];
+  if(last) last.querySelectorAll('input')[1].focus();
+}
+function removeRow(i){
+  items.splice(i,1);
+  if(items.length===0) items.push(blankRow());
+  renderItems();
+  recalc();
+  save();
+}
+function applyRowCount(){
+  let n = parseInt(document.getElementById('rowCountInput').value,10);
+  if(!n || n<1) n = 1;
+  if(n>200) n = 200;
+  if(n > items.length){
+    while(items.length < n) items.push(blankRow());
+  } else if(n < items.length){
+    items = items.slice(0,n);
+  }
+  renderItems();
+  recalc();
+  save();
+}
+
+function applyQtyAll(){
+  let n = parseFloat(document.getElementById('qtyAllInput').value);
+  if(isNaN(n) || n<0) n = 0;
+  items.forEach(it => it.qty = n);
+  renderItems();
+  recalc();
+  save();
+}
+
+function toggleShowTotal(){
+  const on = document.getElementById('showTotalToggle').checked;
+  document.getElementById('totalsWrap').classList.toggle('no-print', !on);
+  save();
+}
+
+function parseLineToItem(line){
+  let text = line;
+  let qty = 1;
+  const qtyMatch = text.match(/(?:ใช้|จำนวน)\s*(\d+)\s*(?:ตัว|ชิ้น|อัน|ชุด|คู่)?/);
+  if(qtyMatch){ qty = parseInt(qtyMatch[1],10); text = text.replace(qtyMatch[0],''); }
+
+  let cost = null;
+  const priceKeywordMatch = text.match(/(?:อันละ|ตัวละ|ชิ้นละ|ชุดละ|คู่ละ|เมตรละ|ลิตรละ|ราคา)\s*([\d,]+(?:\.\d+)?)/);
+  if(priceKeywordMatch){
+    cost = parseFloat(priceKeywordMatch[1].replace(/,/g,''));
+    text = text.replace(priceKeywordMatch[0], '');
+  } else {
+    const numbers = [...text.matchAll(/([\d,]{2,}(?:\.\d+)?)/g)];
+    if(numbers.length){
+      const last = numbers[numbers.length-1];
+      cost = parseFloat(last[1].replace(/,/g,''));
+      text = text.slice(0,last.index) + text.slice(last.index+last[0].length);
+    }
+  }
+  text = text.replace(/[()]/g,'').replace(/\s+/g,' ').trim();
+  if(!text && cost===null) return null;
+  return { sku:'', name: text || line.trim(), qty: qty||1, unit:'อัน', cost: cost!==null ? cost : '' };
+}
+
+function parsePasteText(){
+  const box = document.getElementById('pasteBox');
+  const lines = box.value.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!lines.length) return;
+  let added = 0;
+  lines.forEach(line=>{
+    const parsed = parseLineToItem(line);
+    if(parsed){ items.push(parsed); added++; }
+  });
+  box.value = '';
+  renderItems();
+  recalc();
+  save();
+  document.getElementById('rowCountInput').value = items.length;
+  flashCopyNote(added ? `เพิ่ม ${added} รายการจากข้อความแล้ว` : 'ไม่พบรายการที่แยกได้ ลองตรวจข้อความอีกครั้ง');
+}
+
+function recalc(){
+  const subtotal = items.reduce((s,it)=>s+rowTotal(it),0);
+  const discount = parseFloat(document.getElementById('discountInput').value)||0;
+  const afterDiscount = Math.max(subtotal - discount, 0);
+  const vatOn = document.getElementById('vatToggle').checked;
+  const vat = vatOn ? afterDiscount*0.07 : 0;
+  const grand = afterDiscount + vat;
+  document.getElementById('tSubtotal').textContent = fmt(subtotal);
+  document.getElementById('tVat').textContent = fmt(vat);
+  document.getElementById('tGrand').textContent = fmt(grand);
+  document.getElementById('tBahttext').textContent = '(' + bahtText(grand) + ')';
+  save();
+}
+
+function bahtText(num){
+  num = Math.round((num||0)*100)/100;
+  if(num===0) return 'ศูนย์บาทถ้วน';
+  const txtNum=['ศูนย์','หนึ่ง','สอง','สาม','สี่','ห้า','หก','เจ็ด','แปด','เก้า'];
+  const txtDigit=['','สิบ','ร้อย','พัน','หมื่น','แสน','ล้าน'];
+  function convert(numStr){
+    let s='', len=numStr.length;
+    for(let i=0;i<len;i++){
+      const d = parseInt(numStr[i],10);
+      const place = len-i-1;
+      if(d===0) continue;
+      if(place===0 && d===1 && len>1){ s+='เอ็ด'; }
+      else if(place===1 && d===2){ s+='ยี่'+txtDigit[1]; }
+      else if(place===1 && d===1){ s+=txtDigit[1]; }
+      else { s += txtNum[d]+txtDigit[place%7]; }
+    }
+    return s;
+  }
+  const baht = Math.floor(num);
+  const satang = Math.round((num-baht)*100);
+  let bahtStr = baht>0 ? convert(String(baht))+'บาท' : '';
+  let satangStr = satang>0 ? convert(String(satang).padStart(2,'0'))+'สตางค์' : 'ถ้วน';
+  if(baht>1e6){
+    let millions = Math.floor(baht/1e6), rest = baht%1e6, out='';
+    while(millions>0){ out = convert(String(millions%1e6))+'ล้าน'+out; millions=Math.floor(millions/1e6); }
+    bahtStr = out + (rest>0?convert(String(rest)):'') + 'บาท';
+  }
+  return bahtStr + satangStr;
+}
+
+function handlePhoto(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    photoDataUrl = reader.result;
+    document.getElementById('photoImg').src = photoDataUrl;
+    document.getElementById('photoImg').style.display = 'block';
+    document.getElementById('photoEmpty').style.display = 'none';
+    document.getElementById('removePhotoBtn').style.display = 'block';
+    save();
+  };
+  reader.readAsDataURL(file);
+}
+function removePhoto(){
+  photoDataUrl = null;
+  document.getElementById('photoImg').style.display = 'none';
+  document.getElementById('photoImg').src = '';
+  document.getElementById('photoEmpty').style.display = 'block';
+  document.getElementById('removePhotoBtn').style.display = 'none';
+  document.getElementById('photoInput').value = '';
+  save();
+}
+
+function handleLogo(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    logoDataUrl = reader.result;
+    document.getElementById('logoImg').src = logoDataUrl;
+    document.getElementById('logoImg').style.display = 'block';
+    document.getElementById('logoPlaceholder').style.display = 'none';
+    save();
+  };
+  reader.readAsDataURL(file);
+}
+
+function genDocNo(){
+  const d = new Date();
+  const ymd = d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+  return `QT-${ymd}-001`;
+}
+
+function shopDefaults(){
+  return {
+    shopName: 'AUTO 1',
+    shopTag: 'อะไหล่แท้ - อะไหล่เทียบ คุณภาพมั่นใจ',
+    shopBranch: 'สาขาฟิวเจอร์รังสิต',
+    shopBranchPhone: '025508104',
+  };
+}
+
+function collectState(){
+  return {
+    shopName: document.getElementById('shopName').textContent,
+    shopTag: document.getElementById('shopTag').textContent,
+    shopBranch: document.getElementById('shopBranch').textContent,
+    shopBranchPhone: document.getElementById('shopBranchPhone').textContent,
+    shopAddress: document.getElementById('shopAddress').value,
+    shopPhone: document.getElementById('shopPhone').value,
+    shopTaxId: document.getElementById('shopTaxId').value,
+    logoDataUrl,
+    docNo: document.getElementById('docNo').value,
+    docDate: document.getElementById('docDate').value,
+    docValid: document.getElementById('docValid').value,
+    custName: document.getElementById('custName').value,
+    custPhone: document.getElementById('custPhone').value,
+    custCar: document.getElementById('custCar').value,
+    photoDataUrl,
+    items,
+    discount: document.getElementById('discountInput').value,
+    vat: document.getElementById('vatToggle').checked,
+    showTotal: document.getElementById('showTotalToggle').checked,
+    notes: document.getElementById('notes').value,
+  };
+}
+
+let saveTimer=null;
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState())); }catch(e){}
+    const note = document.getElementById('saveNote');
+    note.textContent = 'บันทึกแล้ว ' + new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  }, 300);
+}
+
+function load(){
+  let s = null;
+  try{ s = JSON.parse(localStorage.getItem(STORAGE_KEY)); }catch(e){}
+  document.getElementById('docNo').value = (s && s.docNo) || genDocNo();
+  document.getElementById('docDate').value = (s && s.docDate) || new Date().toISOString().slice(0,10);
+  document.getElementById('docValid').value = (s && s.docValid) || '7';
+  const sd = shopDefaults();
+  document.getElementById('shopName').textContent = (s && 'shopName' in s) ? s.shopName : sd.shopName;
+  document.getElementById('shopTag').textContent = (s && 'shopTag' in s) ? s.shopTag : sd.shopTag;
+  document.getElementById('shopBranch').textContent = (s && 'shopBranch' in s) ? s.shopBranch : sd.shopBranch;
+  document.getElementById('shopBranchPhone').textContent = (s && 'shopBranchPhone' in s) ? s.shopBranchPhone : sd.shopBranchPhone;
+  if(s){
+    document.getElementById('shopAddress').value = s.shopAddress || '';
+    document.getElementById('shopPhone').value = s.shopPhone || '';
+    document.getElementById('shopTaxId').value = s.shopTaxId || '';
+    document.getElementById('custName').value = s.custName || '';
+    document.getElementById('custPhone').value = s.custPhone || '';
+    document.getElementById('custCar').value = s.custCar || '';
+    document.getElementById('discountInput').value = s.discount || 0;
+    document.getElementById('vatToggle').checked = !!s.vat;
+    document.getElementById('showTotalToggle').checked = s.showTotal !== false;
+    document.getElementById('notes').value = s.notes || '';
+    if(s.photoDataUrl){
+      photoDataUrl = s.photoDataUrl;
+      document.getElementById('photoImg').src = photoDataUrl;
+      document.getElementById('photoImg').style.display = 'block';
+      document.getElementById('photoEmpty').style.display = 'none';
+      document.getElementById('removePhotoBtn').style.display = 'block';
+    }
+    if(s.logoDataUrl){
+      logoDataUrl = s.logoDataUrl;
+      document.getElementById('logoImg').src = logoDataUrl;
+      document.getElementById('logoImg').style.display = 'block';
+      document.getElementById('logoPlaceholder').style.display = 'none';
+    }
+    items = (s.items && s.items.length) ? s.items : defaultCatalog();
+  } else {
+    items = defaultCatalog();
+  }
+  document.getElementById('rowCountInput').value = items.length;
+  toggleShowTotal();
+  renderItems();
+  recalc();
+}
+
+function resetForm(){
+  if(!confirm('ล้างข้อมูลทั้งหมดในใบเสนอราคานี้หรือไม่? (ข้อมูลร้าน/โลโก้จะยังคงอยู่)')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  photoDataUrl = null;
+  logoDataUrl = null;
+  const sd = shopDefaults();
+  document.getElementById('shopName').textContent = sd.shopName;
+  document.getElementById('shopTag').textContent = sd.shopTag;
+  document.getElementById('shopBranch').textContent = sd.shopBranch;
+  document.getElementById('shopBranchPhone').textContent = sd.shopBranchPhone;
+  document.getElementById('shopAddress').value='';
+  document.getElementById('shopPhone').value='';
+  document.getElementById('shopTaxId').value='';
+  document.getElementById('custName').value='';
+  document.getElementById('custPhone').value='';
+  document.getElementById('custCar').value='';
+  document.getElementById('discountInput').value=0;
+  document.getElementById('vatToggle').checked=false;
+  document.getElementById('showTotalToggle').checked=true;
+  toggleShowTotal();
+  document.getElementById('notes').value='';
+  document.getElementById('pasteBox').value='';
+  document.getElementById('logoImg').style.display = 'none';
+  document.getElementById('logoImg').src = '';
+  document.getElementById('logoPlaceholder').style.display = 'inline';
+  document.getElementById('logoInput').value = '';
+  removePhoto();
+  document.getElementById('docNo').value = genDocNo();
+  document.getElementById('docDate').value = new Date().toISOString().slice(0,10);
+  items = defaultCatalog();
+  document.getElementById('rowCountInput').value = items.length;
+  renderItems();
+  recalc();
+}
+
+['shopName','shopTag','shopBranch','shopBranchPhone'].forEach(id=>{
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById(id).addEventListener('input', save);
+  });
+});
+document.addEventListener('DOMContentLoaded',()=>{
+  ['shopAddress','shopPhone','shopTaxId','custName','custPhone','custCar','docNo','docDate','docValid','notes'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', save);
+  });
+  document.getElementById('rowCountInput').addEventListener('keydown', e=>{
+    if(e.key==='Enter'){ e.preventDefault(); applyRowCount(); }
+  });
+  load();
+});
+</script>
+
+</body>
+</html>
