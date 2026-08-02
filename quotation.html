@@ -267,8 +267,9 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
       <div class="section-title"><span class="bar"></span>รายการสินค้า/อะไหล่</div>
 
       <div class="rowcount-bar no-print">
-        <label>จำนวนรายการ <input type="number" id="rowCountInput" min="1" max="200" value="3"></label>
+        <label>จำนวนรายการ <input type="number" id="rowCountInput" min="1" max="200" value="11"></label>
         <button class="btn btn-ghost" onclick="applyRowCount()">✅ ตั้งค่าทั้งหมด</button>
+        <button class="btn btn-ghost" onclick="copyItemsText()">📋 คัดลอกข้อความ</button>
         <span class="hint">พิมพ์จำนวนแล้วกดปุ่มเดียว ระบบจะปรับแถวให้ครบทันที</span>
       </div>
 
@@ -276,10 +277,12 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
         <thead>
           <tr>
             <th style="width:26px">#</th>
+            <th class="center" style="width:78px">SKU</th>
             <th>รายการสินค้า</th>
-            <th class="center" style="width:60px">จำนวน</th>
-            <th class="center" style="width:64px">หน่วย</th>
-            <th class="num" style="width:90px">ราคา/หน่วย</th>
+            <th class="center" style="width:56px">จำนวน</th>
+            <th class="center" style="width:58px">หน่วย</th>
+            <th class="num no-print" style="width:80px">ราคาทุน</th>
+            <th class="num" style="width:86px">ราคาขาย/หน่วย</th>
             <th class="num" style="width:100px">รวม (บาท)</th>
             <th class="no-print" style="width:28px"></th>
           </tr>
@@ -287,6 +290,7 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
         <tbody id="itemsBody"></tbody>
       </table>
       <button class="add-row-btn no-print" onclick="addRow()">+ เพิ่มรายการ</button>
+      <div style="font-size:10.5px;color:var(--sub);margin-top:6px" class="no-print">💡 ราคาทุนใช้คำนวณภายในเท่านั้น ราคาขาย = ทุน + 50% จะถูกปัดเศษและแสดงในใบเสนอราคา (คอลัมน์ราคาทุนจะไม่ปรากฏตอนพิมพ์)</div>
 
       <div class="totals-wrap">
         <div class="totals">
@@ -332,36 +336,85 @@ let items = [];
 let photoDataUrl = null;
 let logoDataUrl = null;
 
-function blankRow(){ return { name:'', qty:1, unit:'ชิ้น', price:'' }; }
+const MARKUP = 1.5;
+
+function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', cost:'' }; }
+
+function defaultCatalog(){
+  return [
+    { sku:'', name:'โช๊คอัพหน้า TOKICO', qty:1, unit:'อัน', cost:1480 },
+    { sku:'', name:'โช๊คอัพหลัง TOKICO', qty:1, unit:'อัน', cost:1100 },
+    { sku:'', name:'เบ้าโช๊คอัพหน้า แท้', qty:1, unit:'อัน', cost:880 },
+    { sku:'', name:'ยางกันฝุ่นกันกระแทกโช๊คอัพหน้า IR', qty:1, unit:'อัน', cost:350 },
+    { sku:'', name:'ลูกปืนเบ้าโช้คอัพ แท้', qty:1, unit:'อัน', cost:280 },
+    { sku:'', name:'เหล็กรองเบ้าโช๊คบน แท้', qty:1, unit:'อัน', cost:280 },
+    { sku:'', name:'ยางรองสปริงหน้าล่าง TW', qty:1, unit:'อัน', cost:200 },
+    { sku:'', name:'ยางเบ้าโช๊คหลัง RBI', qty:4, unit:'อัน', cost:120 },
+    { sku:'', name:'ยางกันฝุ่นกันกระแทกโช๊คอัพหลัง IR', qty:1, unit:'อัน', cost:360 },
+    { sku:'', name:'ปีกนกล่าง TRW', qty:1, unit:'อัน', cost:1700 },
+    { sku:'', name:'สกรูกันโคลงหน้า RBI', qty:1, unit:'อัน', cost:280 },
+  ];
+}
+
+function sellPrice(it){ return (parseFloat(it.cost)||0) * MARKUP; }
+function rowTotal(it){ return (parseFloat(it.qty)||0) * sellPrice(it); }
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmt(n){ return (n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function digitsOnly(s){ return (s||'').replace(/\D/g,'').slice(0,8); }
 
 function renderItems(){
   const body = document.getElementById('itemsBody');
   body.innerHTML = items.map((it,i)=>`
     <tr>
       <td class="center">${i+1}</td>
+      <td class="center"><input type="text" inputmode="numeric" maxlength="8" placeholder="รหัส 8 หลัก" value="${escapeHtml(it.sku)}" oninput="updateSku(${i},this)"></td>
       <td><input type="text" placeholder="ระบุชื่อสินค้า/อะไหล่" value="${escapeHtml(it.name)}" oninput="updateItem(${i},'name',this.value)"></td>
       <td class="center"><input class="qty" type="number" min="0" step="1" value="${it.qty}" oninput="updateItem(${i},'qty',this.value)"></td>
       <td class="center"><input class="unit" type="text" value="${escapeHtml(it.unit)}" oninput="updateItem(${i},'unit',this.value)"></td>
-      <td class="num"><input class="num" type="number" min="0" step="0.01" placeholder="0.00" value="${it.price}" oninput="updateItem(${i},'price',this.value)"></td>
+      <td class="num no-print"><input class="num" type="number" min="0" step="0.01" placeholder="0.00" value="${it.cost}" oninput="updateItem(${i},'cost',this.value)"></td>
+      <td class="num sell-price">${fmt(sellPrice(it))}</td>
       <td class="row-total">${fmt(rowTotal(it))}</td>
       <td class="no-print center"><button class="del-btn" onclick="removeRow(${i})" title="ลบแถวนี้">✕</button></td>
     </tr>
   `).join('');
 }
 
-function rowTotal(it){ return (parseFloat(it.qty)||0) * (parseFloat(it.price)||0); }
-function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function fmt(n){ return (n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-
 function updateItem(i,field,val){
-  items[i][field] = (field==='qty'||field==='price') ? val : val;
-  renderRowTotalOnly(i);
+  items[i][field] = val;
+  renderRowValuesOnly(i);
   recalc();
   save();
 }
-function renderRowTotalOnly(i){
+function updateSku(i,el){
+  const clean = digitsOnly(el.value);
+  el.value = clean;
+  items[i].sku = clean;
+  save();
+}
+function renderRowValuesOnly(i){
   const rows = document.getElementById('itemsBody').children;
-  if(rows[i]) rows[i].querySelector('.row-total').textContent = fmt(rowTotal(items[i]));
+  if(!rows[i]) return;
+  rows[i].querySelector('.sell-price').textContent = fmt(sellPrice(items[i]));
+  rows[i].querySelector('.row-total').textContent = fmt(rowTotal(items[i]));
+}
+
+function copyItemsText(){
+  const lines = items
+    .filter(it => it.name.trim())
+    .map((it,i) => `${i+1}. ${it.sku ? '['+it.sku+'] ' : ''}${it.name} x${it.qty||0} ${it.unit} @${fmt(sellPrice(it))} = ${fmt(rowTotal(it))} บาท`);
+  lines.push('รวมทั้งหมด: ' + document.getElementById('tGrand').textContent + ' บาท');
+  const text = lines.join('\n');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>flashCopyNote('คัดลอกข้อความแล้ว')).catch(()=>flashCopyNote('คัดลอกไม่สำเร็จ'));
+  } else {
+    flashCopyNote('เบราว์เซอร์นี้ไม่รองรับการคัดลอกอัตโนมัติ');
+  }
+}
+function flashCopyNote(msg){
+  const note = document.getElementById('saveNote');
+  const prev = note.textContent;
+  note.textContent = msg;
+  setTimeout(()=>{ note.textContent = prev; }, 1800);
 }
 
 function addRow(){
@@ -370,7 +423,7 @@ function addRow(){
   save();
   const rows = document.getElementById('itemsBody').children;
   const last = rows[rows.length-1];
-  if(last) last.querySelector('input').focus();
+  if(last) last.querySelectorAll('input')[1].focus();
 }
 function removeRow(i){
   items.splice(i,1);
@@ -544,9 +597,9 @@ function load(){
       document.getElementById('logoImg').style.display = 'block';
       document.getElementById('logoPlaceholder').style.display = 'none';
     }
-    items = (s.items && s.items.length) ? s.items : [blankRow(),blankRow(),blankRow()];
+    items = (s.items && s.items.length) ? s.items : defaultCatalog();
   } else {
-    items = [blankRow(),blankRow(),blankRow()];
+    items = defaultCatalog();
   }
   document.getElementById('rowCountInput').value = items.length;
   renderItems();
@@ -576,7 +629,7 @@ function resetForm(){
   removePhoto();
   document.getElementById('docNo').value = genDocNo();
   document.getElementById('docDate').value = new Date().toISOString().slice(0,10);
-  items = [blankRow(),blankRow(),blankRow()];
+  items = defaultCatalog();
   document.getElementById('rowCountInput').value = items.length;
   renderItems();
   recalc();
