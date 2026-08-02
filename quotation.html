@@ -63,10 +63,14 @@ html,body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif}
   box-shadow:0 6px 18px rgba(255,138,30,.35);overflow:hidden;position:relative;
 }
 .brand-logo img{width:100%;height:100%;object-fit:cover}
+.logo-text{font-size:13px;font-weight:800;line-height:1.1;text-align:center;color:#fff;letter-spacing:.5px}
 .logo-edit{font-size:10px;color:#bcd3f7;margin-top:5px;cursor:pointer;text-decoration:underline;display:inline-block}
 .brand-name{font-size:20px;font-weight:700;outline:none;line-height:1.3;min-width:120px}
 .brand-tag{font-size:12px;color:#bcd3f7;margin-top:2px;outline:none}
 .brand-name:empty::before,.brand-tag:empty::before{content:attr(data-ph);color:#7f9ac2}
+.branch-info{font-size:11px;color:#cfe0fb;margin-bottom:8px}
+.branch-info span[contenteditable]{outline:none}
+.branch-info span[contenteditable]:empty::before{content:attr(data-ph);color:#8fa9d1}
 
 /* FROM / TO */
 .fromto-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
@@ -122,6 +126,16 @@ html,body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif}
   width:70px;border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-family:'Kanit',sans-serif;font-size:13px;text-align:center;
 }
 .rowcount-bar .hint{font-size:10.5px;color:var(--sub);flex:1;min-width:180px}
+
+/* PASTE-TO-PARSE */
+.paste-bar{background:#f6f9ff;border:1px solid #e1ebff;border-radius:10px;padding:10px 14px;margin-bottom:10px}
+.paste-label{font-size:11px;color:var(--navy1);font-weight:500;margin-bottom:8px;display:block}
+.paste-row{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.paste-row textarea{
+  flex:1;min-width:220px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;
+  font-family:'Kanit',sans-serif;font-size:12.5px;resize:vertical;background:#fff;
+}
+.show-total-toggle{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px;margin:4px 0 10px;cursor:pointer}
 
 /* TABLE */
 table.items{width:100%;border-collapse:collapse;font-size:12.5px}
@@ -213,7 +227,7 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
     <div class="banner">
       <div class="brand">
         <div class="brand-logo" id="logoBox">
-          <span id="logoPlaceholder">🚗</span>
+          <span id="logoPlaceholder" class="logo-text">AUTO<br>1</span>
           <img id="logoImg" style="display:none">
         </div>
         <div style="min-width:0">
@@ -223,6 +237,10 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
         </div>
       </div>
       <div class="doc-meta">
+        <div class="branch-info">
+          <span id="shopBranch" contenteditable="true" data-ph="ชื่อสาขา"></span> ·
+          โทร <span id="shopBranchPhone" contenteditable="true" data-ph="เบอร์โทรสาขา"></span>
+        </div>
         <div class="doc-title">ใบเสนอราคา<small>QUOTATION</small></div>
         <div class="doc-fields">
           <div class="dfrow">เลขที่ <input id="docNo" placeholder="QT-00000000-001"></div>
@@ -266,6 +284,14 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
     <div class="section">
       <div class="section-title"><span class="bar"></span>รายการสินค้า/อะไหล่</div>
 
+      <div class="paste-bar no-print">
+        <label class="paste-label">📥 วางข้อความราคาที่ได้มา (เช่น "โช๊คอัพหน้า อันละ 1480 TOKICO") แล้วกดปุ่มเพื่อแปลงเป็นรายการอัตโนมัติ</label>
+        <div class="paste-row">
+          <textarea id="pasteBox" rows="3" placeholder="วางข้อความที่นี่ บรรทัดละ 1 รายการ"></textarea>
+          <button class="btn btn-ghost" onclick="parsePasteText()">➕ แปลงเป็นรายการ</button>
+        </div>
+      </div>
+
       <div class="rowcount-bar no-print">
         <label>จำนวนรายการ <input type="number" id="rowCountInput" min="1" max="200" value="11"></label>
         <button class="btn btn-ghost" onclick="applyRowCount()">✅ ตั้งค่าทั้งหมด</button>
@@ -273,11 +299,17 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
         <span class="hint">พิมพ์จำนวนแล้วกดปุ่มเดียว ระบบจะปรับแถวให้ครบทันที</span>
       </div>
 
+      <div class="rowcount-bar no-print">
+        <label>จำนวนต่อชิ้น (ทุกแถว) <input type="number" id="qtyAllInput" min="0" step="1" value="1"></label>
+        <button class="btn btn-ghost" onclick="applyQtyAll()">✅ ตั้งจำนวนทั้งหมด</button>
+        <span class="hint">ใช้เมื่อทุกชิ้นต้องการจำนวนเท่ากันในคราวเดียว เช่น ทำ 2 คัน</span>
+      </div>
+
       <table class="items">
         <thead>
           <tr>
             <th style="width:26px">#</th>
-            <th class="center" style="width:78px">SKU</th>
+            <th class="center" style="width:100px">SKU</th>
             <th>รายการสินค้า</th>
             <th class="center" style="width:56px">จำนวน</th>
             <th class="center" style="width:58px">หน่วย</th>
@@ -292,7 +324,10 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
       <button class="add-row-btn no-print" onclick="addRow()">+ เพิ่มรายการ</button>
       <div style="font-size:10.5px;color:var(--sub);margin-top:6px" class="no-print">💡 ราคาทุนใช้คำนวณภายในเท่านั้น ราคาขาย = ทุน + 50% จะถูกปัดเศษและแสดงในใบเสนอราคา (คอลัมน์ราคาทุนจะไม่ปรากฏตอนพิมพ์)</div>
 
-      <div class="totals-wrap">
+      <label class="show-total-toggle no-print">
+        <input type="checkbox" id="showTotalToggle" checked onchange="toggleShowTotal()"> แสดงยอดรวมสุทธิตอนพิมพ์ใบเสนอราคา
+      </label>
+      <div class="totals-wrap" id="totalsWrap">
         <div class="totals">
           <div class="trow"><span>รวมเป็นเงิน</span><span id="tSubtotal">0.00</span></div>
           <div class="trow">
@@ -360,14 +395,15 @@ function sellPrice(it){ return (parseFloat(it.cost)||0) * MARKUP; }
 function rowTotal(it){ return (parseFloat(it.qty)||0) * sellPrice(it); }
 function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function fmt(n){ return (n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function digitsOnly(s){ return (s||'').replace(/\D/g,'').slice(0,8); }
+const SKU_MAX_LEN = 20;
+function digitsOnly(s){ return (s||'').replace(/\D/g,'').slice(0,SKU_MAX_LEN); }
 
 function renderItems(){
   const body = document.getElementById('itemsBody');
   body.innerHTML = items.map((it,i)=>`
     <tr>
       <td class="center">${i+1}</td>
-      <td class="center"><input type="text" inputmode="numeric" maxlength="8" placeholder="รหัส 8 หลัก" value="${escapeHtml(it.sku)}" oninput="updateSku(${i},this)"></td>
+      <td class="center"><input type="text" inputmode="numeric" maxlength="${SKU_MAX_LEN}" placeholder="รหัสสินค้า (ตัวเลข)" value="${escapeHtml(it.sku)}" oninput="updateSku(${i},this)"></td>
       <td><input type="text" placeholder="ระบุชื่อสินค้า/อะไหล่" value="${escapeHtml(it.name)}" oninput="updateItem(${i},'name',this.value)"></td>
       <td class="center"><input class="qty" type="number" min="0" step="1" value="${it.qty}" oninput="updateItem(${i},'qty',this.value)"></td>
       <td class="center"><input class="unit" type="text" value="${escapeHtml(it.unit)}" oninput="updateItem(${i},'unit',this.value)"></td>
@@ -444,6 +480,62 @@ function applyRowCount(){
   renderItems();
   recalc();
   save();
+}
+
+function applyQtyAll(){
+  let n = parseFloat(document.getElementById('qtyAllInput').value);
+  if(isNaN(n) || n<0) n = 0;
+  items.forEach(it => it.qty = n);
+  renderItems();
+  recalc();
+  save();
+}
+
+function toggleShowTotal(){
+  const on = document.getElementById('showTotalToggle').checked;
+  document.getElementById('totalsWrap').classList.toggle('no-print', !on);
+  save();
+}
+
+function parseLineToItem(line){
+  let text = line;
+  let qty = 1;
+  const qtyMatch = text.match(/(?:ใช้|จำนวน)\s*(\d+)\s*(?:ตัว|ชิ้น|อัน|ชุด|คู่)?/);
+  if(qtyMatch){ qty = parseInt(qtyMatch[1],10); text = text.replace(qtyMatch[0],''); }
+
+  let cost = null;
+  const priceKeywordMatch = text.match(/(?:อันละ|ตัวละ|ชิ้นละ|ชุดละ|คู่ละ|เมตรละ|ลิตรละ|ราคา)\s*([\d,]+(?:\.\d+)?)/);
+  if(priceKeywordMatch){
+    cost = parseFloat(priceKeywordMatch[1].replace(/,/g,''));
+    text = text.replace(priceKeywordMatch[0], '');
+  } else {
+    const numbers = [...text.matchAll(/([\d,]{2,}(?:\.\d+)?)/g)];
+    if(numbers.length){
+      const last = numbers[numbers.length-1];
+      cost = parseFloat(last[1].replace(/,/g,''));
+      text = text.slice(0,last.index) + text.slice(last.index+last[0].length);
+    }
+  }
+  text = text.replace(/[()]/g,'').replace(/\s+/g,' ').trim();
+  if(!text && cost===null) return null;
+  return { sku:'', name: text || line.trim(), qty: qty||1, unit:'อัน', cost: cost!==null ? cost : '' };
+}
+
+function parsePasteText(){
+  const box = document.getElementById('pasteBox');
+  const lines = box.value.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!lines.length) return;
+  let added = 0;
+  lines.forEach(line=>{
+    const parsed = parseLineToItem(line);
+    if(parsed){ items.push(parsed); added++; }
+  });
+  box.value = '';
+  renderItems();
+  recalc();
+  save();
+  document.getElementById('rowCountInput').value = items.length;
+  flashCopyNote(added ? `เพิ่ม ${added} รายการจากข้อความแล้ว` : 'ไม่พบรายการที่แยกได้ ลองตรวจข้อความอีกครั้ง');
 }
 
 function recalc(){
@@ -534,10 +626,21 @@ function genDocNo(){
   return `QT-${ymd}-001`;
 }
 
+function shopDefaults(){
+  return {
+    shopName: 'AUTO 1',
+    shopTag: 'อะไหล่แท้ - อะไหล่เทียบ คุณภาพมั่นใจ',
+    shopBranch: 'สาขาฟิวเจอร์รังสิต',
+    shopBranchPhone: '025508104',
+  };
+}
+
 function collectState(){
   return {
     shopName: document.getElementById('shopName').textContent,
     shopTag: document.getElementById('shopTag').textContent,
+    shopBranch: document.getElementById('shopBranch').textContent,
+    shopBranchPhone: document.getElementById('shopBranchPhone').textContent,
     shopAddress: document.getElementById('shopAddress').value,
     shopPhone: document.getElementById('shopPhone').value,
     shopTaxId: document.getElementById('shopTaxId').value,
@@ -552,6 +655,7 @@ function collectState(){
     items,
     discount: document.getElementById('discountInput').value,
     vat: document.getElementById('vatToggle').checked,
+    showTotal: document.getElementById('showTotalToggle').checked,
     notes: document.getElementById('notes').value,
   };
 }
@@ -572,9 +676,12 @@ function load(){
   document.getElementById('docNo').value = (s && s.docNo) || genDocNo();
   document.getElementById('docDate').value = (s && s.docDate) || new Date().toISOString().slice(0,10);
   document.getElementById('docValid').value = (s && s.docValid) || '7';
+  const sd = shopDefaults();
+  document.getElementById('shopName').textContent = (s && 'shopName' in s) ? s.shopName : sd.shopName;
+  document.getElementById('shopTag').textContent = (s && 'shopTag' in s) ? s.shopTag : sd.shopTag;
+  document.getElementById('shopBranch').textContent = (s && 'shopBranch' in s) ? s.shopBranch : sd.shopBranch;
+  document.getElementById('shopBranchPhone').textContent = (s && 'shopBranchPhone' in s) ? s.shopBranchPhone : sd.shopBranchPhone;
   if(s){
-    document.getElementById('shopName').textContent = s.shopName || '';
-    document.getElementById('shopTag').textContent = s.shopTag || '';
     document.getElementById('shopAddress').value = s.shopAddress || '';
     document.getElementById('shopPhone').value = s.shopPhone || '';
     document.getElementById('shopTaxId').value = s.shopTaxId || '';
@@ -583,6 +690,7 @@ function load(){
     document.getElementById('custCar').value = s.custCar || '';
     document.getElementById('discountInput').value = s.discount || 0;
     document.getElementById('vatToggle').checked = !!s.vat;
+    document.getElementById('showTotalToggle').checked = s.showTotal !== false;
     document.getElementById('notes').value = s.notes || '';
     if(s.photoDataUrl){
       photoDataUrl = s.photoDataUrl;
@@ -602,17 +710,21 @@ function load(){
     items = defaultCatalog();
   }
   document.getElementById('rowCountInput').value = items.length;
+  toggleShowTotal();
   renderItems();
   recalc();
 }
 
 function resetForm(){
-  if(!confirm('ล้างข้อมูลทั้งหมดในใบเสนอราคานี้หรือไม่?')) return;
+  if(!confirm('ล้างข้อมูลทั้งหมดในใบเสนอราคานี้หรือไม่? (ข้อมูลร้าน/โลโก้จะยังคงอยู่)')) return;
   localStorage.removeItem(STORAGE_KEY);
   photoDataUrl = null;
   logoDataUrl = null;
-  document.getElementById('shopName').textContent='';
-  document.getElementById('shopTag').textContent='';
+  const sd = shopDefaults();
+  document.getElementById('shopName').textContent = sd.shopName;
+  document.getElementById('shopTag').textContent = sd.shopTag;
+  document.getElementById('shopBranch').textContent = sd.shopBranch;
+  document.getElementById('shopBranchPhone').textContent = sd.shopBranchPhone;
   document.getElementById('shopAddress').value='';
   document.getElementById('shopPhone').value='';
   document.getElementById('shopTaxId').value='';
@@ -621,7 +733,10 @@ function resetForm(){
   document.getElementById('custCar').value='';
   document.getElementById('discountInput').value=0;
   document.getElementById('vatToggle').checked=false;
+  document.getElementById('showTotalToggle').checked=true;
+  toggleShowTotal();
   document.getElementById('notes').value='';
+  document.getElementById('pasteBox').value='';
   document.getElementById('logoImg').style.display = 'none';
   document.getElementById('logoImg').src = '';
   document.getElementById('logoPlaceholder').style.display = 'inline';
@@ -635,7 +750,7 @@ function resetForm(){
   recalc();
 }
 
-['shopName','shopTag'].forEach(id=>{
+['shopName','shopTag','shopBranch','shopBranchPhone'].forEach(id=>{
   document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById(id).addEventListener('input', save);
   });
