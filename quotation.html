@@ -60,12 +60,19 @@ html,body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif}
   width:56px;height:56px;flex-shrink:0;border-radius:14px;
   background:linear-gradient(135deg,var(--amber),#ff5f6d);
   display:flex;align-items:center;justify-content:center;font-size:26px;
-  box-shadow:0 6px 18px rgba(255,138,30,.35);
+  box-shadow:0 6px 18px rgba(255,138,30,.35);overflow:hidden;position:relative;
 }
+.brand-logo img{width:100%;height:100%;object-fit:cover}
+.logo-edit{font-size:10px;color:#bcd3f7;margin-top:5px;cursor:pointer;text-decoration:underline;display:inline-block}
 .brand-name{font-size:20px;font-weight:700;outline:none;line-height:1.3;min-width:120px}
 .brand-tag{font-size:12px;color:#bcd3f7;margin-top:2px;outline:none}
-.brand-meta{font-size:11px;color:#9fb8dd;margin-top:6px;line-height:1.7;outline:none;max-width:340px}
-.brand-meta:empty::before,.brand-name:empty::before,.brand-tag:empty::before{content:attr(data-ph);color:#7f9ac2}
+.brand-name:empty::before,.brand-tag:empty::before{content:attr(data-ph);color:#7f9ac2}
+
+/* FROM / TO */
+.fromto-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.party-card{padding:20px 28px}
+.party-card + .party-card{border-left:1px solid var(--line2)}
+.party-label{font-size:10.5px;font-weight:600;letter-spacing:1.5px;color:var(--amber);text-transform:uppercase;margin-bottom:12px}
 .doc-meta{position:relative;z-index:1;text-align:right;flex-shrink:0}
 .doc-title{font-size:22px;font-weight:700;letter-spacing:1px}
 .doc-title small{display:block;font-size:10px;letter-spacing:3px;color:#a9c6f2;font-weight:400;margin-top:2px}
@@ -81,7 +88,8 @@ html,body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif}
 .section{padding:20px 28px;border-bottom:1px solid var(--line2)}
 .section-title{font-size:11px;letter-spacing:2px;color:var(--sub);text-transform:uppercase;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .section-title .bar{width:4px;height:12px;background:var(--amber);border-radius:2px}
-.cust-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:12px}
+.field{margin-bottom:12px}
+.field-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .field label{font-size:11px;color:var(--sub);display:block;margin-bottom:5px}
 .field input,.field textarea{
   width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;
@@ -160,7 +168,9 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
 
 /* RESPONSIVE */
 @media (max-width:640px){
-  .cust-grid{grid-template-columns:1fr}
+  .field-row2{grid-template-columns:1fr}
+  .fromto-grid{grid-template-columns:1fr}
+  .party-card + .party-card{border-left:none;border-top:1px solid var(--line2)}
   .banner{flex-direction:column}
   .doc-meta{text-align:left}
   .doc-fields .dfrow{justify-content:flex-start}
@@ -178,7 +188,8 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
   .section{padding:14px 6px}
   .banner{padding:18px 6px}
   table.items input,.field input,.field textarea,.trow input{border-color:transparent!important;background:transparent!important;box-shadow:none!important}
-  .del-btn,.add-row-btn,.upload-btn,.remove-photo{display:none!important}
+  .del-btn,.add-row-btn,.upload-btn,.remove-photo,.logo-edit{display:none!important}
+  .party-card + .party-card{border-left:1px solid #ccc}
   @page{size:A4;margin:12mm}
 }
 </style>
@@ -201,11 +212,14 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
     <!-- BANNER -->
     <div class="banner">
       <div class="brand">
-        <div class="brand-logo">🚗</div>
+        <div class="brand-logo" id="logoBox">
+          <span id="logoPlaceholder">🚗</span>
+          <img id="logoImg" style="display:none">
+        </div>
         <div style="min-width:0">
           <div class="brand-name" id="shopName" contenteditable="true" data-ph="ชื่อร้านอะไหล่รถยนต์ของคุณ"></div>
           <div class="brand-tag" id="shopTag" contenteditable="true" data-ph="อะไหล่แท้ - อะไหล่เทียบ คุณภาพมั่นใจ"></div>
-          <div class="brand-meta" id="shopMeta" contenteditable="true" data-ph="ที่อยู่ร้าน · เบอร์โทร · LINE ID (แตะเพื่อแก้ไข)"></div>
+          <label class="logo-edit no-print">🖼 เปลี่ยนโลโก้ร้าน<input type="file" accept="image/*" style="display:none" id="logoInput" onchange="handleLogo(event)"></label>
         </div>
       </div>
       <div class="doc-meta">
@@ -218,22 +232,32 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
       </div>
     </div>
 
-    <!-- CUSTOMER -->
-    <div class="section">
-      <div class="section-title"><span class="bar"></span>ข้อมูลลูกค้า</div>
-      <div class="cust-grid">
-        <div class="field"><label>ชื่อลูกค้า</label><input id="custName" placeholder="ชื่อ-นามสกุล / ชื่อร้าน"></div>
-        <div class="field"><label>เบอร์โทร</label><input id="custPhone" placeholder="08x-xxx-xxxx" inputmode="tel"></div>
-        <div class="field"><label>รุ่นรถ / ทะเบียน</label><input id="custCar" placeholder="เช่น Toyota Vios ทะเบียน กข 1234"></div>
-      </div>
-      <div class="car-photo-row">
-        <div class="photo-box" id="photoBox">
-          <div class="photo-empty" id="photoEmpty">รูปรถ<br>(ยังไม่ได้อัพโหลด)</div>
-          <img id="photoImg" style="display:none">
+    <!-- FROM / TO -->
+    <div class="fromto-grid">
+      <div class="party-card">
+        <div class="party-label">ผู้เสนอราคา (ร้านค้า)</div>
+        <div class="field"><label>ที่อยู่ร้าน</label><textarea id="shopAddress" rows="2" placeholder="เลขที่ / ถนน / ตำบล / อำเภอ / จังหวัด"></textarea></div>
+        <div class="field-row2">
+          <div class="field"><label>เบอร์โทร</label><input id="shopPhone" placeholder="08x-xxx-xxxx" inputmode="tel"></div>
+          <div class="field"><label>เลขผู้เสียภาษี</label><input id="shopTaxId" placeholder="เลข 13 หลัก (ถ้ามี)"></div>
         </div>
-        <div class="photo-controls no-print">
-          <label class="upload-btn">📷 อัพโหลดรูปรถ<input type="file" accept="image/*" style="display:none" id="photoInput" onchange="handlePhoto(event)"></label>
-          <button class="remove-photo" id="removePhotoBtn" style="display:none" onclick="removePhoto()">✕ ลบรูป</button>
+      </div>
+      <div class="party-card">
+        <div class="party-label">เสนอราคาถึง (ลูกค้า)</div>
+        <div class="field"><label>ชื่อลูกค้า</label><input id="custName" placeholder="ชื่อ-นามสกุล / ชื่อร้าน"></div>
+        <div class="field-row2">
+          <div class="field"><label>เบอร์โทร</label><input id="custPhone" placeholder="08x-xxx-xxxx" inputmode="tel"></div>
+          <div class="field"><label>รุ่นรถ / ทะเบียน</label><input id="custCar" placeholder="เช่น Vios กข 1234"></div>
+        </div>
+        <div class="car-photo-row">
+          <div class="photo-box" id="photoBox">
+            <div class="photo-empty" id="photoEmpty">รูปรถ<br>(ยังไม่ได้อัพโหลด)</div>
+            <img id="photoImg" style="display:none">
+          </div>
+          <div class="photo-controls no-print">
+            <label class="upload-btn">📷 อัพโหลดรูปรถ<input type="file" accept="image/*" style="display:none" id="photoInput" onchange="handlePhoto(event)"></label>
+            <button class="remove-photo" id="removePhotoBtn" style="display:none" onclick="removePhoto()">✕ ลบรูป</button>
+          </div>
         </div>
       </div>
     </div>
@@ -306,6 +330,7 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
 const STORAGE_KEY = 'autoPartsQuotationDraft';
 let items = [];
 let photoDataUrl = null;
+let logoDataUrl = null;
 
 function blankRow(){ return { name:'', qty:1, unit:'ชิ้น', price:'' }; }
 
@@ -436,6 +461,20 @@ function removePhoto(){
   save();
 }
 
+function handleLogo(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    logoDataUrl = reader.result;
+    document.getElementById('logoImg').src = logoDataUrl;
+    document.getElementById('logoImg').style.display = 'block';
+    document.getElementById('logoPlaceholder').style.display = 'none';
+    save();
+  };
+  reader.readAsDataURL(file);
+}
+
 function genDocNo(){
   const d = new Date();
   const ymd = d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
@@ -446,7 +485,10 @@ function collectState(){
   return {
     shopName: document.getElementById('shopName').textContent,
     shopTag: document.getElementById('shopTag').textContent,
-    shopMeta: document.getElementById('shopMeta').textContent,
+    shopAddress: document.getElementById('shopAddress').value,
+    shopPhone: document.getElementById('shopPhone').value,
+    shopTaxId: document.getElementById('shopTaxId').value,
+    logoDataUrl,
     docNo: document.getElementById('docNo').value,
     docDate: document.getElementById('docDate').value,
     docValid: document.getElementById('docValid').value,
@@ -480,7 +522,9 @@ function load(){
   if(s){
     document.getElementById('shopName').textContent = s.shopName || '';
     document.getElementById('shopTag').textContent = s.shopTag || '';
-    document.getElementById('shopMeta').textContent = s.shopMeta || '';
+    document.getElementById('shopAddress').value = s.shopAddress || '';
+    document.getElementById('shopPhone').value = s.shopPhone || '';
+    document.getElementById('shopTaxId').value = s.shopTaxId || '';
     document.getElementById('custName').value = s.custName || '';
     document.getElementById('custPhone').value = s.custPhone || '';
     document.getElementById('custCar').value = s.custCar || '';
@@ -493,6 +537,12 @@ function load(){
       document.getElementById('photoImg').style.display = 'block';
       document.getElementById('photoEmpty').style.display = 'none';
       document.getElementById('removePhotoBtn').style.display = 'block';
+    }
+    if(s.logoDataUrl){
+      logoDataUrl = s.logoDataUrl;
+      document.getElementById('logoImg').src = logoDataUrl;
+      document.getElementById('logoImg').style.display = 'block';
+      document.getElementById('logoPlaceholder').style.display = 'none';
     }
     items = (s.items && s.items.length) ? s.items : [blankRow(),blankRow(),blankRow()];
   } else {
@@ -507,15 +557,22 @@ function resetForm(){
   if(!confirm('ล้างข้อมูลทั้งหมดในใบเสนอราคานี้หรือไม่?')) return;
   localStorage.removeItem(STORAGE_KEY);
   photoDataUrl = null;
+  logoDataUrl = null;
   document.getElementById('shopName').textContent='';
   document.getElementById('shopTag').textContent='';
-  document.getElementById('shopMeta').textContent='';
+  document.getElementById('shopAddress').value='';
+  document.getElementById('shopPhone').value='';
+  document.getElementById('shopTaxId').value='';
   document.getElementById('custName').value='';
   document.getElementById('custPhone').value='';
   document.getElementById('custCar').value='';
   document.getElementById('discountInput').value=0;
   document.getElementById('vatToggle').checked=false;
   document.getElementById('notes').value='';
+  document.getElementById('logoImg').style.display = 'none';
+  document.getElementById('logoImg').src = '';
+  document.getElementById('logoPlaceholder').style.display = 'inline';
+  document.getElementById('logoInput').value = '';
   removePhoto();
   document.getElementById('docNo').value = genDocNo();
   document.getElementById('docDate').value = new Date().toISOString().slice(0,10);
@@ -525,13 +582,13 @@ function resetForm(){
   recalc();
 }
 
-['shopName','shopTag','shopMeta'].forEach(id=>{
+['shopName','shopTag'].forEach(id=>{
   document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById(id).addEventListener('input', save);
   });
 });
 document.addEventListener('DOMContentLoaded',()=>{
-  ['custName','custPhone','custCar','docNo','docDate','docValid','notes'].forEach(id=>{
+  ['shopAddress','shopPhone','shopTaxId','custName','custPhone','custCar','docNo','docDate','docValid','notes'].forEach(id=>{
     document.getElementById(id).addEventListener('input', save);
   });
   document.getElementById('rowCountInput').addEventListener('keydown', e=>{
