@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ระบบใบเสนอราคาอะไหล่รถยนต์</title>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Mitr:wght@300;400;500;600;700&family=Itim&display=swap" rel="stylesheet">
 <style>
 :root{
   --navy0:#0b1a2e; --navy1:#0f2a4a; --navy2:#12345f;
@@ -13,9 +13,10 @@
   --ink:#0f1e33; --sub:#5b7290; --line:#dbe4f0; --line2:#eef2f8;
   --bg:#eef2f7; --card:#ffffff;
   --green:#0fa968; --red:#e0334f;
+  --font:'Kanit',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 .wrap{max-width:900px;margin:0 auto;padding:18px 14px 60px}
 
 /* TOOLBAR */
@@ -28,7 +29,7 @@ html,body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif}
 .tb-title{font-weight:600;font-size:15px;color:var(--navy1);display:flex;align-items:center;gap:8px}
 .tb-actions{display:flex;gap:8px;flex-wrap:wrap}
 .btn{
-  border:none;border-radius:9px;padding:9px 16px;font-family:'Kanit',sans-serif;
+  border:none;border-radius:9px;padding:9px 16px;font-family:var(--font);
   font-weight:500;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;
   transition:transform .12s,box-shadow .12s;
 }
@@ -38,6 +39,10 @@ html,body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif}
 .btn-danger{background:#fff;border:1px solid rgba(224,51,79,.35);color:var(--red)}
 .save-note{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:5px}
 .save-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.font-select{
+  border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:12px;
+  font-family:var(--font);color:var(--navy1);background:#fff;cursor:pointer;
+}
 
 /* DOCUMENT CARD */
 .doc{
@@ -85,7 +90,7 @@ html,body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif}
 .doc-fields .dfrow{display:flex;justify-content:flex-end;gap:6px;margin-top:4px;align-items:center}
 .doc-fields input{
   background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:6px;
-  color:#fff;font-family:'Kanit',sans-serif;font-size:11px;padding:3px 7px;text-align:right;outline:none;
+  color:#fff;font-family:var(--font);font-size:11px;padding:3px 7px;text-align:right;outline:none;
 }
 .doc-fields input::placeholder{color:#9fb8dd}
 
@@ -98,7 +103,7 @@ html,body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif}
 .field label{font-size:11px;color:var(--sub);display:block;margin-bottom:5px}
 .field input,.field textarea{
   width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;
-  font-family:'Kanit',sans-serif;font-size:13px;color:var(--ink);outline:none;background:#fbfcfe;
+  font-family:var(--font);font-size:13px;color:var(--ink);outline:none;background:#fbfcfe;
 }
 .field input:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,111,255,.1)}
 
@@ -124,7 +129,7 @@ html,body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif}
 }
 .rowcount-bar label{font-size:12px;color:var(--navy1);font-weight:500;display:flex;align-items:center;gap:6px}
 .rowcount-bar input[type=number]{
-  width:70px;border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-family:'Kanit',sans-serif;font-size:13px;text-align:center;
+  width:70px;border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-family:var(--font);font-size:13px;text-align:center;
 }
 .rowcount-bar .hint{font-size:10.5px;color:var(--sub);flex:1;min-width:180px}
 
@@ -134,7 +139,7 @@ html,body{background:var(--bg);color:var(--ink);font-family:'Kanit',sans-serif}
 .paste-row{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
 .paste-row textarea{
   flex:1;min-width:220px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;
-  font-family:'Kanit',sans-serif;font-size:12.5px;resize:vertical;background:#fff;
+  font-family:var(--font);font-size:12.5px;resize:vertical;background:#fff;
 }
 .show-total-toggle{font-size:11px;color:var(--sub);display:flex;align-items:center;gap:6px;margin:4px 0 10px;cursor:pointer}
 
@@ -149,10 +154,14 @@ table.items th.num,table.items td.num{text-align:right}
 table.items th.center,table.items td.center{text-align:center}
 table.items input{
   width:100%;border:1px solid transparent;background:transparent;border-radius:6px;
-  padding:6px 7px;font-family:'Kanit',sans-serif;font-size:12.5px;color:var(--ink);outline:none;
+  padding:6px 7px;font-family:var(--font);font-size:12.5px;color:var(--ink);outline:none;
 }
 table.items input:hover{border-color:var(--line)}
 table.items input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 2px rgba(30,111,255,.1)}
+table.items td:nth-child(2) input:placeholder-shown,
+table.items td:nth-child(3) input:placeholder-shown{
+  border:none;border-bottom:1px dashed var(--sub);border-radius:0;background:transparent;
+}
 table.items input.num{text-align:right}
 table.items input.qty,table.items input.unit{text-align:center}
 .row-total{font-weight:600;text-align:right;padding-right:10px;white-space:nowrap}
@@ -160,14 +169,14 @@ table.items input.qty,table.items input.unit{text-align:center}
 .del-btn:hover{opacity:1}
 .add-row-btn{
   margin-top:10px;background:#fff;border:1px dashed var(--blue2);color:var(--blue);
-  border-radius:9px;padding:9px 14px;font-size:12.5px;cursor:pointer;width:100%;font-family:'Kanit',sans-serif;font-weight:500;
+  border-radius:9px;padding:9px 14px;font-size:12.5px;cursor:pointer;width:100%;font-family:var(--font);font-weight:500;
 }
 
 /* TOTALS */
 .totals-wrap{display:flex;justify-content:flex-end}
 .totals{width:100%;max-width:320px;margin-top:6px}
 .trow{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;color:var(--sub)}
-.trow input{width:90px;border:1px solid var(--line);border-radius:7px;padding:5px 8px;text-align:right;font-family:'Kanit',sans-serif;font-size:12px}
+.trow input{width:90px;border:1px solid var(--line);border-radius:7px;padding:5px 8px;text-align:right;font-family:var(--font);font-size:12px}
 .trow.vat label{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--sub)}
 .grand{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:12px;border-top:2px solid var(--navy1)}
 .grand .gl{font-size:13px;font-weight:600;color:var(--navy1)}
@@ -203,6 +212,10 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
   .section{padding:10px 6px}
   .banner{padding:12px 6px}
   table.items input,.field input,.field textarea,.trow input{border-color:transparent!important;background:transparent!important;box-shadow:none!important}
+  table.items td:nth-child(2) input:placeholder-shown,
+  table.items td:nth-child(3) input:placeholder-shown{
+    border-bottom:1px dashed #999!important;
+  }
   .del-btn,.add-row-btn,.upload-btn,.remove-photo,.logo-edit{display:none!important}
   .party-card + .party-card{border-left:1px solid #ccc}
   .banner-mechanic{opacity:.12}
@@ -248,6 +261,13 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
     <div class="tb-title">🔧 ระบบสร้างใบเสนอราคาอะไหล่รถยนต์</div>
     <div class="tb-actions">
       <span class="save-note"><span class="save-dot"></span><span id="saveNote">บันทึกอัตโนมัติ</span></span>
+      <select id="fontSelect" class="font-select" onchange="setFont(this.value)" title="เปลี่ยนฟอนต์">
+        <option value="Kanit">ฟอนต์: Kanit</option>
+        <option value="Sarabun">ฟอนต์: Sarabun</option>
+        <option value="Prompt">ฟอนต์: Prompt</option>
+        <option value="Mitr">ฟอนต์: Mitr</option>
+        <option value="Itim">ฟอนต์: Itim (ลายมือ)</option>
+      </select>
       <button class="btn btn-ghost" onclick="resetForm()">🗑️ ล้างฟอร์ม</button>
       <button class="btn btn-print" onclick="window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
     </div>
@@ -428,13 +448,19 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
 <script>
 const STORAGE_KEY = 'autoPartsQuotationDraft';
 const DEFAULT_LOGO_SRC = document.getElementById('logoImg').src;
+
+function setFont(name){
+  document.documentElement.style.setProperty('--font', `'${name}',sans-serif`);
+  document.getElementById('fontSelect').value = name;
+  save();
+}
 let items = [];
 let photoDataUrl = null;
 let logoDataUrl = null;
 
 const MARKUP = 1.5;
 
-function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', cost:'' }; }
+function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', price:'', direct:true }; }
 
 function defaultCatalog(){
   return [
@@ -452,7 +478,10 @@ function defaultCatalog(){
   ];
 }
 
-function sellPrice(it){ return (parseFloat(it.cost)||0) * MARKUP; }
+function sellPrice(it){
+  if(it.direct) return parseFloat(it.price)||0;
+  return (parseFloat(it.cost)||0) * MARKUP;
+}
 function rowTotal(it){ return (parseFloat(it.qty)||0) * sellPrice(it); }
 function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function fmt(n){ return (n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}); }
@@ -461,19 +490,27 @@ function digitsOnly(s){ return (s||'').replace(/\D/g,'').slice(0,SKU_MAX_LEN); }
 
 function renderItems(){
   const body = document.getElementById('itemsBody');
-  body.innerHTML = items.map((it,i)=>`
+  body.innerHTML = items.map((it,i)=>{
+    const costCell = it.direct
+      ? `<td class="num no-print center" style="color:var(--sub)">—</td>`
+      : `<td class="num no-print"><input class="num" type="number" min="0" step="0.01" placeholder="0.00" value="${it.cost}" oninput="updateItem(${i},'cost',this.value)"></td>`;
+    const sellCell = it.direct
+      ? `<td class="num"><input class="num" type="number" min="0" step="0.01" placeholder="0.00" value="${it.price}" oninput="updateItem(${i},'price',this.value)"></td>`
+      : `<td class="num sell-price">${fmt(sellPrice(it))}</td>`;
+    return `
     <tr>
       <td class="center">${i+1}</td>
       <td class="center"><input type="text" inputmode="numeric" maxlength="${SKU_MAX_LEN}" placeholder="รหัสสินค้า (ตัวเลข)" value="${escapeHtml(it.sku)}" oninput="updateSku(${i},this)"></td>
       <td><input type="text" placeholder="ระบุชื่อสินค้า/อะไหล่" value="${escapeHtml(it.name)}" oninput="updateItem(${i},'name',this.value)"></td>
       <td class="center"><input class="qty" type="number" min="0" step="1" value="${it.qty}" oninput="updateItem(${i},'qty',this.value)"></td>
       <td class="center"><input class="unit" type="text" value="${escapeHtml(it.unit)}" oninput="updateItem(${i},'unit',this.value)"></td>
-      <td class="num no-print"><input class="num" type="number" min="0" step="0.01" placeholder="0.00" value="${it.cost}" oninput="updateItem(${i},'cost',this.value)"></td>
-      <td class="num sell-price">${fmt(sellPrice(it))}</td>
+      ${costCell}
+      ${sellCell}
       <td class="row-total">${fmt(rowTotal(it))}</td>
       <td class="no-print center"><button class="del-btn" onclick="removeRow(${i})" title="ลบแถวนี้">✕</button></td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function updateItem(i,field,val){
@@ -491,7 +528,8 @@ function updateSku(i,el){
 function renderRowValuesOnly(i){
   const rows = document.getElementById('itemsBody').children;
   if(!rows[i]) return;
-  rows[i].querySelector('.sell-price').textContent = fmt(sellPrice(items[i]));
+  const sellEl = rows[i].querySelector('.sell-price');
+  if(sellEl) sellEl.textContent = fmt(sellPrice(items[i]));
   rows[i].querySelector('.row-total').textContent = fmt(rowTotal(items[i]));
 }
 
@@ -720,6 +758,7 @@ function collectState(){
     vat: document.getElementById('vatToggle').checked,
     showTotal: document.getElementById('showTotalToggle').checked,
     notes: document.getElementById('notes').value,
+    font: document.getElementById('fontSelect').value,
   };
 }
 
@@ -757,6 +796,7 @@ function load(){
     document.getElementById('vatToggle').checked = !!s.vat;
     document.getElementById('showTotalToggle').checked = s.showTotal !== false;
     document.getElementById('notes').value = s.notes || '';
+    setFont(s.font || 'Kanit');
     if(s.photoDataUrl){
       photoDataUrl = s.photoDataUrl;
       document.getElementById('photoImg').src = photoDataUrl;
