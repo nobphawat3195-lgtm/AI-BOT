@@ -460,6 +460,7 @@ let photoDataUrl = null;
 let logoDataUrl = null;
 
 const MARKUP = 1.5;
+const RESET_ROW_COUNT = 5;
 
 function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', price:'', direct:true }; }
 
@@ -822,7 +823,7 @@ function load(){
 }
 
 function resetForm(){
-  if(!confirm('ล้างข้อมูลทั้งหมดในใบเสนอราคานี้หรือไม่? (ข้อมูลร้าน/โลโก้จะยังคงอยู่)')) return;
+  if(!confirm('ล้างข้อมูลทั้งหมด? รายการสินค้าทุกแถวจะถูกลบหมด เหลือแถวว่างเปล่า (ข้อมูลร้าน/โลโก้จะยังคงอยู่)')) return;
   localStorage.removeItem(STORAGE_KEY);
   photoDataUrl = null;
   logoDataUrl = null;
@@ -852,8 +853,9 @@ function resetForm(){
   removePhoto();
   document.getElementById('docNo').value = genDocNo();
   document.getElementById('docDate').value = new Date().toISOString().slice(0,10);
-  items = defaultCatalog();
+  items = Array.from({length: RESET_ROW_COUNT}, () => blankRow());
   document.getElementById('rowCountInput').value = items.length;
+  document.getElementById('qtyAllInput').value = 1;
   renderItems();
   recalc();
 }
