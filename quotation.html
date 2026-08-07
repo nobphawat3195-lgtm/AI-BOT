@@ -230,34 +230,34 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
   /* header block */
   .banner-mechanic{opacity:.10}
   .brand{gap:8px}
-  .brand-logo{width:34px;height:34px;border-radius:8px;box-shadow:none}
-  .brand-name{font-size:13px}
-  .brand-tag{font-size:8.5px;margin-top:0}
-  .branch-info{font-size:8.5px;margin-bottom:2px}
-  .doc-title{font-size:15px;letter-spacing:.5px}
-  .doc-title small{font-size:7px;letter-spacing:2px;margin-top:0}
-  .doc-fields{margin-top:3px;font-size:8.5px}
+  .brand-logo{width:40px;height:40px;border-radius:9px;box-shadow:none}
+  .brand-name{font-size:16px}
+  .brand-tag{font-size:10px;margin-top:0}
+  .branch-info{font-size:10px;margin-bottom:2px}
+  .doc-title{font-size:18px;letter-spacing:.5px}
+  .doc-title small{font-size:8px;letter-spacing:2px;margin-top:0}
+  .doc-fields{margin-top:3px;font-size:10px}
   .doc-fields .dfrow{margin-top:1px;gap:4px}
-  .doc-fields input{font-size:8.5px;padding:1px 4px}
+  .doc-fields input{font-size:10px;padding:1px 5px}
 
   /* customer / vehicle block — compacted */
   .section{padding:7px 10px}
-  .section-title{margin-bottom:4px;font-size:9px;letter-spacing:1px;break-after:avoid;page-break-after:avoid}
+  .section-title{margin-bottom:5px;font-size:10.5px;letter-spacing:1px;break-after:avoid;page-break-after:avoid}
   .fromto-grid .party-card{padding:6px 10px}
-  .party-label{margin-bottom:3px;font-size:9px}
+  .party-label{margin-bottom:4px;font-size:10.5px}
   .fromto-grid .field{margin-bottom:3px}
-  .field label{margin-bottom:1px;font-size:8.5px}
-  .field input,.field textarea{padding:2px 5px;font-size:10.5px}
+  .field label{margin-bottom:1px;font-size:10px}
+  .field input,.field textarea{padding:2px 5px;font-size:12.5px}
   .fromto-grid textarea{min-height:20px}
   .car-photo-row{margin-top:4px;gap:8px}
   .photo-box{width:74px;height:44px;border-radius:5px}
   .photo-empty{font-size:7px;padding:2px}
 
   /* item table */
-  table.items{font-size:9.5px}
-  table.items th{padding:3px 5px;font-size:8px}
+  table.items{font-size:12px}
+  table.items th{padding:4px 5px;font-size:9.5px}
   table.items td{padding:0 5px;border-bottom:1px solid #e6ecf5}
-  table.items input{padding:1px 4px;font-size:9.5px}
+  table.items input{padding:1px 4px;font-size:12px}
   table.items tr{break-inside:avoid;page-break-inside:avoid}
   table.items input,.field input,.field textarea,.trow input{border-color:transparent!important;background:transparent!important;box-shadow:none!important}
   table.items td:nth-child(2) input:placeholder-shown,
@@ -268,15 +268,15 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
   /* totals / signatures / notes */
   .totals-wrap{break-inside:avoid;page-break-inside:avoid}
   .totals{margin-top:2px}
-  .trow{padding:2px 0;font-size:10px}
+  .trow{padding:2px 0;font-size:12px}
   .grand{margin-top:3px;padding-top:4px}
-  .grand .gv{font-size:16px}
-  .bahttext{font-size:9px;margin-top:2px}
+  .grand .gv{font-size:19px}
+  .bahttext{font-size:10.5px;margin-top:2px}
   .sign-grid{break-inside:avoid;page-break-inside:avoid;margin-top:8px;gap:14px}
   .sign-grid .field{margin-bottom:2px}
   .sign-line{height:24px;margin-bottom:3px}
-  .sign-label{font-size:9px}
-  textarea.notes{min-height:26px;font-size:10px}
+  .sign-label{font-size:10.5px}
+  textarea.notes{min-height:26px;font-size:11.5px}
 }
 </style>
 </head>
@@ -625,16 +625,21 @@ function toggleShowTotal(){
   save();
 }
 
+const UNIT_BY_KEYWORD = {'อันละ':'อัน','ตัวละ':'ตัว','ชิ้นละ':'ชิ้น','ชุดละ':'ชุด','คู่ละ':'อัน','เมตรละ':'เมตร','ลิตรละ':'ลิตร'};
+
 function parseLineToItem(line){
   let text = line;
   let qty = 1;
   const qtyMatch = text.match(/(?:ใช้|จำนวน)\s*(\d+)\s*(?:ตัว|ชิ้น|อัน|ชุด|คู่)?/);
   if(qtyMatch){ qty = parseInt(qtyMatch[1],10); text = text.replace(qtyMatch[0],''); }
 
-  let cost = null;
-  const priceKeywordMatch = text.match(/(?:อันละ|ตัวละ|ชิ้นละ|ชุดละ|คู่ละ|เมตรละ|ลิตรละ|ราคา)\s*([\d,]+(?:\.\d+)?)/);
+  let cost = null, unit = 'อัน', perPair = false;
+  const priceKeywordMatch = text.match(/(อันละ|ตัวละ|ชิ้นละ|ชุดละ|คู่ละ|เมตรละ|ลิตรละ|ราคา)\s*([\d,]+(?:\.\d+)?)/);
   if(priceKeywordMatch){
-    cost = parseFloat(priceKeywordMatch[1].replace(/,/g,''));
+    const keyword = priceKeywordMatch[1];
+    cost = parseFloat(priceKeywordMatch[2].replace(/,/g,''));
+    unit = UNIT_BY_KEYWORD[keyword] || 'อัน';
+    perPair = keyword === 'คู่ละ';
     text = text.replace(priceKeywordMatch[0], '');
   } else {
     const numbers = [...text.matchAll(/([\d,]{2,}(?:\.\d+)?)/g)];
@@ -643,10 +648,20 @@ function parseLineToItem(line){
       cost = parseFloat(last[1].replace(/,/g,''));
       text = text.slice(0,last.index) + text.slice(last.index+last[0].length);
     }
+    perPair = /คู่/.test(text);
   }
-  text = text.replace(/[()]/g,'').replace(/\s+/g,' ').trim();
+
+  // A "คู่ละ" price covers 2 pieces. Store it per piece (price / 2) so the
+  // +50% markup is applied to the piece price, and double the quantity so
+  // the line still totals the same pair the supplier quoted.
+  if(perPair && cost !== null){
+    cost = cost / 2;
+    qty = (qty || 1) * 2;
+  }
+
+  text = text.replace(/[()]/g,'').replace(/(ค่ะ|คะ|ครับ|นะคะ|นะครับ)\s*$/,'').replace(/\s+/g,' ').trim();
   if(!text && cost===null) return null;
-  return { sku:'', name: text || line.trim(), qty: qty||1, unit:'อัน', cost: cost!==null ? cost : '' };
+  return { sku:'', name: text || line.trim(), qty: qty||1, unit, cost: cost!==null ? cost : '' };
 }
 
 function parsePasteText(){
