@@ -435,7 +435,7 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
       </div>
 
       <div class="rowcount-bar no-print">
-        <label>จำนวนรายการ <input type="number" id="rowCountInput" min="1" max="200" value="11"></label>
+        <label>จำนวนรายการ <input type="number" id="rowCountInput" min="0" max="200" value="0"></label>
         <button class="btn btn-ghost" onclick="applyRowCount()">✅ ตั้งค่าทั้งหมด</button>
         <button class="btn btn-ghost" onclick="copyItemsText()">📋 คัดลอกข้อความ</button>
         <span class="hint">พิมพ์จำนวนแล้วกดปุ่มเดียว ระบบจะปรับแถวให้ครบทันที</span>
@@ -531,7 +531,7 @@ let photoDataUrl = null;
 let logoDataUrl = null;
 
 const MARKUP = 1.5;
-const RESET_ROW_COUNT = 5;
+const RESET_ROW_COUNT = 0;
 
 function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', price:'', direct:true }; }
 
@@ -642,7 +642,7 @@ function removeRow(i){
 }
 function applyRowCount(){
   let n = parseInt(document.getElementById('rowCountInput').value,10);
-  if(!n || n<1) n = 1;
+  if(isNaN(n) || n<0) n = 0;
   if(n>200) n = 200;
   if(n > items.length){
     while(items.length < n) items.push(blankRow());
