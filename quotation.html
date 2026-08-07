@@ -61,6 +61,23 @@ html,body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 .banner::after{content:'';position:absolute;left:-40px;bottom:-80px;width:200px;height:200px;border-radius:50%;
   background:radial-gradient(circle,rgba(77,159,255,.2),transparent 70%)}
 .banner-mechanic{position:absolute;right:6px;bottom:0;height:100%;width:auto;opacity:.16;z-index:0;pointer-events:none}
+
+/* ANIMATED TOOLS (screen only) */
+.banner-tools{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden}
+.banner-tools .cog{fill:#8fc0ff;opacity:.30}
+.banner-tools .cog-dim{fill:#7fb0f0;opacity:.20}
+.banner-tools .wrench-art{fill:#ffc98a;opacity:.34}
+.spin-cw{animation:spinCW 9s linear infinite;transform-origin:0 0}
+.spin-ccw{animation:spinCCW 7s linear infinite;transform-origin:0 0}
+.spin-slow{animation:spinCW 16s linear infinite;transform-origin:0 0}
+.wrench-rock{animation:wrenchRock 3.4s ease-in-out infinite;transform-origin:0 0}
+@keyframes spinCW{to{transform:rotate(360deg)}}
+@keyframes spinCCW{to{transform:rotate(-360deg)}}
+@keyframes wrenchRock{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
+@media (prefers-reduced-motion:reduce){
+  .spin-cw,.spin-ccw,.spin-slow,.wrench-rock{animation:none}
+}
+@media (max-width:640px){ .banner-tools{opacity:.5} }
 .brand{display:flex;gap:14px;align-items:flex-start;position:relative;z-index:1;min-width:0}
 .brand-logo{
   width:56px;height:56px;flex-shrink:0;border-radius:14px;
@@ -304,6 +321,33 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
 
     <!-- BANNER -->
     <div class="banner">
+      <svg class="banner-tools no-print" viewBox="0 0 400 150" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <g id="cogShape">
+            <circle r="17" fill="none" stroke="currentColor" stroke-width="9"/>
+            <g>
+              <rect x="-3.5" y="-27" width="7" height="9" rx="2"/>
+              <rect x="-3.5" y="-27" width="7" height="9" rx="2" transform="rotate(45)"/>
+              <rect x="-3.5" y="-27" width="7" height="9" rx="2" transform="rotate(90)"/>
+              <rect x="-3.5" y="-27" width="7" height="9" rx="2" transform="rotate(135)"/>
+              <rect x="-3.5" y="-27" width="7" height="9" rx="2" transform="rotate(180)"/>
+              <rect x="-3.5" y="-27" width="7" height="9" rx="2" transform="rotate(225)"/>
+              <rect x="-3.5" y="-27" width="7" height="9" rx="2" transform="rotate(270)"/>
+              <rect x="-3.5" y="-27" width="7" height="9" rx="2" transform="rotate(315)"/>
+            </g>
+          </g>
+          <g id="wrenchShape">
+            <rect x="-4.5" y="-4" width="46" height="9" rx="4.5"/>
+            <path d="M-6 -14 a15 15 0 1 0 0 28 a15 15 0 1 0 0 -28 z M-6 -7 a8 8 0 1 1 0 14 a8 8 0 1 1 0 -14 z"/>
+            <path d="M34 -13 h10 l6 6 v14 l-6 6 h-10 z"/>
+          </g>
+        </defs>
+
+        <g transform="translate(214,52)"><g class="spin-cw"><use href="#cogShape" class="cog"/></g></g>
+        <g transform="translate(258,96) scale(.72)"><g class="spin-ccw"><use href="#cogShape" class="cog-dim"/></g></g>
+        <g transform="translate(178,108) scale(.55)"><g class="spin-slow"><use href="#cogShape" class="cog-dim"/></g></g>
+        <g transform="translate(128,58) scale(.8) rotate(-24)"><g class="wrench-rock"><use href="#wrenchShape" class="wrench-art"/></g></g>
+      </svg>
       <svg class="banner-mechanic" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <circle cx="100" cy="42" r="24" fill="#fff"/>
         <path d="M74 30 a26 26 0 0 1 52 0 l-4 0 a22 22 0 0 0 -44 0 z" fill="#fff"/>
@@ -819,55 +863,57 @@ function save(){
 function load(){
   let s = null;
   try{ s = JSON.parse(localStorage.getItem(STORAGE_KEY)); }catch(e){}
-  document.getElementById('docNo').value = (s && s.docNo) || genDocNo();
-  document.getElementById('docDate').value = (s && s.docDate) || new Date().toISOString().slice(0,10);
-  document.getElementById('docValid').value = (s && s.docValid) || '7';
+
+  // Shop-level settings persist between visits...
   const sd = shopDefaults();
   document.getElementById('shopName').textContent = (s && 'shopName' in s) ? s.shopName : sd.shopName;
   document.getElementById('shopTag').textContent = (s && 'shopTag' in s) ? s.shopTag : sd.shopTag;
   document.getElementById('shopBranch').textContent = (s && 'shopBranch' in s) ? s.shopBranch : sd.shopBranch;
   document.getElementById('shopBranchPhone').textContent = (s && 'shopBranchPhone' in s) ? s.shopBranchPhone : sd.shopBranchPhone;
-  if(s){
-    document.getElementById('shopAddress').value = s.shopAddress || '';
-    document.getElementById('shopPhone').value = s.shopPhone || '';
-    document.getElementById('shopTaxId').value = s.shopTaxId || '';
-    document.getElementById('custName').value = s.custName || '';
-    document.getElementById('custPhone').value = s.custPhone || '';
-    document.getElementById('custCar').value = s.custCar || '';
-    document.getElementById('appraiserName').value = s.appraiserName || '';
-    document.getElementById('approverName').value = s.approverName || '';
-    document.getElementById('discountInput').value = s.discount || 0;
-    document.getElementById('vatToggle').checked = !!s.vat;
-    document.getElementById('showTotalToggle').checked = s.showTotal !== false;
-    document.getElementById('notes').value = s.notes || '';
-    setFont(s.font || 'Kanit');
-    if(s.photoDataUrl){
-      photoDataUrl = s.photoDataUrl;
-      document.getElementById('photoImg').src = photoDataUrl;
-      document.getElementById('photoImg').style.display = 'block';
-      document.getElementById('photoEmpty').style.display = 'none';
-      document.getElementById('removePhotoBtn').style.display = 'block';
-    }
-    if(s.logoDataUrl){
-      logoDataUrl = s.logoDataUrl;
-      document.getElementById('logoImg').src = logoDataUrl;
-      document.getElementById('logoImg').style.display = 'block';
-      document.getElementById('logoPlaceholder').style.display = 'none';
-    }
-    items = (s.items && s.items.length) ? s.items : defaultCatalog();
-  } else {
-    items = defaultCatalog();
+  document.getElementById('shopAddress').value = (s && s.shopAddress) || '';
+  document.getElementById('shopPhone').value = (s && s.shopPhone) || '';
+  document.getElementById('shopTaxId').value = (s && s.shopTaxId) || '';
+  document.getElementById('docValid').value = (s && s.docValid) || '7';
+  document.getElementById('showTotalToggle').checked = !(s && s.showTotal === false);
+  setFont((s && s.font) || 'Kanit');
+  if(s && s.logoDataUrl){
+    logoDataUrl = s.logoDataUrl;
+    document.getElementById('logoImg').src = logoDataUrl;
+    document.getElementById('logoImg').style.display = 'block';
+    document.getElementById('logoPlaceholder').style.display = 'none';
   }
-  document.getElementById('rowCountInput').value = items.length;
+
+  // ...but every visit starts a brand new blank quotation, so yesterday's
+  // job never carries over into today's customer.
+  startNewJob();
+
   toggleShowTotal();
   renderItems();
   recalc();
 }
 
+function startNewJob(){
+  photoDataUrl = null;
+  document.getElementById('custName').value = '';
+  document.getElementById('custPhone').value = '';
+  document.getElementById('custCar').value = '';
+  document.getElementById('appraiserName').value = '';
+  document.getElementById('approverName').value = '';
+  document.getElementById('discountInput').value = 0;
+  document.getElementById('vatToggle').checked = false;
+  document.getElementById('notes').value = '';
+  document.getElementById('pasteBox').value = '';
+  removePhoto();
+  document.getElementById('docNo').value = genDocNo();
+  document.getElementById('docDate').value = new Date().toISOString().slice(0,10);
+  items = Array.from({length: RESET_ROW_COUNT}, () => blankRow());
+  document.getElementById('rowCountInput').value = items.length;
+  document.getElementById('qtyAllInput').value = 1;
+}
+
 function resetForm(){
   if(!confirm('ล้างข้อมูลทั้งหมด? รายการสินค้าทุกแถวจะถูกลบหมด เหลือแถวว่างเปล่า (ข้อมูลร้าน/โลโก้จะยังคงอยู่)')) return;
   localStorage.removeItem(STORAGE_KEY);
-  photoDataUrl = null;
   logoDataUrl = null;
   const sd = shopDefaults();
   document.getElementById('shopName').textContent = sd.shopName;
@@ -877,27 +923,13 @@ function resetForm(){
   document.getElementById('shopAddress').value='';
   document.getElementById('shopPhone').value='';
   document.getElementById('shopTaxId').value='';
-  document.getElementById('custName').value='';
-  document.getElementById('custPhone').value='';
-  document.getElementById('custCar').value='';
-  document.getElementById('appraiserName').value='';
-  document.getElementById('approverName').value='';
-  document.getElementById('discountInput').value=0;
-  document.getElementById('vatToggle').checked=false;
   document.getElementById('showTotalToggle').checked=true;
-  toggleShowTotal();
-  document.getElementById('notes').value='';
-  document.getElementById('pasteBox').value='';
   document.getElementById('logoImg').style.display = 'block';
   document.getElementById('logoImg').src = DEFAULT_LOGO_SRC;
   document.getElementById('logoPlaceholder').style.display = 'none';
   document.getElementById('logoInput').value = '';
-  removePhoto();
-  document.getElementById('docNo').value = genDocNo();
-  document.getElementById('docDate').value = new Date().toISOString().slice(0,10);
-  items = Array.from({length: RESET_ROW_COUNT}, () => blankRow());
-  document.getElementById('rowCountInput').value = items.length;
-  document.getElementById('qtyAllInput').value = 1;
+  startNewJob();
+  toggleShowTotal();
   renderItems();
   recalc();
 }
