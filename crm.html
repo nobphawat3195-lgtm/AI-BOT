@@ -348,12 +348,18 @@ nav .badge{
   <!-- DATA PAGE -->
   <section id="pgData" hidden>
     <div class="panel">
-      <h2>💾 สำรอง / กู้คืนข้อมูล</h2>
-      <p class="hint">ข้อมูลถูกบันทึกไว้ในเครื่องนี้โดยอัตโนมัติ (ไม่ต้องกดบันทึก) แนะนำให้กด “ส่งออกไฟล์สำรอง” เก็บไว้ใน iCloud / Google Drive อย่างน้อยเดือนละครั้ง เพื่อกันข้อมูลหายเวลาเปลี่ยนเครื่องหรือล้างข้อมูลเบราว์เซอร์</p>
-      <button class="btn pri" id="btnExportJson">⬇️ ส่งออกไฟล์สำรอง (.json)</button>
-      <button class="btn" id="btnExportCsv">📊 ส่งออกเป็น Excel/CSV</button>
-      <button class="btn" id="btnImport">⬆️ นำเข้าไฟล์สำรอง (.json / .csv)</button>
+      <h2>📲 ย้ายข้อมูลไปอีกเครื่อง</h2>
+      <p class="hint">ใช้ตอนอยากให้ iPad กับมือถือมีข้อมูลชุดเดียวกัน กดปุ่มล่างแล้วเลือก <b>AirDrop</b> ไปยังอีกเครื่อง จากนั้นในเครื่องปลายทางเปิดแอปนี้ แล้วกด “รับข้อมูลจากอีกเครื่อง” เลือกไฟล์ที่เพิ่งส่งไป</p>
+      <button class="btn pri" id="btnShare">📲 ส่งข้อมูลไปอีกเครื่อง</button>
+      <button class="btn" id="btnImport">⬆️ รับข้อมูลจากอีกเครื่อง</button>
       <input type="file" id="fileIn" accept=".json,.csv,text/csv,application/json" hidden>
+      <p class="hint" id="syncInfo"></p>
+    </div>
+    <div class="panel">
+      <h2>💾 สำรอง / ส่งออกข้อมูล</h2>
+      <p class="hint">ข้อมูลบันทึกไว้ในเครื่องนี้อัตโนมัติ (ไม่ต้องกดบันทึก) แต่จะหายถ้าล้างข้อมูลเบราว์เซอร์หรือเปลี่ยนเครื่อง แนะนำให้เก็บไฟล์สำรองไว้อย่างน้อยเดือนละครั้ง</p>
+      <button class="btn" id="btnExportJson">⬇️ บันทึกไฟล์สำรอง (.json)</button>
+      <button class="btn" id="btnExportCsv">📊 ส่งออกเป็น Excel/CSV</button>
       <p class="hint" id="backupInfo"></p>
     </div>
     <div class="panel">
@@ -372,6 +378,23 @@ nav .badge{
         3. ใช้ “โอกาสปิด” จัดลำดับลูกค้าที่ควรทุ่มเวลา<br>
         4. ใช้แถบตัวกรองด้านบนดูเฉพาะกลุ่มที่ต้องติดตาม<br>
         5. ทุกการเปลี่ยนสถานะและโน้ตจะถูกเก็บเป็น <b>ประวัติการติดตาม</b> ในหน้ารายละเอียดลูกค้า
+      </p>
+    </div>
+    <div class="panel">
+      <h2>📲 ใช้สองเครื่องให้ข้อมูลตรงกัน</h2>
+      <p style="line-height:1.75">
+        ข้อมูลเก็บอยู่ในเครื่องเท่านั้น ไม่ได้ขึ้นคลาวด์ iPad กับมือถือจึงเป็นคนละชุดกัน
+        ต้องย้ายข้อมูลเองเมื่อต้องการให้ตรงกัน<br><br>
+        <b>วิธีที่เร็วที่สุด (2 ที)</b><br>
+        1. เครื่องต้นทาง → หน้า “ข้อมูล” → <b>ส่งข้อมูลไปอีกเครื่อง</b> → เลือก AirDrop ปลายทาง<br>
+        2. เครื่องปลายทาง → หน้า “ข้อมูล” → <b>รับข้อมูลจากอีกเครื่อง</b> → เลือกไฟล์ที่เพิ่งรับมา<br><br>
+        <b>ควรทำตอนไหน</b> — ทำตอนจบวัน หรือก่อนสลับไปใช้อีกเครื่อง
+        ถ้าจำง่าย ๆ คือ “ใช้เครื่องไหนเสร็จ ส่งไปอีกเครื่องก่อนวาง”<br><br>
+        <b>ถ้าเผลอกรอกทั้งสองเครื่อง</b> ไม่ต้องกังวล เลือก <b>รวมข้อมูล</b>
+        ลูกค้าจะไม่หาย ประวัติการติดตามจากทั้งสองเครื่องจะถูกรวมเข้าด้วยกัน
+        ถ้าลูกค้ารายเดียวกันถูกแก้ทั้งสองเครื่อง ระบบจะยึดฉบับที่แก้ล่าสุด<br><br>
+        <b>ข้อควรรู้</b> การลบลูกค้าไม่ตามไปด้วยตอน “รวมข้อมูล” ถ้าลบใครที่เครื่องหนึ่ง
+        แล้วอยากให้อีกเครื่องลบตาม ให้ใช้ <b>แทนที่ทั้งหมด</b> แทน
       </p>
     </div>
     <div class="panel">
@@ -471,6 +494,21 @@ nav .badge{
   </div>
 </div>
 
+<!-- IMPORT DECISION SHEET -->
+<div class="sheet" id="shImport">
+  <div class="sheet-bd" data-close></div>
+  <div class="sheet-in">
+    <div class="sheet-hd">
+      <h2>รับข้อมูลจากอีกเครื่อง</h2>
+      <button class="x" data-close>✕</button>
+    </div>
+    <div class="sheet-bd2" id="importBody"></div>
+    <div class="sheet-ft">
+      <button data-close>ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -486,7 +524,7 @@ const ACTIVE   = ['กำลังดำเนินการ','ยื่นก�
 const TH_MON   = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 
 /* ================= STATE ================= */
-let db = { v:1, customers:[], lastBackup:null };
+let db = { v:1, customers:[], lastBackup:null, lastSync:null };
 let filter = 'all';
 let editingId = null;
 let detailId = null;
@@ -820,8 +858,16 @@ function renderAll(){
 
 function renderBackupInfo(){
   $('#backupInfo').textContent = db.lastBackup
-    ? `ส่งออกไฟล์สำรองล่าสุด: ${new Date(db.lastBackup).toLocaleString('th-TH')}`
-    : 'ยังไม่เคยส่งออกไฟล์สำรอง';
+    ? `บันทึกไฟล์สำรองล่าสุด: ${new Date(db.lastBackup).toLocaleString('th-TH')}`
+    : 'ยังไม่เคยบันทึกไฟล์สำรอง';
+  renderSyncInfo();
+}
+function renderSyncInfo(){
+  const el = $('#syncInfo');
+  if(!el) return;
+  el.textContent = db.lastSync
+    ? `ย้ายข้อมูลระหว่างเครื่องล่าสุด: ${new Date(db.lastSync).toLocaleString('th-TH')}`
+    : 'ยังไม่เคยย้ายข้อมูลระหว่างเครื่อง';
 }
 
 /* ================= NAVIGATION ================= */
@@ -930,12 +976,39 @@ function stamp(){
   const d = new Date();
   return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
 }
+function snapshot(){
+  return JSON.stringify(Object.assign({}, db, { exportedAt:new Date().toISOString() }), null, 2);
+}
 function exportJson(){
   db.lastBackup = new Date().toISOString();
   save();
-  download(`crm-สินเชื่อ-${stamp()}.json`, JSON.stringify(db, null, 2), 'application/json');
+  download(`crm-สินเชื่อ-${stamp()}.json`, snapshot(), 'application/json');
   renderBackupInfo();
-  toast('ส่งออกไฟล์สำรองแล้ว — เก็บไฟล์ไว้ใน iCloud/Drive');
+  toast('บันทึกไฟล์สำรองแล้ว');
+}
+
+// Hands the backup straight to the OS share sheet, so iPad→iPhone is an AirDrop
+// away instead of a save-then-find-the-file trip through the Files app.
+async function shareToDevice(){
+  if(!db.customers.length){ toast('ยังไม่มีข้อมูลให้ส่ง'); return; }
+  const name = `crm-สินเชื่อ-${stamp()}.json`;
+  const file = new File([snapshot()], name, { type:'application/json' });
+  if(navigator.canShare && navigator.canShare({ files:[file] })){
+    try{
+      await navigator.share({ files:[file], title:'ข้อมูลลูกค้าสินเชื่อ' });
+      db.lastSync = new Date().toISOString();
+      save(); renderSyncInfo();
+      toast('ส่งแล้ว — ไปกด “รับข้อมูลจากอีกเครื่อง” ที่เครื่องปลายทาง');
+    }catch(e){
+      if(e && e.name === 'AbortError') return;   // user dismissed the sheet
+      console.warn(e);
+      toast('ส่งไม่สำเร็จ ลองใช้ปุ่มบันทึกไฟล์สำรองแทน');
+    }
+    return;
+  }
+  // desktop browsers and older iOS have no file sharing — fall back to a download
+  download(name, snapshot(), 'application/json');
+  toast('เครื่องนี้แชร์ไฟล์ตรงไม่ได้ — บันทึกไฟล์ไว้แล้ว ส่งไปอีกเครื่องเองได้เลย');
 }
 const CSV_COLS = [
   ['name','รายชื่อลูกค้า'], ['due','วันครบกำหนดรีไฟแนนซ์'], ['last','วันที่โทร/อัปเดตล่าสุด'],
@@ -1026,32 +1099,105 @@ function importCsv(text){
   save(); renderAll();
   toast(added ? `นำเข้า ${added} รายการแล้ว` : 'ไม่พบรายชื่อลูกค้าในไฟล์');
 }
+// Follow-up history is append-only, so the two devices' logs can always be
+// unioned without losing anything — identical entries collapse by time+text.
+function unionLogs(a, b){
+  const seen = new Set();
+  const out = [];
+  [...(a||[]), ...(b||[])].forEach(l=>{
+    if(!l || !l.t) return;
+    const k = l.t + '|' + l.text;
+    if(seen.has(k)) return;
+    seen.add(k);
+    out.push(l);
+  });
+  return out.sort((x,y)=>(x.t||'').localeCompare(y.t||''));
+}
+
+// Compare without applying, so the user sees what an import would do first.
+function planMerge(incoming){
+  const byId = new Map(db.customers.map(c=>[c.id, c]));
+  const plan = { added:[], updated:[], unchanged:[] };
+  incoming.forEach(inc=>{
+    if(!inc || !inc.name) return;
+    const cur = inc.id ? byId.get(inc.id) : null;
+    if(!cur) plan.added.push(inc);
+    else if((inc.updatedAt||'') > (cur.updatedAt||'')) plan.updated.push(inc);
+    else plan.unchanged.push(inc);
+  });
+  return plan;
+}
+
+function applyMerge(incoming){
+  const byId = new Map(db.customers.map(c=>[c.id, c]));
+  const p = planMerge(incoming);
+  incoming.forEach(inc=>{
+    if(!inc || !inc.name) return;
+    const cur = inc.id ? byId.get(inc.id) : null;
+    if(!cur){
+      if(!inc.id) inc.id = uid();
+      inc.logs = unionLogs(inc.logs, []);
+      db.customers.push(inc);
+      return;
+    }
+    // newest edit wins on the fields; history from both devices is kept
+    const logs = unionLogs(cur.logs, inc.logs);
+    if((inc.updatedAt||'') > (cur.updatedAt||'')) Object.assign(cur, inc);
+    cur.logs = logs;
+  });
+  db.lastSync = new Date().toISOString();
+  save(); renderAll(); closeSheets();
+  toast(`รวมข้อมูลแล้ว — เพิ่ม ${p.added.length} อัปเดต ${p.updated.length}`);
+}
+
+function applyReplace(incoming){
+  db.customers = incoming.filter(c=>c&&c.name).map(c=>{
+    if(!c.id) c.id = uid();
+    if(!Array.isArray(c.logs)) c.logs = [];
+    return c;
+  });
+  db.lastSync = new Date().toISOString();
+  save(); renderAll(); closeSheets();
+  toast(`แทนที่ข้อมูลแล้ว ${db.customers.length} รายการ`);
+}
+
+let pendingImport = null;
 function importJson(text){
   const p = JSON.parse(text);
   const incoming = Array.isArray(p) ? p : (p.customers || []);
   if(!Array.isArray(incoming) || !incoming.length){ toast('ไฟล์นี้ไม่มีข้อมูลลูกค้า'); return; }
-  const mode = db.customers.length
-    ? confirm(`ไฟล์มีลูกค้า ${incoming.length} รายการ\n\nกด "ตกลง" = รวมกับข้อมูลเดิม\nกด "ยกเลิก" = แทนที่ข้อมูลเดิมทั้งหมด`)
-    : true;
-  if(mode){
-    const have = new Set(db.customers.map(c=>c.id));
-    let added = 0;
-    incoming.forEach(c=>{
-      if(!c || !c.name) return;
-      if(!c.id || have.has(c.id)) c.id = uid();
-      if(!Array.isArray(c.logs)) c.logs = [];
-      db.customers.push(c); added++;
-    });
-    toast(`รวมข้อมูลแล้ว เพิ่ม ${added} รายการ`);
-  }else{
-    db.customers = incoming.filter(c=>c&&c.name).map(c=>{
-      if(!c.id) c.id = uid();
-      if(!Array.isArray(c.logs)) c.logs = [];
-      return c;
-    });
-    toast(`กู้คืนข้อมูล ${db.customers.length} รายการแล้ว`);
-  }
-  save(); renderAll();
+  if(!db.customers.length){ applyReplace(incoming); return; }
+
+  pendingImport = incoming;
+  const plan = planMerge(incoming);
+  const srcDate = (Array.isArray(p) ? null : p.exportedAt) || null;
+  $('#importBody').innerHTML = `
+    <div class="panel">
+      <h2>ไฟล์ที่เลือกมีลูกค้า ${incoming.length} ราย</h2>
+      ${srcDate?`<p class="hint">ส่งออกจากอีกเครื่องเมื่อ ${esc(new Date(srcDate).toLocaleString('th-TH'))}</p>`:''}
+      <table>
+        <tbody>
+          <tr><td>🆕 ยังไม่มีในเครื่องนี้</td><td class="num">${plan.added.length} ราย</td></tr>
+          <tr><td>🔄 ในไฟล์ใหม่กว่า จะถูกอัปเดต</td><td class="num">${plan.updated.length} ราย</td></tr>
+          <tr><td>✓ ในเครื่องนี้ใหม่กว่า/เท่ากัน</td><td class="num">${plan.unchanged.length} ราย</td></tr>
+          <tr><td>ตอนนี้ในเครื่องนี้มี</td><td class="num">${db.customers.length} ราย</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <h2>เลือกวิธีรวมข้อมูล</h2>
+      <button class="btn pri" id="doMerge">🔀 รวมข้อมูล (แนะนำ)</button>
+      <p class="hint">เก็บลูกค้าของทั้งสองเครื่องไว้ทั้งหมด ถ้าลูกค้ารายเดียวกันถูกแก้ทั้งสองเครื่อง จะยึดฉบับที่แก้ล่าสุด ส่วนประวัติการติดตามจะรวมจากทั้งสองเครื่อง ไม่มีอะไรหาย</p>
+      <button class="btn" id="doReplace">♻️ แทนที่ทั้งหมดด้วยไฟล์นี้</button>
+      <p class="hint">ทำให้เครื่องนี้เหมือนเครื่องต้นทางเป๊ะ ๆ <b>ข้อมูลที่มีอยู่ในเครื่องนี้ตอนนี้จะถูกลบทิ้ง</b> เลือกข้อนี้เมื่อคุณลบลูกค้าที่เครื่องต้นทางแล้วอยากให้เครื่องนี้ลบตาม</p>
+    </div>`;
+  $('#doMerge').addEventListener('click', ()=>applyMerge(pendingImport));
+  $('#doReplace').addEventListener('click', ()=>{
+    if(!confirm(`ลบข้อมูล ${db.customers.length} รายการในเครื่องนี้ แล้วแทนที่ด้วย ${pendingImport.length} รายการจากไฟล์?`)) return;
+    applyReplace(pendingImport);
+  });
+  $('#shImport').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 /* ================= EVENTS ================= */
@@ -1108,6 +1254,7 @@ $$('nav button').forEach(b=>b.addEventListener('click', ()=>go(b.dataset.pg)));
 
 $('#btnPrint').addEventListener('click', ()=>window.print());
 $('#btnQuickBackup').addEventListener('click', exportJson);
+$('#btnShare').addEventListener('click', shareToDevice);
 $('#btnExportJson').addEventListener('click', exportJson);
 $('#btnExportCsv').addEventListener('click', exportCsv);
 $('#btnImport').addEventListener('click', ()=>$('#fileIn').click());
