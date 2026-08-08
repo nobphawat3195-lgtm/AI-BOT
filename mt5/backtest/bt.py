@@ -369,6 +369,8 @@ class EA_B:
         self.dloss_pct = kw.get('dloss_pct', 5.0)
         self.use_dprof = kw.get('use_dprof', False)
         self.dprof_pct = kw.get('dprof_pct', 5.0)
+        self.max_trades_day = kw.get('max_trades_day', 0)   # 0 = unlimited
+        self.cooldown_sec   = kw.get('cooldown_sec', 0)     # gap after a closed trade
         # state
         self.state = 'idle'
         self.last_candle = None
@@ -404,6 +406,7 @@ class EA_B:
 
     def tick(self, t, bid, ask, newbar):
         bk = self.bk
+        t2 = t
         if self.day != t.date():
             self.day = t.date()
             self.day_net = 0.0
@@ -455,6 +458,17 @@ class EA_B:
             bk.pend = []
 
         self.state = 'idle'
+
+        # --- frequency controls: commission is the dominant cost on a small account
+        if self.max_trades_day > 0:
+            done = sum(1 for t in bk.trades if t.close_time.date() == t2.date())
+            if done >= self.max_trades_day:
+                return
+        if self.cooldown_sec > 0 and bk.trades:
+            last = bk.trades[-1].close_time
+            if (t2 - last).total_seconds() < self.cooldown_sec:
+                return
+
         # PlaceStraddle
         spread_pts = (ask - bid) / POINT
         if spread_pts > self.max_spread:
@@ -553,7 +567,7 @@ def run(ea_cls, bars, balance=10000.0, commission=0.0, seed=1,
 
     for i, b in enumerate(bars):
         spread = b['sp'] * POINT
-        if isinstance(ea, EA_B):
+        if hasattr(ea, 'prev_low'):
             ea.prev_low, ea.prev_high = prev_low, prev_high
 
         pts_path = pathmod.bar_path(b['o'], b['h'], b['l'], b['c'], b.get('tv', 60), rng, noise=noise)
