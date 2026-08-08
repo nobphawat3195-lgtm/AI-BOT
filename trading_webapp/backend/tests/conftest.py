@@ -1,10 +1,26 @@
-import pytest
+import os
+import tempfile
 
-from app.broker.paper import PaperBroker
-from app.config import Settings
-from app.prices import StaticFeed
-from app.service import TradingService
-from app.store import Store
+# Must run before anything imports the app: TestClient starts the real
+# lifespan, which builds its own price feed and background monitor from
+# the environment. Left unset, that feed is the live Yahoo one and the
+# monitor polls it on a loop — turning the suite into a network test
+# that hangs whenever the upstream is slow or unreachable.
+os.environ.setdefault("XAU_PRICE_FEED", "static")
+os.environ.setdefault("XAU_API_TOKEN", "test-token")
+os.environ.setdefault("XAU_BROKER", "paper")
+os.environ.setdefault("XAU_ALLOW_LIVE", "false")
+os.environ.setdefault(
+    "XAU_DB_PATH", os.path.join(tempfile.gettempdir(), "xauusd_lifespan_test.db")
+)
+
+import pytest  # noqa: E402
+
+from app.broker.paper import PaperBroker  # noqa: E402
+from app.config import Settings  # noqa: E402
+from app.prices import StaticFeed  # noqa: E402
+from app.service import TradingService  # noqa: E402
+from app.store import Store  # noqa: E402
 
 
 @pytest.fixture
