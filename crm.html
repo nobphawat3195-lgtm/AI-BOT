@@ -35,7 +35,20 @@
     --grey-soft:#1e2631;
   }
 }
+/* explicit dark choice must win even when the OS is set to light */
+:root[data-theme="dark"]{
+  --brand:#4d9fe8; --brand2:#75b6f0; --brand-soft:#132c44;
+  --bg:#0d1117; --card:#161c26; --line:#28313f;
+  --text:#e6edf5; --text2:#9aa8bb; --text3:#6b7889;
+  --red:#ff6b7d; --red-soft:#3a1a20;
+  --amber:#e8ab3c; --amber-soft:#3a2e15;
+  --green:#3fd0a0; --green-soft:#0f3129;
+  --purple:#b98bf0; --purple-soft:#2a1d3d;
+  --grey-soft:#1e2631;
+}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+/* an explicit display on a component would otherwise beat the UA's [hidden] rule */
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{
   background:var(--bg);color:var(--text);
@@ -130,6 +143,13 @@ main{padding:10px 14px 20px}
 }
 .c-act .pri{background:var(--brand);color:#fff}
 .c-act a:active,.c-act button:active{opacity:.7}
+.warn{
+  display:flex;gap:10px;align-items:flex-start;
+  background:var(--amber-soft);border:1px solid var(--amber);
+  border-radius:12px;padding:12px 13px;margin-bottom:12px;
+  font-size:13.5px;line-height:1.55;color:var(--text);
+}
+.warn b{color:var(--amber)}
 .empty{text-align:center;padding:56px 20px;color:var(--text3)}
 .empty .e-ic{font-size:44px;margin-bottom:10px}
 
@@ -300,6 +320,13 @@ nav .badge{
 </div>
 
 <main>
+  <div class="warn" id="noStore" hidden>
+    <span style="font-size:18px;line-height:1.2">⚠️</span>
+    <div><b>เบราว์เซอร์นี้ไม่อนุญาตให้บันทึกข้อมูลถาวร</b><br>
+    ข้อมูลที่กรอกจะอยู่แค่จนกว่าจะปิดหน้านี้ ใช้ทดลองได้ แต่อย่าใช้เก็บข้อมูลลูกค้าจริง —
+    ถ้าจะใช้จริงให้เปิดจากไฟล์ที่บันทึกไว้ในเครื่อง หรือปิดโหมดไม่ระบุตัวตน/อนุญาตคุกกี้ก่อน</div>
+  </div>
+
   <!-- LIST PAGE -->
   <section id="pgList">
     <div class="bar">
@@ -507,17 +534,31 @@ function toast(msg){
 }
 
 /* ================= STORAGE ================= */
-function load(){
+// Sandboxed iframes and private-browsing modes can block localStorage outright.
+// Detect it up front so the app can warn instead of losing data silently.
+const storageOK = (() => {
   try{
-    const raw = localStorage.getItem(KEY);
-    if(raw){
-      const p = JSON.parse(raw);
-      if(p && Array.isArray(p.customers)) db = Object.assign(db, p);
-    }
-  }catch(e){ console.warn('load failed', e); }
+    const probe = '__crm_probe__';
+    localStorage.setItem(probe, '1');
+    localStorage.removeItem(probe);
+    return true;
+  }catch(e){ return false; }
+})();
+
+function load(){
+  if(storageOK){
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(raw){
+        const p = JSON.parse(raw);
+        if(p && Array.isArray(p.customers)) db = Object.assign(db, p);
+      }
+    }catch(e){ console.warn('load failed', e); }
+  }
   db.customers.forEach(c => { if(!Array.isArray(c.logs)) c.logs = []; });
 }
 function save(){
+  if(!storageOK) return;   // kept in memory only; the banner already says so
   try{
     localStorage.setItem(KEY, JSON.stringify(db));
     // keep a rolling same-day snapshot as a second copy
@@ -1108,6 +1149,7 @@ setInterval(()=>{
 
 /* ================= INIT ================= */
 load();
+$('#noStore').hidden = storageOK;
 go('list');
 </script>
 </body>
