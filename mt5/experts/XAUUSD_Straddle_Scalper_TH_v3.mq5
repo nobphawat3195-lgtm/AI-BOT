@@ -27,7 +27,7 @@
 //|  *** คำเตือน: ระบบความเสี่ยงสูง ทดสอบใน Demo ก่อนใช้เงินจริงเสมอ ***  |
 //+------------------------------------------------------------------+
 #property copyright "AUTO1 Trading Lab"
-#property version   "3.00"
+#property version   "3.10"
 #property strict
 
 #include <Trade\Trade.mqh>
