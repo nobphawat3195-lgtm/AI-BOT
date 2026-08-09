@@ -18,7 +18,7 @@ class EA_C:
         self.cd_sl   = kw.get('cd_sl', 60)
         self.min_gap = kw.get('min_gap', 0)
         self.use_time= kw.get('use_time', True)
-        self.sessions=[(7*60,8*60+30),(19*60,20*60+30),(2*60,3*60+30)]
+        self.sessions=kw.get('sessions',[(7*60,8*60+30),(19*60,20*60+30),(2*60,3*60+30)])
         self.close_end=kw.get('close_end', True)
         self.lot_mode= kw.get('lot_mode','fixed')
         self.fixed   = kw.get('fixed', 0.01)
