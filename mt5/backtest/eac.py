@@ -1,4 +1,4 @@
-"""EA_C - replicates XAU_StraddleCore_v1.mq5 logic for validation."""
+"""EA_C - replicates XAU_StraddleCore_v1_3.mq5 logic for validation."""
 import datetime
 from bt import POINT, TICK_VALUE, STOPS_LEVEL, SERVER_GMT, norm, round_lot, Pending
 

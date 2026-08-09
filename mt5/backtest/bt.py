@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Bar-by-bar simulator replicating the exact order logic of:
-  A) XAU_StraddleReverse_v4_2.mq5   (SAR v4)
-  B) XAUUSD_Straddle_Scalper_TH_v3.mq5
+  A) XAU_StraddleReverse_v4_4.mq5   (SAR v4)
+  B) XAUUSD_Straddle_Scalper_TH_v3_1.mq5
 
 Data: XAUUSD M1 OHLC + per-bar spread.
 Intrabar model = MT5 "1 minute OHLC" tick generation:

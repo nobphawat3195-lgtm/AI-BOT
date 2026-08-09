@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                   XAU_StraddleReverse_v4.mq5     |
+//|                                 XAU_StraddleReverse_v4_4.mq5     |
 //|            XAUUSD Straddle Stop-&-Reverse Scalper  (เวอร์ชัน 4)   |
 //|                                                                  |
 //|  ใหม่ใน v4:                                                      |
@@ -15,12 +15,12 @@
 //|  *** ต้องใช้บัญชีแบบ HEDGING เท่านั้น / ทดสอบบัญชีเดโมก่อนเสมอ ***|
 //+------------------------------------------------------------------+
 //  ── ประวัติเวอร์ชัน ──────────────────────────────────────────────
-//  4.31  แก้บั๊ก: ห้ามเชื่อ TimeGMT() ใน Strategy Tester
-//  4.30  แก้ระบบกลับไม้ที่ยิงไม่ออกทางคณิตศาสตร์ (ReverseGap 1.20->0.60
-//        + ResolveReverseGap) และให้ CalcLot รู้ว่า SL ถูกโบรกขยาย
-//  4.20  เวอร์ชันเดิมจากผู้เขียน
+//  4.4  แก้บั๊ก: ห้ามเชื่อ TimeGMT() ใน Strategy Tester
+//  4.3  แก้ระบบกลับไม้ที่ยิงไม่ออกทางคณิตศาสตร์ (ReverseGap 1.20->0.60
+//       + ResolveReverseGap) และให้ CalcLot รู้ว่า SL ถูกโบรกขยาย
+//  4.2  เวอร์ชันเดิมจากผู้เขียน
 #property copyright "Custom EA v4"
-#property version   "4.31"
+#property version   "4.4"
 #property description "XAUUSD Straddle Stop & Reverse - รองรับทุกโบรกเกอร์"
 
 #include <Trade/Trade.mqh>
