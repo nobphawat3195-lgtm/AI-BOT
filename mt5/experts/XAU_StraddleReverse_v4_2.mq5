@@ -283,8 +283,13 @@ void ResetDailyIfNeeded()
   }
 
 //=================== เขตเวลาอัตโนมัติ ===============================
+//--- ⚠ ใน Strategy Tester ค่า TimeGMT() มักคืนค่าเท่ากับ TimeCurrent()
+//    ทำให้ตรวจได้ GMT+0 เสมอ และช่วงเวลาเทรดเลื่อนไปผิดหลายชั่วโมงเงียบๆ
+//    (ยืนยันจากผลรันจริงของ EA พี่น้องกัน: ไม้ทุกไม้ตกในหน้าต่างของ GMT+0)
+//    ในโหมดทดสอบจึงใช้ค่าที่ผู้ใช้ตั้งเองเท่านั้น
 int ServerGMTOffset()
   {
+   if(MQLInfoInteger(MQL_TESTER)) return InpServerGMTOffset;
    if(!InpAutoGMTOffset) return InpServerGMTOffset;
    long diff = (long)TimeCurrent() - (long)TimeGMT();
    int off = Ri((double)diff / 3600.0);

@@ -157,13 +157,39 @@ bool ResultOK(const string what)
   }
 
 //=================== เขตเวลา / ช่วงเทรด =============================
+//--- ⚠ สำคัญมาก: ใน Strategy Tester ค่า TimeGMT() มักคืนค่าเท่ากับ TimeCurrent()
+//    ทำให้การตรวจอัตโนมัติได้ผลเป็น GMT+0 เสมอ และช่วงเวลาเทรดจะเลื่อนไปผิด
+//    หลายชั่วโมงโดยไม่มีใครรู้
+//
+//    ยืนยันจากผลรันจริง (1-5 มิ.ย. 2026): ไม้ทั้ง 312 ไม้ตกในหน้าต่างที่
+//    คำนวณจาก GMT+0 พอดีเป๊ะ ทั้งที่เซิร์ฟเวอร์จริงไม่ใช่ GMT+0
+//    -> ในโหมดทดสอบจึงต้องใช้ค่าที่ผู้ใช้ตั้งเองเท่านั้น ห้ามเดา
 int ServerGMT()
   {
+   if(MQLInfoInteger(MQL_TESTER)) return InpManualGMT;
    if(!InpAutoGMT) return InpManualGMT;
    long diff = (long)TimeCurrent() - (long)TimeGMT();
    int off = (int)MathRound((double)diff / 3600.0);
    if(off < -12 || off > 14) return InpManualGMT;
    return off;
+  }
+
+//--- พิมพ์ช่วงเวลาเทรดที่แปลงเป็นเวลาเซิร์ฟเวอร์แล้ว
+//    ถ้าตัวเลขนี้ไม่ตรงกับที่คาด แปลว่า InpManualGMT ตั้งผิด
+void LogSessions()
+  {
+   string names[3] = {"ช่วง 1", "ช่วง 2", "ช่วง 3"};
+   string src[3];
+   src[0] = InpSess1; src[1] = InpSess2; src[2] = InpSess3;
+   for(int i = 0; i < 3; i++)
+     {
+      int f, t;
+      if(!ParseSess(src[i], f, t)) continue;
+      int sf = ((f - (7 - g_gmt) * 60) % 1440 + 1440) % 1440;
+      int st = ((t - (7 - g_gmt) * 60) % 1440 + 1440) % 1440;
+      PrintFormat("  %s : ไทย %s  ->  เวลาเซิร์ฟเวอร์ %02d:%02d-%02d:%02d",
+                  names[i], src[i], sf / 60, sf % 60, st / 60, st % 60);
+     }
   }
 
 //--- แปลง "07:00-08:30" เป็นนาทีเริ่มและนาทีจบ
@@ -618,6 +644,21 @@ int OnInit()
    PrintFormat("ล็อตไม้แรก=%.2f (เพดาน %.2f) | โหมด=%s",
                CalcLot(), InpMaxLot,
                (InpLotMode == LOT_FIXED ? "ล็อตคงที่" : "ตาม % ความเสี่ยง"));
+
+   //--- ต้องพิมพ์เสมอ: ถ้า GMT ผิด ช่วงเทรดจะเลื่อนไปผิดโดยไม่มีอาการอื่นให้เห็น
+   if(InpUseTimeFilter)
+     {
+      if(MQLInfoInteger(MQL_TESTER))
+         PrintFormat("⚠ โหมด Strategy Tester: บังคับใช้ InpManualGMT = GMT%+d "
+                     "(TimeGMT() ในโหมดทดสอบเชื่อถือไม่ได้) "
+                     "-> ต้องตั้งค่านี้ให้ตรงกับโบรกเอง", g_gmt);
+      else
+         PrintFormat("เขตเวลาที่ใช้: GMT%+d (%s)", g_gmt,
+                     InpAutoGMT ? "ตรวจอัตโนมัติ" : "ตั้งเอง");
+      Print("ช่วงเวลาเทรดที่จะใช้จริง:");
+      LogSessions();
+      Print("  ^ ถ้าเวลาเซิร์ฟเวอร์ข้างบนไม่ตรงกับที่ตั้งใจ ให้แก้ InpManualGMT");
+     }
 
    //--- ตรวจค่าที่ตั้งมาว่าสมเหตุสมผลไหม ตอนที่ยังแก้ทัน
    bool warn = false;
