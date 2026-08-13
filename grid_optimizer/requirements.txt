@@ -1,0 +1,4 @@
+optuna>=4.0.0
+
+# development / tests
+pytest>=8.3.0
