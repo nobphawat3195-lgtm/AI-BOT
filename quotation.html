@@ -213,7 +213,9 @@ table.items input.qty,table.items input.unit{text-align:center}
 .totals{width:100%;max-width:320px;margin-top:6px}
 .trow{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;color:var(--sub)}
 .trow input{width:90px;border:1px solid var(--line);border-radius:7px;padding:5px 8px;text-align:right;font-family:var(--font);font-size:12px}
-.trow.vat label{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--sub)}
+.trow.vat label,.trow.disc label{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--sub)}
+.trow.off{opacity:.42}
+.trow.off input[type=number]{pointer-events:none}
 .grand{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:12px;border-top:2px solid var(--navy1)}
 .grand .gl{font-size:13px;font-weight:600;color:var(--navy1)}
 .grand .gv{font-size:22px;font-weight:700;color:var(--navy1)}
@@ -469,6 +471,8 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
   input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;appearance:none;margin:0}
   input[type=number]{-moz-appearance:textfield}
   *:focus,*:focus-visible{outline:none!important;box-shadow:none!important}
+  /* the VAT / discount tick boxes are controls, not part of the document */
+  .trow.vat input[type=checkbox],.trow.disc input[type=checkbox]{display:none!important}
   .pmirrored{display:none!important}
   .pmirror{display:block;white-space:pre-wrap;word-break:break-word;
     font-size:12.5px;line-height:1.45;color:var(--ink);padding:2px 5px;min-height:1em}
@@ -773,11 +777,11 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
       <div class="totals-wrap" id="totalsWrap">
         <div class="totals">
           <div class="trow"><span>รวมราคาสินค้า</span><span id="tSubtotal">0.00</span></div>
-          <div class="trow">
-            <span>ส่วนลดรวม</span>
+          <div class="trow disc" id="rowDiscount">
+            <label><input type="checkbox" id="discountToggle" onchange="recalc()"> ส่วนลดรวม</label>
             <span><input type="number" id="discountInput" value="0" min="0" oninput="recalc()"> บาท</span>
           </div>
-          <div class="trow"><span>ยอดหลังหักส่วนลด</span><span id="tAfterDiscount">0.00</span></div>
+          <div class="trow" id="rowAfterDiscount"><span>ยอดหลังหักส่วนลด</span><span id="tAfterDiscount">0.00</span></div>
           <div class="trow vat">
             <label><input type="checkbox" id="vatToggle" onchange="recalc()"> คิดภาษีมูลค่าเพิ่ม (VAT 7%)</label>
             <span id="tVat">0.00</span>
@@ -1064,8 +1068,14 @@ function parsePasteText(){
 
 function recalc(){
   const subtotal = items.reduce((s,it)=>s+rowTotal(it),0);
-  const discount = parseFloat(document.getElementById('discountInput').value)||0;
+  const discountOn = document.getElementById('discountToggle').checked;
+  const discount = discountOn ? (parseFloat(document.getElementById('discountInput').value)||0) : 0;
   const afterDiscount = Math.max(subtotal - discount, 0);
+  // With no discount in play the two discount lines are just noise on the
+  // printed quotation, so drop them from paper (and dim them on screen).
+  document.getElementById('rowDiscount').classList.toggle('off', !discountOn);
+  document.getElementById('rowDiscount').classList.toggle('no-print', !discountOn);
+  document.getElementById('rowAfterDiscount').classList.toggle('no-print', !discountOn);
   const vatOn = document.getElementById('vatToggle').checked;
   const vat = vatOn ? afterDiscount*0.07 : 0;
   const grand = afterDiscount + vat;
@@ -1189,6 +1199,7 @@ function collectState(){
     photoDataUrl,
     items,
     discount: document.getElementById('discountInput').value,
+    discountOn: document.getElementById('discountToggle').checked,
     vat: document.getElementById('vatToggle').checked,
     showTotal: document.getElementById('showTotalToggle').checked,
     notes: document.getElementById('notes').value,
@@ -1265,6 +1276,7 @@ function startNewJob(){
   document.getElementById('appraiserName').value = '';
   document.getElementById('approverName').value = '';
   document.getElementById('discountInput').value = 0;
+  document.getElementById('discountToggle').checked = false;
   document.getElementById('vatToggle').checked = false;
   document.getElementById('notes').value = '';
   document.getElementById('pasteBox').value = '';
