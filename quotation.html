@@ -125,6 +125,7 @@ html,body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 .section-title .bar{width:4px;height:12px;background:var(--amber);border-radius:2px}
 .field{margin-bottom:12px}
 .field-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-row3{display:grid;grid-template-columns:1.5fr .75fr 1fr;gap:12px}
 .field label{font-size:11px;color:var(--sub);display:block;margin-bottom:5px}
 .field input,.field textarea{
   width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;
@@ -227,7 +228,7 @@ textarea.notes{min-height:64px;resize:vertical;line-height:1.6}
 
 /* RESPONSIVE */
 @media (max-width:640px){
-  .field-row2{grid-template-columns:1fr}
+  .field-row2,.field-row3{grid-template-columns:1fr}
   .fromto-grid{grid-template-columns:1fr}
   .party-card + .party-card{border-left:none;border-top:1px solid var(--line2)}
   .banner{flex-direction:column}
@@ -438,6 +439,10 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
   .site-foot{justify-content:center;text-align:center}
 }
 
+/* print mirrors: <input>/<textarea> clip long values, so on paper we print
+   a wrapping text copy of the fields that can legitimately run long. */
+.pmirror{display:none}
+
 /* PRINT — A4, single sheet, forced desktop layout */
 @media print{
   /* flip the screen theme back to paper: white sheet, dark ink */
@@ -464,6 +469,10 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
   input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;appearance:none;margin:0}
   input[type=number]{-moz-appearance:textfield}
   *:focus,*:focus-visible{outline:none!important;box-shadow:none!important}
+  .pmirrored{display:none!important}
+  .pmirror{display:block;white-space:pre-wrap;word-break:break-word;
+    font-size:12.5px;line-height:1.45;color:var(--ink);padding:2px 5px;min-height:1em}
+  .pmirror:empty{min-height:14px}
   .grand .gv{color:var(--ink)!important;text-shadow:none!important}
   .grand .gl{color:var(--ink)!important}
   .trow{color:var(--sub)!important}
@@ -479,6 +488,7 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
   .fromto-grid{grid-template-columns:1fr 1fr!important}
   .party-card + .party-card{border-left:1px solid #ccc!important;border-top:none!important}
   .field-row2{grid-template-columns:1fr 1fr!important}
+  .field-row3{grid-template-columns:1.5fr .75fr 1fr!important}
   .sign-grid{grid-template-columns:1fr 1fr!important}
   .doc-meta{text-align:right!important}
   .doc-fields .dfrow{justify-content:flex-end!important}
@@ -599,7 +609,7 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
         <option value="Itim">ฟอนต์: Itim (ลายมือ)</option>
       </select>
       <button class="btn btn-ghost" onclick="resetForm()">🗑️ ล้างฟอร์ม</button>
-      <button class="btn btn-print" onclick="window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
+      <button class="btn btn-print" onclick="syncPrintMirrors();window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
     </div>
   </div>
 
@@ -682,18 +692,20 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
     <div class="fromto-grid">
       <div class="party-card">
         <div class="party-label">ผู้เสนอราคา (ร้านค้า)</div>
-        <div class="field"><label>ที่อยู่ร้าน</label><textarea id="shopAddress" rows="2" placeholder="เลขที่ / ถนน / ตำบล / อำเภอ / จังหวัด"></textarea></div>
-        <div class="field-row2">
+        <div class="field"><label>ชื่อนิติบุคคล (ตามใบกำกับภาษี)</label><input id="shopLegalName" class="pmirrored" placeholder="ชื่อบริษัทตาม ภ.พ.20"><div class="pmirror" data-for="shopLegalName"></div></div>
+        <div class="field"><label>ที่อยู่ตามใบกำกับภาษี</label><textarea id="shopAddress" class="pmirrored" rows="2" placeholder="เลขที่ / ถนน / ตำบล / อำเภอ / จังหวัด / รหัสไปรษณีย์"></textarea><div class="pmirror" data-for="shopAddress"></div></div>
+        <div class="field-row3">
+          <div class="field"><label>เลขประจำตัวผู้เสียภาษี</label><input id="shopTaxId" placeholder="เลข 13 หลัก" inputmode="numeric"></div>
+          <div class="field"><label>สาขาที่</label><input id="shopBranchCode" placeholder="00000" inputmode="numeric"></div>
           <div class="field"><label>เบอร์โทร</label><input id="shopPhone" placeholder="08x-xxx-xxxx" inputmode="tel"></div>
-          <div class="field"><label>เลขผู้เสียภาษี</label><input id="shopTaxId" placeholder="เลข 13 หลัก (ถ้ามี)"></div>
         </div>
       </div>
       <div class="party-card">
         <div class="party-label">เสนอราคาถึง (ลูกค้า)</div>
-        <div class="field"><label>ชื่อลูกค้า</label><input id="custName" placeholder="ชื่อ-นามสกุล / ชื่อร้าน"></div>
+        <div class="field"><label>ชื่อลูกค้า</label><input id="custName" class="pmirrored" placeholder="ชื่อ-นามสกุล / ชื่อร้าน"><div class="pmirror" data-for="custName"></div></div>
         <div class="field-row2">
           <div class="field"><label>เบอร์โทร</label><input id="custPhone" placeholder="08x-xxx-xxxx" inputmode="tel"></div>
-          <div class="field"><label>รุ่นรถ / ทะเบียน</label><input id="custCar" placeholder="เช่น Vios กข 1234"></div>
+          <div class="field"><label>รุ่นรถ / ทะเบียน</label><input id="custCar" class="pmirrored" placeholder="เช่น Vios กข 1234"><div class="pmirror" data-for="custCar"></div></div>
         </div>
         <div class="car-photo-row">
           <div class="photo-box" id="photoBox">
@@ -799,7 +811,7 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
     <div class="section" style="border-bottom:none">
       <div class="section-title"><span class="bar"></span>หมายเหตุ / เงื่อนไข</div>
       <div class="field">
-        <textarea class="notes" id="notes" placeholder="เช่น ราคานี้มีผล 7 วันนับจากวันที่ออกใบเสนอราคา / ชำระเงินสดหรือโอนก่อนเริ่มงาน 50%"></textarea>
+        <textarea class="notes pmirrored" id="notes" placeholder="เช่น ราคานี้มีผล 7 วันนับจากวันที่ออกใบเสนอราคา / ชำระเงินสดหรือโอนก่อนเริ่มงาน 50%"></textarea><div class="pmirror" data-for="notes"></div>
       </div>
     </div>
 
@@ -1146,6 +1158,11 @@ function shopDefaults(){
     shopTag: 'อะไหล่แท้ - อะไหล่เทียบ คุณภาพมั่นใจ',
     shopBranch: 'สาขาฟิวเจอร์รังสิต',
     shopBranchPhone: '025508104',
+    // from the shop's ภ.พ.20 (VAT registration certificate)
+    shopLegalName: 'บริษัท ซีอาร์ซี ไทวัสดุ จำกัด (สาขาออโต้วัน ฟิวเจอร์พาร์ครังสิต)',
+    shopAddress: '94/6 ถนนพหลโยธิน ต.ประชาธิปัตย์ อ.ธัญบุรี จ.ปทุมธานี 12130',
+    shopBranchCode: '00109',
+    shopTaxId: '',
   };
 }
 
@@ -1155,7 +1172,9 @@ function collectState(){
     shopTag: document.getElementById('shopTag').textContent,
     shopBranch: document.getElementById('shopBranch').textContent,
     shopBranchPhone: document.getElementById('shopBranchPhone').textContent,
+    shopLegalName: document.getElementById('shopLegalName').value,
     shopAddress: document.getElementById('shopAddress').value,
+    shopBranchCode: document.getElementById('shopBranchCode').value,
     shopPhone: document.getElementById('shopPhone').value,
     shopTaxId: document.getElementById('shopTaxId').value,
     logoDataUrl,
@@ -1179,12 +1198,20 @@ function collectState(){
 
 let saveTimer=null;
 function save(){
+  syncPrintMirrors();
   clearTimeout(saveTimer);
   saveTimer = setTimeout(()=>{
     try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState())); }catch(e){}
     const note = document.getElementById('saveNote');
     note.textContent = 'บันทึกแล้ว ' + new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
   }, 300);
+}
+
+function syncPrintMirrors(){
+  document.querySelectorAll('.pmirror').forEach(m=>{
+    const src = document.getElementById(m.dataset.for);
+    if(src) m.textContent = src.value;
+  });
 }
 
 function syncBrandChrome(){
@@ -1204,9 +1231,11 @@ function load(){
   document.getElementById('shopTag').textContent = (s && 'shopTag' in s) ? s.shopTag : sd.shopTag;
   document.getElementById('shopBranch').textContent = (s && 'shopBranch' in s) ? s.shopBranch : sd.shopBranch;
   document.getElementById('shopBranchPhone').textContent = (s && 'shopBranchPhone' in s) ? s.shopBranchPhone : sd.shopBranchPhone;
-  document.getElementById('shopAddress').value = (s && s.shopAddress) || '';
+  document.getElementById('shopLegalName').value = (s && 'shopLegalName' in s) ? s.shopLegalName : sd.shopLegalName;
+  document.getElementById('shopAddress').value = (s && 'shopAddress' in s) ? s.shopAddress : sd.shopAddress;
+  document.getElementById('shopBranchCode').value = (s && 'shopBranchCode' in s) ? s.shopBranchCode : sd.shopBranchCode;
+  document.getElementById('shopTaxId').value = (s && 'shopTaxId' in s) ? s.shopTaxId : sd.shopTaxId;
   document.getElementById('shopPhone').value = (s && s.shopPhone) || '';
-  document.getElementById('shopTaxId').value = (s && s.shopTaxId) || '';
   document.getElementById('docValid').value = (s && s.docValid) || '7';
   document.getElementById('showTotalToggle').checked = !(s && s.showTotal === false);
   setFont((s && s.font) || 'Kanit');
@@ -1223,6 +1252,7 @@ function load(){
 
   toggleShowTotal();
   syncBrandChrome();
+  syncPrintMirrors();
   renderItems();
   recalc();
 }
@@ -1255,9 +1285,11 @@ function resetForm(){
   document.getElementById('shopTag').textContent = sd.shopTag;
   document.getElementById('shopBranch').textContent = sd.shopBranch;
   document.getElementById('shopBranchPhone').textContent = sd.shopBranchPhone;
-  document.getElementById('shopAddress').value='';
+  document.getElementById('shopLegalName').value = sd.shopLegalName;
+  document.getElementById('shopAddress').value = sd.shopAddress;
+  document.getElementById('shopBranchCode').value = sd.shopBranchCode;
+  document.getElementById('shopTaxId').value = sd.shopTaxId;
   document.getElementById('shopPhone').value='';
-  document.getElementById('shopTaxId').value='';
   document.getElementById('showTotalToggle').checked=true;
   document.getElementById('logoImg').style.display = 'block';
   document.getElementById('logoImg').src = DEFAULT_LOGO_SRC;
@@ -1276,7 +1308,7 @@ function resetForm(){
   });
 });
 document.addEventListener('DOMContentLoaded',()=>{
-  ['shopAddress','shopPhone','shopTaxId','custName','custPhone','custCar','appraiserName','approverName','docNo','docDate','docValid','notes'].forEach(id=>{
+  ['shopLegalName','shopAddress','shopBranchCode','shopPhone','shopTaxId','custName','custPhone','custCar','appraiserName','approverName','docNo','docDate','docValid','notes'].forEach(id=>{
     document.getElementById(id).addEventListener('input', save);
   });
   document.getElementById('rowCountInput').addEventListener('keydown', e=>{
