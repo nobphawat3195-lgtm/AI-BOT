@@ -443,7 +443,7 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
 
 /* print mirrors: <input>/<textarea> clip long values, so on paper we print
    a wrapping text copy of the fields that can legitimately run long. */
-.pmirror{display:none}
+.pmirror,.cell-print{display:none}
 
 /* PRINT — A4, single sheet, forced desktop layout */
 @media print{
@@ -474,6 +474,10 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
   /* the VAT / discount tick boxes are controls, not part of the document */
   .trow.vat input[type=checkbox],.trow.disc input[type=checkbox]{display:none!important}
   .pmirrored{display:none!important}
+  /* inputs clip; on paper print a wrapping text copy of the cell instead */
+  .cell-in{display:none!important}
+  .cell-print{display:block!important;white-space:normal;word-break:break-word;line-height:1.35}
+  table.items td.num .cell-print{text-align:right}
   .pmirror{display:block;white-space:pre-wrap;word-break:break-word;
     font-size:12.5px;line-height:1.45;color:var(--ink);padding:2px 5px;min-height:1em}
   .pmirror:empty{min-height:14px}
@@ -759,8 +763,10 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
             <th class="center" style="width:56px">จำนวน</th>
             <th class="center" style="width:58px">หน่วย</th>
             <th class="num no-print" style="width:80px">ราคาทุน</th>
-            <th class="num" style="width:86px">ราคาขาย/หน่วย</th>
-            <th class="num" style="width:100px">รวม (บาท)</th>
+            <th class="num" style="width:82px">ราคาขาย/หน่วย</th>
+            <th class="num" style="width:88px">ราคารวม</th>
+            <th class="num" style="width:74px">ส่วนลด</th>
+            <th class="num" style="width:92px">ราคาสุทธิ</th>
             <th class="no-print" style="width:50px"></th>
           </tr>
         </thead>
@@ -777,8 +783,9 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
       <div class="totals-wrap" id="totalsWrap">
         <div class="totals">
           <div class="trow"><span>รวมราคาสินค้า</span><span id="tSubtotal">0.00</span></div>
+          <div class="trow" id="rowLineDiscount"><span>ส่วนลดรายการ</span><span id="tLineDiscount">0.00</span></div>
           <div class="trow disc" id="rowDiscount">
-            <label><input type="checkbox" id="discountToggle" onchange="recalc()"> ส่วนลดรวม</label>
+            <label><input type="checkbox" id="discountToggle" onchange="recalc()"> ส่วนลดเพิ่มเติม</label>
             <span><input type="number" id="discountInput" value="0" min="0" oninput="recalc()"> บาท</span>
           </div>
           <div class="trow" id="rowAfterDiscount"><span>ยอดหลังหักส่วนลด</span><span id="tAfterDiscount">0.00</span></div>
@@ -854,7 +861,7 @@ let logoDataUrl = null;
 const MARKUP = 1.5;
 const RESET_ROW_COUNT = 0;
 
-function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', price:'', direct:true }; }
+function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', price:'', disc:'', direct:true }; }
 
 function defaultCatalog(){
   return [
@@ -880,7 +887,26 @@ function sellPrice(it){
   if(it.direct) return parseFloat(it.price)||0;
   return (parseFloat(it.cost)||0) * MARKUP;
 }
-function rowTotal(it){ return (parseFloat(it.qty)||0) * sellPrice(it); }
+function lineGross(it){ return (parseFloat(it.qty)||0) * sellPrice(it); }
+// A line discount is entered either as a baht amount ("29000") or a
+// percentage of that line ("5%"). Never more than the line itself.
+function lineDiscount(it){
+  const raw = String(it.disc ?? '').trim();
+  if(!raw) return 0;
+  const gross = lineGross(it);
+  const pct = raw.endsWith('%');
+  const n = parseFloat(pct ? raw.slice(0,-1) : raw);
+  if(isNaN(n) || n <= 0) return 0;
+  return Math.min(pct ? gross * n / 100 : n, gross);
+}
+function lineNet(it){ return lineGross(it) - lineDiscount(it); }
+function discLabel(it){
+  const raw = String(it.disc ?? '').trim();
+  if(!raw || !lineDiscount(it)) return '';
+  return raw.endsWith('%') ? raw : fmt(lineDiscount(it));
+}
+// kept as the "what this line contributes" figure used by the totals
+function rowTotal(it){ return lineNet(it); }
 function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function fmt(n){ return (n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 const SKU_MAX_LEN = 20;
@@ -896,18 +922,20 @@ function renderItems(){
       ? `<td class="num no-print center" style="color:var(--sub)">—</td>`
       : `<td class="num no-print"><input class="num" type="number" min="0" step="0.01" value="${it.cost}" oninput="updateItem(${i},'cost',this.value)"></td>`;
     const sellCell = it.direct
-      ? `<td class="num"><input class="num" type="number" min="0" step="0.01" value="${it.price}" oninput="updateItem(${i},'price',this.value)"></td>`
+      ? `<td class="num"><input class="num cell-in" type="number" min="0" step="0.01" value="${it.price}" oninput="updateItem(${i},'price',this.value)"><span class="cell-print">${priced ? fmt(sellPrice(it)) : ''}</span></td>`
       : `<td class="num sell-price">${priced ? fmt(sellPrice(it)) : ''}</td>`;
     return `
     <tr>
       <td class="center">${i+1}</td>
       <td class="center"><input type="text" inputmode="numeric" maxlength="${SKU_MAX_LEN}" placeholder="รหัสสินค้า (ตัวเลข)" value="${escapeHtml(it.sku)}" oninput="updateSku(${i},this)"></td>
-      <td><input type="text" placeholder="ระบุชื่อสินค้า/อะไหล่" value="${escapeHtml(it.name)}" oninput="updateItem(${i},'name',this.value)"></td>
+      <td><input class="cell-in" type="text" placeholder="ระบุชื่อสินค้า/อะไหล่" value="${escapeHtml(it.name)}" oninput="updateItem(${i},'name',this.value)"><span class="cell-print">${escapeHtml(it.name)}</span></td>
       <td class="center"><input class="qty" type="number" min="0" step="1" value="${it.qty}" oninput="updateItem(${i},'qty',this.value)"></td>
       <td class="center"><input class="unit" type="text" value="${escapeHtml(it.unit)}" oninput="updateItem(${i},'unit',this.value)"></td>
       ${costCell}
       ${sellCell}
-      <td class="row-total">${priced ? fmt(rowTotal(it)) : ''}</td>
+      <td class="num row-gross">${priced ? fmt(lineGross(it)) : ''}</td>
+      <td class="num"><input class="num cell-in" type="text" inputmode="decimal" placeholder="0 หรือ 5%" value="${escapeHtml(String(it.disc ?? ''))}" oninput="updateItem(${i},'disc',this.value)"><span class="cell-print">${escapeHtml(discLabel(it))}</span></td>
+      <td class="row-total">${priced ? fmt(lineNet(it)) : ''}</td>
       <td class="no-print center row-actions">
         <button class="ins-btn" onclick="insertRowAfter(${i})" title="แทรกแถวใหม่ใต้แถวนี้">+</button>
         <button class="del-btn" onclick="removeRow(${i})" title="ลบแถวนี้">✕</button>
@@ -935,13 +963,14 @@ function renderRowValuesOnly(i){
   const priced = hasPrice(items[i]);
   const sellEl = rows[i].querySelector('.sell-price');
   if(sellEl) sellEl.textContent = priced ? fmt(sellPrice(items[i])) : '';
-  rows[i].querySelector('.row-total').textContent = priced ? fmt(rowTotal(items[i])) : '';
+  rows[i].querySelector('.row-gross').textContent = priced ? fmt(lineGross(items[i])) : '';
+  rows[i].querySelector('.row-total').textContent = priced ? fmt(lineNet(items[i])) : '';
 }
 
 function copyItemsText(){
   const lines = items
     .filter(it => it.name.trim())
-    .map((it,i) => `${i+1}. ${it.sku ? '['+it.sku+'] ' : ''}${it.name} x${it.qty||0} ${it.unit} @${fmt(sellPrice(it))} = ${fmt(rowTotal(it))} บาท`);
+    .map((it,i) => `${i+1}. ${it.sku ? '['+it.sku+'] ' : ''}${it.name} x${it.qty||0} ${it.unit} @${fmt(sellPrice(it))}${discLabel(it) ? ' -' + discLabel(it) : ''} = ${fmt(lineNet(it))} บาท`);
   lines.push('รวมทั้งหมด: ' + document.getElementById('tGrand').textContent + ' บาท');
   const text = lines.join('\n');
   if(navigator.clipboard && navigator.clipboard.writeText){
@@ -1067,19 +1096,23 @@ function parsePasteText(){
 }
 
 function recalc(){
-  const subtotal = items.reduce((s,it)=>s+rowTotal(it),0);
+  const subtotal = items.reduce((s,it)=>s+lineGross(it),0);
+  const lineDisc = items.reduce((s,it)=>s+lineDiscount(it),0);
   const discountOn = document.getElementById('discountToggle').checked;
-  const discount = discountOn ? (parseFloat(document.getElementById('discountInput').value)||0) : 0;
-  const afterDiscount = Math.max(subtotal - discount, 0);
-  // With no discount in play the two discount lines are just noise on the
-  // printed quotation, so drop them from paper (and dim them on screen).
+  const extraDisc = discountOn ? (parseFloat(document.getElementById('discountInput').value)||0) : 0;
+  const totalDisc = lineDisc + extraDisc;
+  const afterDiscount = Math.max(subtotal - totalDisc, 0);
+  // Discount lines are noise on a quotation that has no discount, so each one
+  // only reaches paper when it actually carries a figure.
   document.getElementById('rowDiscount').classList.toggle('off', !discountOn);
   document.getElementById('rowDiscount').classList.toggle('no-print', !discountOn);
-  document.getElementById('rowAfterDiscount').classList.toggle('no-print', !discountOn);
+  document.getElementById('rowLineDiscount').classList.toggle('no-print', lineDisc <= 0);
+  document.getElementById('rowAfterDiscount').classList.toggle('no-print', totalDisc <= 0);
   const vatOn = document.getElementById('vatToggle').checked;
   const vat = vatOn ? afterDiscount*0.07 : 0;
   const grand = afterDiscount + vat;
   document.getElementById('tSubtotal').textContent = fmt(subtotal);
+  document.getElementById('tLineDiscount').textContent = fmt(lineDisc);
   document.getElementById('tAfterDiscount').textContent = fmt(afterDiscount);
   document.getElementById('tVat').textContent = fmt(vat);
   document.getElementById('tGrand').textContent = fmt(grand);
