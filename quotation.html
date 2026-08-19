@@ -1054,13 +1054,11 @@ function autoFillSku(i){
   if(found === it.sku) return;
   it.sku = found;
   it.skuAuto = true;
-  const cell = document.getElementById('itemsBody').children[i];
-  if(cell){
-    const inp = cell.querySelector('td:nth-child(2) input');
-    const txt = cell.querySelector('td:nth-child(2) .cell-print');
+  const row = document.getElementById('itemsBody').children[i];
+  if(row){
+    const inp = row.children[1].querySelector('input');
     if(inp) inp.value = found;
-    if(txt) txt.textContent = found;
-    cell.querySelector('td:nth-child(2)').classList.toggle('sku-auto', !!found);
+    row.children[1].classList.toggle('sku-auto', !!found);
   }
 }
 function updateSku(i,el){
@@ -1074,14 +1072,28 @@ function updateSku(i,el){
   if(txt) txt.textContent = clean;
   save();
 }
+// Every editable cell keeps a text copy that is what actually gets printed
+// (an <input> clips instead of wrapping). Those copies are written when the
+// table is drawn, so they must be refreshed on every keystroke too - otherwise
+// a row typed after it was drawn prints the values it had when it was drawn.
 function renderRowValuesOnly(i){
-  const rows = document.getElementById('itemsBody').children;
-  if(!rows[i]) return;
-  const priced = hasPrice(items[i]);
-  const sellEl = rows[i].querySelector('.sell-price');
-  if(sellEl) sellEl.textContent = priced ? fmt(sellPrice(items[i])) : '';
-  rows[i].querySelector('.row-gross').textContent = priced ? fmt(lineGross(items[i])) : '';
-  rows[i].querySelector('.row-total').textContent = priced ? fmt(lineNet(items[i])) : '';
+  const row = document.getElementById('itemsBody').children[i];
+  if(!row) return;
+  const it = items[i], td = row.children, priced = hasPrice(it);
+  const put = (cell, text)=>{
+    const el = cell && cell.querySelector('.cell-print');
+    if(el) el.textContent = text;
+  };
+  put(td[1], it.sku);
+  put(td[2], it.name);
+  put(td[3], String(it.qty ?? ''));
+  put(td[4], it.unit);
+  put(td[6], priced ? fmt(sellPrice(it)) : '');   // direct-price rows
+  put(td[8], discLabel(it));
+  const sellEl = row.querySelector('.sell-price');  // marked-up rows
+  if(sellEl) sellEl.textContent = priced ? fmt(sellPrice(it)) : '';
+  row.querySelector('.row-gross').textContent = priced ? fmt(lineGross(it)) : '';
+  row.querySelector('.row-total').textContent = priced ? fmt(lineNet(it)) : '';
 }
 
 function copyItemsText(){
