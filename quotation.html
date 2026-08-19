@@ -167,6 +167,16 @@ html,body{background:var(--bg);color:var(--ink);font-family:var(--font)}
   flex:1;min-width:220px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;
   font-family:var(--font);font-size:12.5px;resize:vertical;background:#fff;
 }
+.sku-bar{
+  background:linear-gradient(120deg,rgba(20,34,60,.62),rgba(12,22,40,.5));
+  border:1px solid rgba(90,150,255,.16);border-radius:10px;padding:10px 14px;margin-bottom:10px;
+}
+.sku-bar summary{cursor:pointer;font-size:12px;color:#cfe0ff;font-weight:500}
+.sku-bar summary::marker{color:var(--blue2)}
+.sku-body{margin-top:10px}
+.sku-hint{font-size:10.5px;color:#829cc2;line-height:1.75;margin-bottom:8px}
+.sku-actions{display:flex;flex-direction:column;gap:6px}
+.sku-note{font-size:11px;color:#9fc6ff;margin-top:8px;min-height:1em}
 .show-total-toggle{
   font-size:11.5px;color:var(--navy1);display:flex;align-items:center;gap:8px;
   margin:8px 0 10px;cursor:pointer;background:#f6f9ff;border:1px solid #e1ebff;
@@ -769,6 +779,26 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
         </div>
       </div>
 
+      <details class="sku-bar no-print">
+        <summary>🗂️ คลังรหัส SKU — <span id="skuCount">กำลังโหลด…</span></summary>
+        <div class="sku-body">
+          <p class="sku-hint">
+            เปิด Excel ที่มีรายการ SKU ของร้าน → เลือก 2 คอลัมน์ (รหัส SKU กับ ชื่อสินค้า) → คัดลอก →
+            วางในช่องด้านล่าง แล้วกดนำเข้า &nbsp;•&nbsp; หรือเลือกไฟล์ .csv ก็ได้<br>
+            สลับลำดับคอลัมน์ได้ ระบบดูจากคอลัมน์ที่เป็นตัวเลขล้วนว่าเป็นรหัส SKU
+          </p>
+          <div class="paste-row">
+            <textarea id="skuPasteBox" rows="4" placeholder="60317713&#9;โช้คอัพหน้า&#10;60317715&#9;เบ้าโช้คอัพหน้า&#10;…"></textarea>
+            <div class="sku-actions">
+              <button class="btn btn-ghost" onclick="importSkuCatalog(document.getElementById('skuPasteBox').value)">⬆️ นำเข้ารายการ</button>
+              <label class="upload-btn">📄 เลือกไฟล์ .csv<input type="file" accept=".csv,.txt,text/csv,text/plain" style="display:none" onchange="importSkuFile(event)"></label>
+              <button class="btn btn-ghost" onclick="resetSkuCatalog()">↩️ กลับค่าตั้งต้น</button>
+            </div>
+          </div>
+          <div id="skuImportNote" class="sku-note"></div>
+        </div>
+      </details>
+
       <div class="rowcount-bar no-print">
         <label>จำนวนรายการ <input type="number" id="rowCountInput" min="0" max="200" value="0"></label>
         <button class="btn btn-ghost" onclick="applyRowCount()">✅ ตั้งค่าทั้งหมด</button>
@@ -988,9 +1018,35 @@ function normThai(t){
     .replace(/ดิสก์/g,'ดิส')
     .replace(/คลัทช์|คลัตช์|คลัช/g,'ครัช');
 }
-const SKU_INDEX = SKU_CATALOG
-  .map(([sku,name])=>({sku, name, key:normThai(name)}))
-  .sort((a,b)=>b.key.length-a.key.length);   // longest name wins
+// The built-in list above is only the starting point - a full list can be
+// imported from the shop's own file and is kept in this browser.
+const SKU_STORE_KEY = 'autoPartsSkuCatalog';
+let skuPairs = SKU_CATALOG;      // [[sku, name], ...] currently in force
+let SKU_INDEX = [];
+
+function buildSkuIndex(){
+  SKU_INDEX = skuPairs
+    .map(([sku,name])=>({sku, name, key:normThai(name)}))
+    .filter(e=>e.key)
+    .sort((a,b)=>b.key.length-a.key.length);   // longest name wins
+}
+
+function loadSkuCatalog(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(SKU_STORE_KEY));
+    if(Array.isArray(saved) && saved.length) skuPairs = saved;
+  }catch(e){}
+  buildSkuIndex();
+  updateSkuCount();
+}
+
+function updateSkuCount(){
+  const el = document.getElementById('skuCount');
+  if(!el) return;
+  const custom = skuPairs !== SKU_CATALOG;
+  el.textContent = `ตอนนี้มี ${skuPairs.length.toLocaleString('th-TH')} รายการ` +
+    (custom ? ' (นำเข้าเอง)' : ' (รายการตั้งต้น)');
+}
 
 // Longest catalogue name contained in the description, so
 // "ยางกันกระแทกโช๊คอัพหน้า IR" matches the full part, not just "โช๊คอัพหน้า".
@@ -999,6 +1055,82 @@ function lookupSku(name){
   if(!k) return '';
   const hit = SKU_INDEX.find(e => k.includes(e.key));
   return hit ? hit.sku : '';
+}
+
+// Accepts what Excel puts on the clipboard (tab separated) as well as CSV.
+// Either column order works - the SKU is whichever field is a bare number.
+function parseSkuTable(text){
+  const out = [], seen = new Set();
+  let skipped = 0;
+  for(const raw of String(text||'').split(/\r?\n/)){
+    const line = raw.trim();
+    if(!line || /^#/.test(line)) continue;               // blank / ##section##
+    const cols = (line.includes('\t') ? line.split('\t') : line.split(','))
+      .map(c=>c.trim().replace(/^["']|["']$/g,''));
+    if(cols.length < 2){ skipped++; continue; }
+    let sku = '', name = '';
+    for(const c of cols){
+      if(!sku && /^\d{4,20}$/.test(c)) sku = c;
+      else if(!name && c && !/^\d{4,20}$/.test(c)) name = c;
+    }
+    if(!sku || !name){ skipped++; continue; }
+    const key = normThai(name);
+    if(!key || seen.has(key)){ skipped++; continue; }     // first wins
+    seen.add(key);
+    out.push([sku, name]);
+  }
+  return { pairs: out, skipped };
+}
+
+function importSkuCatalog(text){
+  const { pairs, skipped } = parseSkuTable(text);
+  const note = document.getElementById('skuImportNote');
+  if(!pairs.length){
+    if(note) note.textContent = '⚠️ ไม่พบข้อมูลที่อ่านได้ — ต้องมี 2 คอลัมน์: รหัส SKU (ตัวเลข) และชื่อสินค้า';
+    return;
+  }
+  skuPairs = pairs;
+  buildSkuIndex();
+  try{ localStorage.setItem(SKU_STORE_KEY, JSON.stringify(pairs)); }
+  catch(e){
+    if(note) note.textContent = '⚠️ รายการยาวเกินกว่าที่เบราว์เซอร์เก็บได้ ใช้ได้ในรอบนี้แต่จะไม่ถูกจำไว้';
+    updateSkuCount(); return;
+  }
+  if(note) note.textContent = `✅ นำเข้า ${pairs.length.toLocaleString('th-TH')} รายการแล้ว` +
+    (skipped ? ` (ข้าม ${skipped} บรรทัดที่อ่านไม่ได้)` : '');
+  updateSkuCount();
+  document.getElementById('skuPasteBox').value = '';
+}
+
+function importSkuFile(ev){
+  const f = ev.target.files[0];
+  if(!f) return;
+  const note = document.getElementById('skuImportNote');
+  const done = txt => { importSkuCatalog(txt); ev.target.value = ''; };
+  const r = new FileReader();
+  r.onload = () => {
+    let txt = r.result;
+    // Thai Excel often saves CSV as Windows-874 rather than UTF-8
+    if(/\uFFFD/.test(txt)){
+      try{ txt = new TextDecoder('windows-874').decode(new Uint8Array(rawBuf)); }catch(e){}
+    }
+    done(txt);
+  };
+  let rawBuf = null;
+  const rb = new FileReader();
+  rb.onload = () => { rawBuf = rb.result; r.readAsText(f, 'utf-8'); };
+  rb.onerror = () => { if(note) note.textContent = '⚠️ อ่านไฟล์ไม่สำเร็จ'; };
+  rb.readAsArrayBuffer(f);
+}
+
+function resetSkuCatalog(){
+  if(!confirm('กลับไปใช้รายการ SKU ตั้งต้น (67 รายการ) หรือไม่?')) return;
+  localStorage.removeItem(SKU_STORE_KEY);
+  skuPairs = SKU_CATALOG;
+  buildSkuIndex();
+  updateSkuCount();
+  const note = document.getElementById('skuImportNote');
+  if(note) note.textContent = 'กลับไปใช้รายการตั้งต้นแล้ว';
 }
 
 const SKU_MAX_LEN = 20;
@@ -1424,6 +1556,7 @@ function load(){
   // job never carries over into today's customer.
   startNewJob();
 
+  loadSkuCatalog();
   toggleShowTotal();
   syncBrandChrome();
   syncPrintMirrors();
