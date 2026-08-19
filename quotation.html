@@ -201,6 +201,8 @@ table.items input.qty,table.items input.unit{text-align:center}
 .del-btn{background:none;border:none;color:var(--red);font-size:15px;cursor:pointer;opacity:.6;padding:4px}
 .del-btn:hover{opacity:1}
 .row-actions{white-space:nowrap}
+table.items td.sku-auto input{color:var(--blue2)}
+table.items td.sku-auto{position:relative}
 .ins-btn{background:none;border:none;color:var(--blue);font-size:16px;font-weight:700;cursor:pointer;opacity:.55;padding:4px;line-height:1}
 .ins-btn:hover{opacity:1}
 .add-row-btn{
@@ -888,7 +890,7 @@ let logoDataUrl = null;
 const MARKUP = 1.5;
 const RESET_ROW_COUNT = 0;
 
-function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', price:'', disc:'', direct:true }; }
+function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', price:'', disc:'', direct:true, skuAuto:true }; }
 
 function defaultCatalog(){
   return [
@@ -936,6 +938,69 @@ function discLabel(it){
 function rowTotal(it){ return lineNet(it); }
 function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function fmt(n){ return (n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+// ── SKU catalogue, transcribed from the shop's printed "NAME LIST SUBLET" ──
+// Typing a description that contains one of these names fills the SKU in
+// automatically. The SKU stays editable; once it is edited by hand the
+// automatic fill leaves that row alone.
+const SKU_CATALOG = [
+  // ## โช้คอัพ ##
+  ['60317713','โช้คอัพหน้า'], ['60317715','เบ้าโช้คอัพหน้า'], ['60317719','ลูกปืนเบ้าโช้คอัพหน้า'],
+  ['60317717','ยางกันกระแทกโช้คอัพหน้า'], ['60317720','ยางกันฝุ่นโช้ค'], ['60317721','ยางรองสปริงโช้ค'],
+  ['60317714','โช้คอัพหลัง'], ['60317718','ยางกันกระแทกโช้คอัพหลัง'], ['60317716','เบ้าโช้คอัพหลัง'],
+  ['60301072','ลูกหมากกันโคลงหน้า'], ['60301069','ยางรัดเหล็กกันโคลงหน้า'], ['60303978','อะไหล่โช้คอัพอื่นๆ'],
+  // ## ระบบแอร์ ##
+  ['60301101','ไส้กรองแอร์'], ['60346646','ไดรเออร์แอร์'], ['60317723','ตู้แอร์'],
+  ['60301098','วาวล์แอร์'], ['60301099','โบลเวอร์แอร์'], ['60346647','ท่อแอร์'],
+  ['60301106','เทอร์โมสตัทแอร์'], ['60317724','แผงคอนเดนเซอร์แอร์'], ['60346648','ฝาครอบกรองแอร์'],
+  ['60301103','รีซีสแตนท์'], ['60301097','คอมเพรสเซอร์แอร์'], ['60301108','โอริงแอร์'],
+  ['60301110','น้ำมันคอมเพรสเซอร์แอร์'], ['60300995','มอเตอร์พัดลม'], ['60317708','สายพานแอร์'],
+  ['60317709','สายพานไดชาร์ท'], ['60301001','สายพานหน้าเครื่อง'], ['60317725','หน้าครัชคอมแอร์'],
+  ['60301272','FLUSHING AIR'],
+  // ## ระบบเครื่องยนต์ ##
+  ['60371350','หัวฉีด'], ['60371371','ยางรองหัวฉีด'], ['60301005','คอยล์จุดระเบิด'], ['60317707','หัวเทียน'],
+  // ## ระบบเบรค ##
+  ['60317693','ผ้าเบรคหน้า'], ['60317698','ผ้าเบรคหลัง'], ['60317700','ก้ามเบรคหลัง'],
+  ['60301027','ชุดซ่อมเบรคหน้า'], ['60317705','ลูกสูบเบรค'], ['60301030','กระบอกเบรคหลัง'],
+  ['60301015','แม่ปั้มเบรคบน'], ['60301008','หม้อลมเบรค'], ['60317701','จานดิสเบรคหน้า'],
+  ['60317702','จานดิสเบรคหลัง'], ['60317704','จานดรัมเบรคหลัง'],
+  ['60301140','เจียร์จานเบรก-แบบแท่น'], ['60301209','เจียร์จานเบรก-แบบประชิด'], ['60301210','เจียร์จานเบรก-แบบเซาะล่อง'],
+  // ## ระบบช่วงล่าง ##
+  ['60301086','ลูกหมากแร็คตัวใน'], ['60301084','ลูกหมากแร็คตัวนอก'], ['60301042','ยางหุ้มแร็ค'],
+  ['60301062','ปีกนกบน'], ['60301064','ปีกนกล่าง'], ['60301047','ลูกปืนล้อหน้า'],
+  ['60301054','ลูกปืนล้อหลัง'], ['60301043','เพลาขับ'], ['60301045','ซีลเพลาขับ'],
+  // ## อื่นๆ ##
+  ['60300978','ไส้กรองอากาศ'], ['60317706','ไส้กรองน้ำมันเครื่อง'], ['60300981','ไส้กรองน้ำมันเชื้อเพลิง'],
+  ['60317710','ไดชาร์ท'], ['60300979','ปะเก็นฝาครอบวาวล์'], ['60301088','ยางแท่นเครื่องตัวหน้า'],
+  ['60301089','ยางแท่นเครื่องตัวข้าง'], ['60301092','ยางแท่นเกียร์'], ['60301290','ค่าอะไหล่'],
+];
+
+// Shop spelling drifts (โช้ค / โช๊ค, spacing, brand suffixes), so compare on a
+// form with tone marks and spaces stripped.
+function normThai(t){
+  return String(t||'').toLowerCase()
+    .replace(/[\u0E48-\u0E4B]/g,'')   // ่ ้ ๊ ๋
+    .replace(/[\s\-_.]/g,'')
+    // the shop writes these both ways (the printed list itself uses
+    // both เบรค and เบรก), so fold the variants together
+    .replace(/เบรก/g,'เบรค')
+    .replace(/แร็ก/g,'แร็ค')
+    .replace(/ไดชาร์จ/g,'ไดชาร์ท')
+    .replace(/ดิสก์/g,'ดิส')
+    .replace(/คลัทช์|คลัตช์|คลัช/g,'ครัช');
+}
+const SKU_INDEX = SKU_CATALOG
+  .map(([sku,name])=>({sku, name, key:normThai(name)}))
+  .sort((a,b)=>b.key.length-a.key.length);   // longest name wins
+
+// Longest catalogue name contained in the description, so
+// "ยางกันกระแทกโช๊คอัพหน้า IR" matches the full part, not just "โช๊คอัพหน้า".
+function lookupSku(name){
+  const k = normThai(name);
+  if(!k) return '';
+  const hit = SKU_INDEX.find(e => k.includes(e.key));
+  return hit ? hit.sku : '';
+}
+
 const SKU_MAX_LEN = 20;
 function digitsOnly(s){ return (s||'').replace(/\D/g,'').slice(0,SKU_MAX_LEN); }
 
@@ -954,7 +1019,7 @@ function renderItems(){
     return `
     <tr>
       <td class="center">${i+1}</td>
-      <td class="center"><input class="cell-in" type="text" inputmode="numeric" maxlength="${SKU_MAX_LEN}" placeholder="รหัสสินค้า (ตัวเลข)" value="${escapeHtml(it.sku)}" oninput="updateSku(${i},this)"><span class="cell-print">${escapeHtml(it.sku)}</span></td>
+      <td class="center${it.skuAuto !== false && it.sku ? ' sku-auto' : ''}"><input class="cell-in" type="text" inputmode="numeric" maxlength="${SKU_MAX_LEN}" placeholder="รหัสสินค้า (ตัวเลข)" value="${escapeHtml(it.sku)}" oninput="updateSku(${i},this)"><span class="cell-print">${escapeHtml(it.sku)}</span></td>
       <td><input class="cell-in" type="text" placeholder="ระบุชื่อสินค้า/อะไหล่" value="${escapeHtml(it.name)}" oninput="updateItem(${i},'name',this.value)"><span class="cell-print">${escapeHtml(it.name)}</span></td>
       <td class="center"><input class="qty cell-in" type="number" min="0" step="1" value="${it.qty}" oninput="updateItem(${i},'qty',this.value)"><span class="cell-print">${escapeHtml(String(it.qty ?? ''))}</span></td>
       <td class="center"><input class="unit cell-in" type="text" value="${escapeHtml(it.unit)}" oninput="updateItem(${i},'unit',this.value)"><span class="cell-print">${escapeHtml(it.unit)}</span></td>
@@ -974,14 +1039,39 @@ function renderItems(){
 
 function updateItem(i,field,val){
   items[i][field] = val;
+  if(field === 'name') autoFillSku(i);
   renderRowValuesOnly(i);
   recalc();
   save();
+}
+
+// Fill the SKU from the catalogue while the row's SKU is still automatic.
+// A hand-typed SKU clears skuAuto, and is then never overwritten.
+function autoFillSku(i){
+  const it = items[i];
+  if(it.skuAuto === false) return;
+  const found = lookupSku(it.name);
+  if(found === it.sku) return;
+  it.sku = found;
+  it.skuAuto = true;
+  const cell = document.getElementById('itemsBody').children[i];
+  if(cell){
+    const inp = cell.querySelector('td:nth-child(2) input');
+    const txt = cell.querySelector('td:nth-child(2) .cell-print');
+    if(inp) inp.value = found;
+    if(txt) txt.textContent = found;
+    cell.querySelector('td:nth-child(2)').classList.toggle('sku-auto', !!found);
+  }
 }
 function updateSku(i,el){
   const clean = digitsOnly(el.value);
   el.value = clean;
   items[i].sku = clean;
+  items[i].skuAuto = false;          // typed by hand from here on
+  const td = el.closest('td');
+  if(td) td.classList.remove('sku-auto');
+  const txt = td && td.querySelector('.cell-print');
+  if(txt) txt.textContent = clean;
   save();
 }
 function renderRowValuesOnly(i){
@@ -1102,7 +1192,8 @@ function parseLineToItem(line){
 
   text = text.replace(/[()]/g,'').replace(/(ค่ะ|คะ|ครับ|นะคะ|นะครับ)\s*$/,'').replace(/\s+/g,' ').trim();
   if(!text && cost===null) return null;
-  return { sku:'', name: text || line.trim(), qty: qty||1, unit, cost: cost!==null ? cost : '' };
+  const nm = text || line.trim();
+  return { sku: lookupSku(nm), name: nm, qty: qty||1, unit, cost: cost!==null ? cost : '', skuAuto:true };
 }
 
 function parsePasteText(){
