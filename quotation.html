@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ระบบใบเสนอราคาอะไหล่รถยนต์</title>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Mitr:wght@300;400;500;600;700&family=Itim&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Mitr:wght@300;400;500;600;700&family=Itim&family=Srisakdi:wght@400;700&family=Chonburi&family=Charmonman:wght@400;700&family=Trirong:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --navy0:#0b1a2e; --navy1:#0f2a4a; --navy2:#12345f;
@@ -478,6 +478,11 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
   .cell-in{display:none!important}
   .cell-print{display:block!important;white-space:normal;word-break:break-word;line-height:1.35}
   table.items td.num .cell-print{text-align:right}
+  table.items td.center .cell-print{text-align:center}
+  /* an empty SKU / description still prints as a line to write on */
+  table.items td:nth-child(2) input.cell-in:placeholder-shown,
+  table.items td:nth-child(3) input.cell-in:placeholder-shown{
+    display:block!important;border-bottom:1px dashed #999!important}
   .pmirror{display:block;white-space:pre-wrap;word-break:break-word;
     font-size:12.5px;line-height:1.45;color:var(--ink);padding:2px 5px;min-height:1em}
   .pmirror:empty{min-height:14px}
@@ -529,7 +534,25 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
 
   /* item table */
   .table-scroll{overflow:visible!important}
-  table.items{font-size:12px;min-width:0!important}
+  table.items{font-size:10.5px;min-width:0!important;table-layout:fixed}
+  /* Give the description every spare millimetre so an ordinary part name
+     stays on one line; only a genuinely long one wraps. */
+  table.items th:nth-child(1){width:20px!important}
+  table.items th:nth-child(2){width:66px!important}
+  table.items th:nth-child(3){width:auto!important}
+  table.items th:nth-child(4){width:38px!important}
+  table.items th:nth-child(5){width:40px!important}
+  table.items th:nth-child(7){width:62px!important}
+  table.items th:nth-child(8){width:70px!important}
+  table.items th:nth-child(9){width:62px!important}
+  table.items th:nth-child(10){width:76px!important}
+  /* figures must never wrap or clip */
+  table.items td.num,table.items td.center,
+  table.items td.num .cell-print{white-space:nowrap}
+  table.items .row-gross,table.items .row-total,table.items .sell-price{white-space:nowrap}
+  table.items th{font-size:8.5px;padding:4px 2px;letter-spacing:0}
+  table.items td{padding:0 2px}
+  table.items input{font-size:10.5px}
   table.items th{padding:4px 5px;font-size:9.5px}
   table.items td{padding:0 5px;border-bottom:1px solid #e6ecf5}
   table.items input{padding:1px 4px;font-size:12px}
@@ -615,6 +638,10 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
         <option value="Prompt">ฟอนต์: Prompt</option>
         <option value="Mitr">ฟอนต์: Mitr</option>
         <option value="Itim">ฟอนต์: Itim (ลายมือ)</option>
+        <option value="Srisakdi">ฟอนต์: Srisakdi (ลายไทยโบราณ)</option>
+        <option value="Chonburi">ฟอนต์: Chonburi (ลายไทยหนา)</option>
+        <option value="Charmonman">ฟอนต์: Charmonman (ลายไทยหวัด)</option>
+        <option value="Trirong">ฟอนต์: Trirong (ไทยทางการ)</option>
       </select>
       <button class="btn btn-ghost" onclick="resetForm()">🗑️ ล้างฟอร์ม</button>
       <button class="btn btn-print" onclick="syncPrintMirrors();window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
@@ -927,10 +954,10 @@ function renderItems(){
     return `
     <tr>
       <td class="center">${i+1}</td>
-      <td class="center"><input type="text" inputmode="numeric" maxlength="${SKU_MAX_LEN}" placeholder="รหัสสินค้า (ตัวเลข)" value="${escapeHtml(it.sku)}" oninput="updateSku(${i},this)"></td>
+      <td class="center"><input class="cell-in" type="text" inputmode="numeric" maxlength="${SKU_MAX_LEN}" placeholder="รหัสสินค้า (ตัวเลข)" value="${escapeHtml(it.sku)}" oninput="updateSku(${i},this)"><span class="cell-print">${escapeHtml(it.sku)}</span></td>
       <td><input class="cell-in" type="text" placeholder="ระบุชื่อสินค้า/อะไหล่" value="${escapeHtml(it.name)}" oninput="updateItem(${i},'name',this.value)"><span class="cell-print">${escapeHtml(it.name)}</span></td>
-      <td class="center"><input class="qty" type="number" min="0" step="1" value="${it.qty}" oninput="updateItem(${i},'qty',this.value)"></td>
-      <td class="center"><input class="unit" type="text" value="${escapeHtml(it.unit)}" oninput="updateItem(${i},'unit',this.value)"></td>
+      <td class="center"><input class="qty cell-in" type="number" min="0" step="1" value="${it.qty}" oninput="updateItem(${i},'qty',this.value)"><span class="cell-print">${escapeHtml(String(it.qty ?? ''))}</span></td>
+      <td class="center"><input class="unit cell-in" type="text" value="${escapeHtml(it.unit)}" oninput="updateItem(${i},'unit',this.value)"><span class="cell-print">${escapeHtml(it.unit)}</span></td>
       ${costCell}
       ${sellCell}
       <td class="num row-gross">${priced ? fmt(lineGross(it)) : ''}</td>
