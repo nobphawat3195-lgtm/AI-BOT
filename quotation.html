@@ -453,6 +453,158 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
   .site-foot{justify-content:center;text-align:center}
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   MOTION LAYER — React Bits effects rebuilt in plain CSS/JS.
+   Screen only; the print block below resets every one of these so
+   the A4 sheet is unchanged.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Aurora: a slow drifting colour field behind everything ───── */
+.aurora{
+  position:fixed;inset:-18% -10% auto -10%;height:88vh;z-index:0;
+  pointer-events:none;filter:blur(66px);opacity:.72;
+}
+.aurora i{
+  position:absolute;display:block;border-radius:50%;mix-blend-mode:screen;
+}
+.aurora i:nth-child(1){
+  width:52vw;height:52vw;left:2%;top:-14%;
+  background:radial-gradient(circle,rgba(30,111,255,.62),transparent 66%);
+  animation:auroraA 19s ease-in-out infinite;
+}
+.aurora i:nth-child(2){
+  width:44vw;height:44vw;right:4%;top:-20%;
+  background:radial-gradient(circle,rgba(72,216,255,.50),transparent 66%);
+  animation:auroraB 23s ease-in-out infinite;
+}
+.aurora i:nth-child(3){
+  width:38vw;height:38vw;left:38%;top:6%;
+  background:radial-gradient(circle,rgba(255,138,30,.24),transparent 68%);
+  animation:auroraC 27s ease-in-out infinite;
+}
+@keyframes auroraA{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(9vw,5vh,0) scale(1.16)}
+}
+@keyframes auroraB{
+  0%,100%{transform:translate3d(0,0,0) scale(1.08)}
+  50%{transform:translate3d(-11vw,7vh,0) scale(.92)}
+}
+@keyframes auroraC{
+  0%,100%{transform:translate3d(0,0,0) scale(.95)}
+  50%{transform:translate3d(-6vw,-4vh,0) scale(1.2)}
+}
+
+/* ── Squares: the grid now drifts instead of sitting still ────── */
+body::before{ animation:gridDrift 32s linear infinite; }
+@keyframes gridDrift{ to{ background-position:56px 56px, 56px 56px } }
+
+/* ── SplitText: hero headline rises in, word by word ──────────── */
+.split-w{
+  display:inline-block;opacity:0;
+  transform:translateY(22px) rotateX(-42deg);
+  transform-origin:50% 100%;
+  animation:splitIn .62s cubic-bezier(.22,1,.36,1) forwards;
+  animation-delay:var(--d,0s);
+}
+@keyframes splitIn{
+  to{opacity:1;transform:translateY(0) rotateX(0)}
+}
+
+/* ── ShinyText: a highlight sweeps across the gradient words ──── */
+.hero h1 .accent{ color:var(--blue2) }          /* visible while it animates in */
+.hero h1 .accent.shine-ready{
+  background:linear-gradient(100deg,var(--blue2) 0%,var(--cyan) 34%,#ffffff 48%,var(--cyan) 62%,var(--blue2) 100%);
+  background-size:280% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shinySweep 5.5s ease-in-out infinite;
+}
+@keyframes shinySweep{
+  0%,100%{background-position:180% 50%}
+  50%{background-position:-40% 50%}
+}
+
+/* ── SpotlightCard: a soft light tracks the cursor over panels ── */
+.spot{position:relative}
+.spot::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  pointer-events:none;z-index:0;opacity:0;transition:opacity .35s ease;
+  background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),
+             rgba(96,178,255,.20), transparent 64%);
+}
+.spot.lit::before{opacity:1}
+.spot>*{position:relative;z-index:1}
+
+/* ── StarBorder: a light travels around the primary action ────── */
+.btn-print{position:relative;overflow:hidden;isolation:isolate}
+.btn-print::before{
+  content:'';position:absolute;inset:-140%;z-index:-1;
+  background:conic-gradient(from 0deg,transparent 0turn,rgba(120,200,255,.95) .06turn,transparent .16turn);
+  animation:borderRun 3.6s linear infinite;
+}
+.btn-print::after{
+  content:'';position:absolute;inset:1px;border-radius:inherit;z-index:-1;
+  background:linear-gradient(135deg,var(--navy2),var(--blue));
+}
+@keyframes borderRun{ to{transform:rotate(1turn)} }
+
+/* ── GlareHover: a sheen wipes across a button on hover ───────── */
+.btn{position:relative;overflow:hidden}
+.btn>span.glare{
+  position:absolute;top:0;left:-60%;width:45%;height:100%;pointer-events:none;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.42),transparent);
+  transform:skewX(-18deg);transition:left .55s ease;
+}
+.btn:hover>span.glare{left:120%}
+
+/* ── Magnet: buttons lean toward the cursor ───────────────────── */
+.magnet{transition:transform .28s cubic-bezier(.22,1,.36,1)}
+
+/* ── ClickSpark: sparks fly off a pressed button (welding vibe) ─ */
+.spark{
+  position:fixed;width:3px;height:3px;border-radius:2px;z-index:9999;
+  pointer-events:none;background:var(--gold);
+  box-shadow:0 0 7px rgba(255,200,97,.95);
+}
+
+/* ── AnimatedContent: sections rise as they scroll into view ──── */
+.reveal{opacity:0;transform:translateY(26px)}
+.reveal.seen{
+  opacity:1;transform:none;
+  transition:opacity .66s ease, transform .66s cubic-bezier(.22,1,.36,1);
+}
+
+/* ── CountUp: the number pulses as it settles ─────────────────── */
+.counting{ animation:countPulse .42s ease-out }
+@keyframes countPulse{
+  0%{transform:scale(1)} 40%{transform:scale(1.06)} 100%{transform:scale(1)}
+}
+.grand .gv{display:inline-block;font-variant-numeric:tabular-nums}
+.trow .tv,.tv{font-variant-numeric:tabular-nums}
+
+/* ── Sliding indicator under the active nav tab ───────────────── */
+.sb-tabs{position:relative}
+.sb-tab{position:relative;transition:color .25s ease}
+.sb-tab:hover{color:#cfe2ff}
+
+/* ── Lift on hover for the cards that are not the sheet ───────── */
+.hero-card,.totals,.hero-badge{
+  transition:transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease;
+}
+.hero-card:hover,.totals:hover{transform:translateY(-3px)}
+.hero-badge:hover{transform:translateY(-2px);border-color:rgba(120,185,255,.45)}
+
+/* ── Respect the reader who asked for less motion ─────────────── */
+@media (prefers-reduced-motion:reduce){
+  .aurora i,body::before,.hero h1 .accent.shine-ready,.btn-print::before{animation:none}
+  .split-w{opacity:1;transform:none;animation:none}
+  .reveal{opacity:1;transform:none}
+  .counting{animation:none}
+  .magnet{transition:none}
+  .hero-card:hover,.totals:hover,.hero-badge:hover{transform:none}
+}
+
 /* print mirrors: <input>/<textarea> clip long values, so on paper we print
    a wrapping text copy of the fields that can legitimately run long. */
 .pmirror,.cell-print{display:none}
@@ -470,6 +622,16 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
   }
   body{background:#fff!important}
   body::before{display:none!important}
+
+  /* the motion layer is screen decoration; nothing of it reaches paper */
+  .aurora,.spark{display:none!important}
+  .spot::before{display:none!important}
+  .btn-print::before,.btn-print::after{display:none!important}
+  .split-w{opacity:1!important;transform:none!important;animation:none!important}
+  .reveal{opacity:1!important;transform:none!important}
+  .magnet{transform:none!important}
+  .counting{animation:none!important}
+  .hero h1 .accent.shine-ready{animation:none!important}
   .site-bar,.hero,.site-foot{display:none!important}
   .no-print{display:none!important}
   .doc{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#fff!important}
@@ -775,7 +937,7 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
         <label class="paste-label">📥 วางข้อความราคาที่ได้มา (เช่น "โช๊คอัพหน้า อันละ 1480 TOKICO") แล้วกดปุ่มเพื่อแปลงเป็นรายการอัตโนมัติ</label>
         <div class="paste-row">
           <textarea id="pasteBox" rows="3" placeholder="วางข้อความที่นี่ บรรทัดละ 1 รายการ"></textarea>
-          <button class="btn btn-ghost" onclick="parsePasteText()">➕ แปลงเป็นรายการ</button>
+          <button class="btn btn-ghost btn-parse" onclick="parsePasteText()">➕ แปลงเป็นรายการ</button>
         </div>
       </div>
 
@@ -1373,11 +1535,11 @@ function recalc(){
   const vatOn = document.getElementById('vatToggle').checked;
   const vat = vatOn ? afterDiscount*0.07 : 0;
   const grand = afterDiscount + vat;
-  document.getElementById('tSubtotal').textContent = fmt(subtotal);
-  document.getElementById('tLineDiscount').textContent = fmt(lineDisc);
-  document.getElementById('tAfterDiscount').textContent = fmt(afterDiscount);
-  document.getElementById('tVat').textContent = fmt(vat);
-  document.getElementById('tGrand').textContent = fmt(grand);
+  countTo(document.getElementById('tSubtotal'), fmt(subtotal));
+  countTo(document.getElementById('tLineDiscount'), fmt(lineDisc));
+  countTo(document.getElementById('tAfterDiscount'), fmt(afterDiscount));
+  countTo(document.getElementById('tVat'), fmt(vat));
+  countTo(document.getElementById('tGrand'), fmt(grand));
   document.getElementById('tBahttext').textContent = '(' + bahtText(grand) + ')';
   save();
 }
@@ -1615,6 +1777,204 @@ function resetForm(){
     document.getElementById(id).addEventListener('input', ()=>{ syncBrandChrome(); save(); });
   });
 });
+
+/* ═══════════════════════════════════════════════════════════════
+   MOTION LAYER — the behaviour behind the effects above.
+   Everything here is screen decoration: it never changes a value,
+   never blocks typing, and switches itself off when the reader has
+   asked for reduced motion or is on a touch screen.
+   ═══════════════════════════════════════════════════════════════ */
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const HOVERS  = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+/* Aurora — the drifting colour field, injected so the markup stays clean. */
+function mountAurora(){
+  if(REDUCED) return;
+  const a = document.createElement('div');
+  a.className = 'aurora';
+  a.setAttribute('aria-hidden','true');
+  a.innerHTML = '<i></i><i></i><i></i>';
+  document.body.prepend(a);
+}
+
+/* SplitText — break the headline into words that rise in one by one. */
+function splitHeadline(){
+  const REDUCED_SPLIT = REDUCED;
+  const h = document.querySelector('.hero h1');
+  if(!h) return;
+  const shine = () => h.querySelector('.accent')?.classList.add('shine-ready');
+  if(REDUCED_SPLIT){ shine(); return; }
+  // Thai writes without spaces, so splitting on whitespace would yield one
+  // long blob. Intl.Segmenter knows Thai word boundaries and keeps vowels
+  // and tone marks attached to their base consonant.
+  const seg = (typeof Intl !== 'undefined' && Intl.Segmenter)
+    ? new Intl.Segmenter('th', { granularity: 'word' })
+    : null;
+  const pieces = text => seg
+    ? [...seg.segment(text)].map(s => s.segment)
+    : text.split(/(\s+)/).filter(Boolean);
+
+  let i = 0;
+  const wrapWords = node => {
+    [...node.childNodes].forEach(n => {
+      if(n.nodeType === 3){
+        const frag = document.createDocumentFragment();
+        pieces(n.textContent).forEach(part => {
+          if(!part) return;
+          if(/^\s+$/.test(part)){ frag.appendChild(document.createTextNode(part)); return; }
+          const s = document.createElement('span');
+          s.className = 'split-w';
+          s.style.setProperty('--d', (i++ * 0.035).toFixed(3) + 's');
+          s.textContent = part;
+          frag.appendChild(s);
+        });
+        n.replaceWith(frag);
+      } else if(n.nodeType === 1 && n.tagName !== 'BR'){
+        wrapWords(n);
+      }
+    });
+  };
+  wrapWords(h);
+
+  // A transformed child breaks the parent's background-clip:text, which is what
+  // paints the gradient headline — so once the words have landed, unwrap them
+  // and hand the plain text back to the shine.
+  const settle = (i * 0.035 + 0.72) * 1000;
+  setTimeout(() => {
+    h.querySelectorAll('.split-w').forEach(s => s.replaceWith(document.createTextNode(s.textContent)));
+    h.normalize();
+    shine();
+  }, settle);
+}
+
+/* SpotlightCard — panels light up under the cursor. */
+function mountSpotlight(){
+  if(!HOVERS || REDUCED) return;
+  document.querySelectorAll('.site-bar,.hero,.hero-card,.toolbar,.totals,.paste-box,.sku-bar,.site-foot')
+    .forEach(el => {
+      el.classList.add('spot');
+      let queued = false, x = 0, y = 0;
+      el.addEventListener('pointermove', e => {
+        const r = el.getBoundingClientRect();
+        x = e.clientX - r.left; y = e.clientY - r.top;
+        if(queued) return;
+        queued = true;
+        requestAnimationFrame(() => {
+          el.style.setProperty('--mx', x + 'px');
+          el.style.setProperty('--my', y + 'px');
+          queued = false;
+        });
+      });
+      el.addEventListener('pointerenter', () => el.classList.add('lit'));
+      el.addEventListener('pointerleave', () => el.classList.remove('lit'));
+    });
+}
+
+/* GlareHover + Magnet — a sheen across every button, and a gentle pull
+   toward the cursor on the two that matter most. */
+function mountButtons(){
+  document.querySelectorAll('.btn').forEach(b => {
+    if(!b.querySelector('span.glare')){
+      const g = document.createElement('span');
+      g.className = 'glare';
+      g.setAttribute('aria-hidden','true');
+      b.appendChild(g);
+    }
+  });
+  if(!HOVERS || REDUCED) return;
+  document.querySelectorAll('.btn-print, .btn-parse').forEach(b => {
+    b.classList.add('magnet');
+    b.addEventListener('pointermove', e => {
+      const r = b.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+      const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+      b.style.transform = `translate(${(dx * 7).toFixed(1)}px, ${(dy * 5).toFixed(1)}px)`;
+    });
+    b.addEventListener('pointerleave', () => { b.style.transform = ''; });
+  });
+}
+
+/* ClickSpark — sparks off a pressed button, like a grinder at the bench. */
+function mountSparks(){
+  if(REDUCED) return;
+  document.addEventListener('pointerdown', e => {
+    const btn = e.target.closest('.btn, .upload-btn, .logo-edit');
+    if(!btn) return;
+    const n = 10;
+    for(let i = 0; i < n; i++){
+      const s = document.createElement('span');
+      s.className = 'spark';
+      s.style.left = e.clientX + 'px';
+      s.style.top  = e.clientY + 'px';
+      document.body.appendChild(s);
+      const ang = (Math.PI * 2 * i) / n + Math.random() * 0.5;
+      const dist = 26 + Math.random() * 30;
+      const dur = 460 + Math.random() * 240;
+      s.animate([
+        { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 },
+        { transform: `translate(${Math.cos(ang)*dist - 50}%, ${Math.sin(ang)*dist + 40}%) scale(0)`, opacity: 0 }
+      ], { duration: dur, easing: 'cubic-bezier(.2,.7,.3,1)' });
+      setTimeout(() => s.remove(), dur + 60);   // never leave one behind
+    }
+  });
+}
+
+/* AnimatedContent — sections rise as they scroll into view. */
+function mountReveal(){
+  if(REDUCED || !('IntersectionObserver' in window)) return;
+  const targets = document.querySelectorAll('.toolbar, .doc, .site-foot');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if(en.isIntersecting){ en.target.classList.add('seen'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.06 });
+  targets.forEach((el, i) => {
+    el.classList.add('reveal');
+    el.style.transitionDelay = (i * 0.07).toFixed(2) + 's';
+    io.observe(el);
+  });
+}
+
+/* CountUp — totals roll to their new value instead of snapping.
+   Reads and writes only the display text; the underlying numbers are
+   untouched, so a total mid-animation is never what gets printed. */
+const countTimers = new WeakMap();
+function countTo(el, text){
+  const target = parseFloat(String(text).replace(/,/g, ''));
+  const from   = parseFloat(String(el.textContent || '').replace(/,/g, ''));
+  const prev   = countTimers.get(el);
+  if(prev) cancelAnimationFrame(prev);
+  if(REDUCED || isNaN(target) || isNaN(from) || from === target){
+    el.textContent = text;
+    return;
+  }
+  const dur = 420, t0 = performance.now();
+  el.classList.add('counting');
+  const step = now => {
+    const p = Math.min(1, (now - t0) / dur);
+    const e = 1 - Math.pow(1 - p, 3);            // ease-out cubic
+    const v = from + (target - from) * e;
+    el.textContent = v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    if(p < 1){
+      countTimers.set(el, requestAnimationFrame(step));
+    } else {
+      el.textContent = text;                      // land exactly on the real value
+      countTimers.delete(el);
+      el.classList.remove('counting');
+    }
+  };
+  countTimers.set(el, requestAnimationFrame(step));
+}
+
+function mountMotion(){
+  mountAurora();
+  splitHeadline();
+  mountSpotlight();
+  mountButtons();
+  mountSparks();
+  mountReveal();
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   ['shopLegalName','shopAddress','shopBranchCode','shopPhone','shopTaxId','custName','custPhone','custCar','appraiserName','approverName','docNo','docDate','docValid','notes'].forEach(id=>{
     document.getElementById(id).addEventListener('input', save);
@@ -1623,6 +1983,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(e.key==='Enter'){ e.preventDefault(); applyRowCount(); }
   });
   load();
+  mountMotion();
 });
 </script>
 
