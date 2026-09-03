@@ -1888,7 +1888,10 @@ const UNIT_BY_KEYWORD = {'อันละ':'อัน','ตัวละ':'ตั
 function parseLineToItem(line){
   let text = line;
   let qty = 1;
-  const qtyMatch = text.match(/(?:ใช้|จำนวน)\s*(\d+)\s*(?:ตัว|ชิ้น|อัน|ชุด|คู่)?/);
+  // The unit word here must not swallow the start of a price keyword:
+  // in "ใช้ 2 ตัวละ 450" the "ตัว" belongs to "ตัวละ", and eating it left a
+  // stray "ละ" in the part name and lost the unit.
+  const qtyMatch = text.match(/(?:ใช้|จำนวน)\s*(\d+)\s*(?:(?:ตัว|ชิ้น|อัน|ชุด|คู่)(?!ละ))?/);
   if(qtyMatch){ qty = parseInt(qtyMatch[1],10); text = text.replace(qtyMatch[0],''); }
 
   let cost = null, unit = 'อัน', perPair = false;
