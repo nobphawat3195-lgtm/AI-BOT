@@ -957,6 +957,91 @@ table.items input:focus{
   .cine-moon{width:64px;height:64px;right:9%;top:7%}
   .cine-lede{font-size:13px;line-height:1.95}
 }
+
+/* ── continuous ambient motion, no cursor required ──────────────
+   The reference clip's scene never sits still: a nebula breathes
+   behind the moon, thin cloud wisps drift past, and the whole frame
+   creeps in a slow Ken-Burns push. This is that, built to be cheap
+   (transform/opacity only) and to fully stop under reduced motion. */
+
+.cine-scene{ animation:sceneDrift 70s ease-in-out infinite alternate; transform-origin:52% 62% }
+@keyframes sceneDrift{
+  0%{transform:scale(1) translate3d(0,0,0)}
+  100%{transform:scale(1.045) translate3d(-1.1%,-0.6%,0)}
+}
+
+/* nebula: soft colour drifting behind and around the moon, like the
+   reference's swirling light — blurred blobs, not a texture image */
+.cine-nebula{
+  position:absolute;right:2%;top:-6%;width:52%;height:56%;
+  pointer-events:none;filter:blur(30px);mix-blend-mode:screen;
+}
+.cine-nebula i{position:absolute;display:block;border-radius:50%;opacity:.55}
+.cine-nebula i:nth-child(1){
+  width:70%;height:70%;right:6%;top:8%;
+  background:radial-gradient(circle,rgba(150,190,255,.40),transparent 68%);
+  animation:nebA 22s ease-in-out infinite;
+}
+.cine-nebula i:nth-child(2){
+  width:56%;height:56%;right:32%;top:26%;
+  background:radial-gradient(circle,rgba(255,205,150,.30),transparent 66%);
+  animation:nebB 27s ease-in-out infinite;
+}
+.cine-nebula i:nth-child(3){
+  width:44%;height:44%;right:12%;top:38%;
+  background:radial-gradient(circle,rgba(190,160,255,.26),transparent 66%);
+  animation:nebC 33s ease-in-out infinite;
+}
+@keyframes nebA{
+  0%,100%{transform:translate(0,0) scale(1)}
+  50%{transform:translate(-6%,4%) scale(1.14)}
+}
+@keyframes nebB{
+  0%,100%{transform:translate(0,0) scale(1.06)}
+  50%{transform:translate(5%,-5%) scale(.92)}
+}
+@keyframes nebC{
+  0%,100%{transform:translate(0,0) scale(.96)}
+  50%{transform:translate(-4%,-6%) scale(1.1)}
+}
+
+/* thin cloud wisps drifting slowly across the upper scene */
+.cine-clouds{position:absolute;inset:0 0 46% 0;overflow:hidden;pointer-events:none}
+.cine-clouds i{
+  position:absolute;display:block;border-radius:50%;
+  background:radial-gradient(ellipse at center, rgba(210,225,245,.16), transparent 70%);
+  filter:blur(6px);
+}
+.cine-clouds i:nth-child(1){width:46%;height:20%;top:14%;left:-30%;animation:driftA 46s linear infinite}
+.cine-clouds i:nth-child(2){width:60%;height:24%;top:32%;left:-46%;animation:driftB 64s linear infinite;animation-delay:-18s}
+.cine-clouds i:nth-child(3){width:38%;height:16%;top:4%;left:-24%;animation:driftA 38s linear infinite;animation-delay:-9s}
+@keyframes driftA{ to{ transform:translateX(220%) } }
+@keyframes driftB{ to{ transform:translateX(190%) } }
+
+/* the moon itself breathes very gently, so it never reads as a cut-out */
+.cine-moon{ animation:moonBreathe 9s ease-in-out infinite }
+@keyframes moonBreathe{
+  0%,100%{ filter:brightness(1) }
+  50%{ filter:brightness(1.08) }
+}
+
+/* shooting stars: rare, quick, diagonal — injected by JS at random
+   intervals so they never repeat on a fixed beat */
+.shooter{
+  position:absolute;height:1.5px;width:90px;border-radius:2px;
+  background:linear-gradient(90deg,rgba(255,255,255,.95),rgba(255,255,255,0));
+  transform-origin:0 0;pointer-events:none;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .cine-scene{animation:none}
+  .cine-nebula i,.cine-clouds i,.cine-moon{animation:none}
+}
+@media (max-width:640px){
+  .cine-nebula{width:74%;height:40%;top:-8%}
+  .cine-clouds i:nth-child(2){display:none}   /* keep the small screen calm */
+}
+
 @media (max-width:640px){
   .hero.cine{border-radius:16px;min-height:470px}
   .cine-copy{min-height:470px;padding:24px 18px}
@@ -1018,6 +1103,7 @@ table.items input:focus{
   .hero h1 .accent.shine-ready{animation:none!important}
   .site-bar,.hero,.hero.cine,.site-foot{display:none!important}
   .cine-scene,.cine-copy{display:none!important}
+  .cine-nebula,.cine-clouds,.cine-shooters{display:none!important}
   .no-print{display:none!important}
   .doc{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#fff!important}
   .party-card{background:none!important}
@@ -1168,8 +1254,11 @@ table.items input:focus{
          nothing to license, and it stays sharp at any size -->
     <div class="cine-scene" aria-hidden="true">
       <div class="cine-sky"></div>
+      <div class="cine-nebula" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="cine-moon"></div>
+      <div class="cine-clouds" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="cine-stars" id="cineStars"></div>
+      <div class="cine-shooters" id="cineShooters" aria-hidden="true"></div>
       <svg class="cine-ridges" viewBox="0 0 1440 560" preserveAspectRatio="xMidYMax slice">
         <defs>
           <linearGradient id="r1" x1="0" y1="0" x2="0" y2="1">
@@ -2421,6 +2510,35 @@ function countTo(el, text){
 
 /* Fill the sky and the valley floor. Doing this here rather than in the
    markup keeps a few hundred elements out of the source file. */
+/* A shooting star every so often — randomised so it never falls into a
+   visible rhythm. Off entirely under reduced motion. */
+function mountShooters(){
+  if(REDUCED) return;
+  const box = document.getElementById('cineShooters');
+  if(!box) return;
+  const fire = () => {
+    const s = document.createElement('span');
+    s.className = 'shooter';
+    const x = 8 + Math.random() * 70, y = 6 + Math.random() * 34;
+    const ang = 24 + Math.random() * 10;
+    s.style.left = x + '%'; s.style.top = y + '%';
+    s.style.transform = `rotate(${ang}deg)`;
+    box.appendChild(s);
+    const dist = 160 + Math.random() * 90;
+    s.animate([
+      { transform: `rotate(${ang}deg) translateX(0)`, opacity: 0 },
+      { transform: `rotate(${ang}deg) translateX(${dist * 0.18}px)`, opacity: 1, offset: 0.12 },
+      { transform: `rotate(${ang}deg) translateX(${dist}px)`, opacity: 0 }
+    ], { duration: 900 + Math.random() * 400, easing: 'cubic-bezier(.2,.6,.3,1)' });
+    setTimeout(() => s.remove(), 1400);
+  };
+  const loop = () => {
+    fire();
+    setTimeout(loop, 5000 + Math.random() * 7000);
+  };
+  setTimeout(loop, 2200 + Math.random() * 2000);
+}
+
 function mountScene(){
   const sky = document.getElementById('cineStars');
   if(sky){
@@ -2481,6 +2599,7 @@ function mountParallax(){
 
 function mountMotion(){
   mountScene();
+  mountShooters();
   mountParallax();
   mountTopline();
   mountAurora();
