@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ระบบใบเสนอราคาอะไหล่รถยนต์</title>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Mitr:wght@300;400;500;600;700&family=Itim&family=Srisakdi:wght@400;700&family=Chonburi&family=Charmonman:wght@400;700&family=Trirong:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Mitr:wght@300;400;500;600;700&family=Itim&family=Srisakdi:wght@400;700&family=Chonburi&family=Charmonman:wght@400;700&family=Trirong:wght@300;400;500;600;700&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --navy0:#0b1a2e; --navy1:#0f2a4a; --navy2:#12345f;
@@ -605,6 +605,218 @@ body::before{ animation:gridDrift 32s linear infinite; }
   .hero-card:hover,.totals:hover,.hero-badge:hover{transform:none}
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   FINISH LAYER — the materials pass.
+   Nothing here changes a control, a value or the print sheet; it is
+   the glass, the hairlines, the grain and the type detailing that
+   separate a working tool from something that looks expensive.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  /* a display face for chrome only — the user's font picker still owns
+     --font, which is what the document itself is set in */
+  --font-display:'Chakra Petch','Kanit',sans-serif;
+
+  --obsidian:#04070d;
+  --glass:rgba(13,21,36,.72);
+  --glass-2:rgba(17,27,46,.62);
+  --platinum:#c9d6e8;
+  --champagne:#e8c98a;
+
+  /* one shadow recipe used everywhere: a tight contact shadow, a wide
+     ambient one, and a hairline of light along the top edge */
+  --lift:
+    0 1px 2px rgba(0,0,0,.44),
+    0 12px 28px -12px rgba(0,0,0,.62),
+    0 40px 80px -50px rgba(0,0,0,.9),
+    inset 0 1px 0 rgba(255,255,255,.055);
+}
+
+body{ background-color:var(--obsidian) }
+
+/* ── Film grain. The one detail that reads as "printed", not rendered ── */
+body::after{
+  content:'';position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23n)' opacity='.55'/></svg>");
+}
+
+/* ── Vignette, so the eye falls to the middle of the page ─────────── */
+.wrap::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(120% 78% at 50% 32%, transparent 42%, rgba(0,0,0,.5) 100%);
+}
+
+/* ── A lit hairline along the very top of the page ────────────────── */
+.topline{
+  position:fixed;top:0;left:0;right:0;height:2px;z-index:60;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(30,111,255,.85) 18%,rgba(72,216,255,.95) 38%,var(--champagne) 58%,rgba(30,111,255,.8) 82%,transparent);
+  background-size:220% 100%;
+  animation:toplineSlide 14s linear infinite;
+  opacity:.9;
+}
+@keyframes toplineSlide{ to{background-position:220% 0} }
+
+/* ── Gradient hairline borders. A flat rgba border is the giveaway of
+      a quick build; a border that catches light along one edge is not ── */
+.site-bar,.hero,.hero-card,.toolbar,.doc,.totals,.site-foot,.paste-box,.sku-bar{
+  border:1px solid transparent!important;
+  background-origin:border-box;
+  background-clip:padding-box,border-box;
+  box-shadow:var(--lift)!important;
+}
+.site-bar{
+  background-image:
+    linear-gradient(125deg,var(--glass),var(--glass-2)),
+    linear-gradient(120deg,rgba(150,200,255,.42),rgba(150,200,255,.05) 42%,rgba(232,201,138,.24));
+}
+.hero{
+  background-image:
+    linear-gradient(118deg,#060d1a 0%,#0b1a31 44%,#0f2748 100%),
+    linear-gradient(120deg,rgba(160,210,255,.46),rgba(120,170,255,.06) 46%,rgba(232,201,138,.30));
+}
+.hero-card{
+  background-image:
+    linear-gradient(158deg,rgba(20,40,76,.9),rgba(9,17,34,.94)),
+    linear-gradient(150deg,rgba(232,201,138,.52),rgba(140,190,255,.16) 48%,rgba(120,175,255,.34));
+}
+.toolbar,.paste-box,.sku-bar{
+  background-image:
+    linear-gradient(122deg,var(--glass),var(--glass-2)),
+    linear-gradient(120deg,rgba(150,200,255,.34),rgba(150,200,255,.04) 50%,rgba(150,200,255,.20));
+}
+.doc{
+  background-image:
+    linear-gradient(150deg,rgba(12,20,36,.94),rgba(8,14,26,.96)),
+    linear-gradient(140deg,rgba(150,200,255,.34),rgba(150,200,255,.05) 46%,rgba(232,201,138,.22));
+}
+.totals{
+  background-image:
+    linear-gradient(160deg,rgba(24,44,80,.9),rgba(9,18,35,.94)),
+    linear-gradient(150deg,rgba(232,201,138,.55),rgba(140,190,255,.14) 50%,rgba(120,175,255,.34));
+}
+.site-foot{
+  background-image:
+    linear-gradient(122deg,var(--glass),rgba(12,20,36,.6)),
+    linear-gradient(120deg,rgba(150,200,255,.28),rgba(150,200,255,.03) 55%,rgba(232,201,138,.18));
+}
+
+/* ── Micro-labels: the uppercase detailing that carries a luxury feel ── */
+.sb-sub,.hero-badge div span,.hc-sub,.doc-title small,.sf-tag,.sb-urole{
+  font-family:var(--font-display);
+  letter-spacing:.26em!important;
+  text-transform:uppercase;
+  font-weight:500;
+  font-size:8.5px!important;
+  color:#8fa6c6;
+}
+.sb-name,.sf-name{
+  font-family:var(--font-display);
+  font-weight:700;letter-spacing:.16em;
+}
+.hero-badge b{font-family:var(--font-display);letter-spacing:.02em}
+.hero-badge .hb-ico{font-size:17px!important;letter-spacing:normal!important}
+.hero h1{letter-spacing:-.008em;text-wrap:balance}
+
+/* ── The logo gets a ring of light, like a badge on a bonnet ──────── */
+.sb-logo,.brand-logo,.sf-l img{
+  box-shadow:
+    0 0 0 1px rgba(232,201,138,.42),
+    0 0 0 4px rgba(232,201,138,.09),
+    0 8px 26px rgba(0,0,0,.5)!important;
+}
+
+/* ── Buttons: weightier, with a lit top edge ──────────────────────── */
+.btn{
+  font-family:var(--font-display);
+  letter-spacing:.03em;font-weight:600;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 2px 10px rgba(0,0,0,.34);
+  transition:transform .22s cubic-bezier(.22,1,.36,1), box-shadow .22s ease, border-color .22s ease;
+}
+.btn-print{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.24),
+    0 4px 14px rgba(30,111,255,.34),
+    0 14px 40px -14px rgba(30,111,255,.7)!important;
+}
+.btn-print:hover{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.3),
+    0 6px 18px rgba(30,111,255,.44),
+    0 18px 52px -14px rgba(72,216,255,.62)!important;
+}
+.btn-ghost:hover{background:rgba(28,48,84,.86)}
+
+/* ── The grand total is the money shot; treat it like one ─────────── */
+.grand .gv{
+  font-family:var(--font-display);
+  font-weight:700;letter-spacing:.005em;
+  background:linear-gradient(102deg,var(--champagne),#fff3d4 46%,var(--gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:none;
+  filter:drop-shadow(0 0 22px rgba(232,201,138,.34));
+}
+.totals{position:relative;overflow:hidden}
+.totals::after{                       /* a slow sheen across the totals card */
+  content:'';position:absolute;top:0;left:-40%;width:34%;height:100%;
+  pointer-events:none;transform:skewX(-16deg);
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.055),transparent);
+  animation:totalsSheen 7s ease-in-out infinite;
+}
+@keyframes totalsSheen{ 0%,64%{left:-40%} 100%{left:130%} }
+
+/* ── Table: quieter rules, a lit header, a highlighted active row ─── */
+table.items th{
+  font-family:var(--font-display);
+  font-weight:600;letter-spacing:.09em;font-size:10.5px;text-transform:uppercase;
+  background:linear-gradient(180deg,rgba(30,111,255,.17),rgba(30,111,255,.07))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07);
+}
+table.items tbody tr{transition:background .18s ease}
+table.items tbody tr:hover td{background:rgba(48,120,235,.10)}
+table.items tbody tr:focus-within td{background:rgba(48,120,235,.15)}
+table.items input:focus{
+  box-shadow:0 0 0 1px rgba(72,216,255,.5), 0 0 18px rgba(30,111,255,.28)!important;
+}
+
+/* ── Inputs: recessed, so the panels read as surfaces above them ──── */
+.party-card input,.party-card textarea,.doc-fields input,#pasteBox,#skuPasteBox{
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.03);
+  transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.party-card input:focus,.party-card textarea:focus,#pasteBox:focus,#skuPasteBox:focus{
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.4), 0 0 0 1px rgba(72,216,255,.42), 0 0 22px rgba(30,111,255,.22);
+}
+
+/* ── Section headings get a lit bar rather than a flat block ──────── */
+.sec-title::before,.section-title::before{
+  background:linear-gradient(180deg,var(--champagne),var(--amber))!important;
+  box-shadow:0 0 12px rgba(232,201,138,.5);
+}
+
+/* ── Details a cheap build skips ──────────────────────────────────── */
+::selection{background:rgba(30,111,255,.42);color:#fff}
+*{scrollbar-width:thin;scrollbar-color:rgba(90,150,255,.42) transparent}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,rgba(90,150,255,.5),rgba(50,100,190,.42));
+  border-radius:8px;border:3px solid transparent;background-clip:content-box;
+}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,rgba(120,180,255,.7),rgba(70,130,220,.6));background-clip:content-box}
+:focus-visible{outline:2px solid rgba(72,216,255,.75);outline-offset:2px}
+
+/* ── Tilt: the hero card leans as the cursor crosses it ───────────── */
+.tilt{transform-style:preserve-3d;will-change:transform}
+
+@media (prefers-reduced-motion:reduce){
+  .topline,.totals::after{animation:none}
+  .tilt{transform:none!important}
+}
+@media (max-width:640px){
+  body::after{opacity:.035}
+  .topline{height:2px}
+}
+
 /* print mirrors: <input>/<textarea> clip long values, so on paper we print
    a wrapping text copy of the fields that can legitimately run long. */
 .pmirror,.cell-print{display:none}
@@ -625,6 +837,22 @@ body::before{ animation:gridDrift 32s linear infinite; }
 
   /* the motion layer is screen decoration; nothing of it reaches paper */
   .aurora,.spark{display:none!important}
+  body::after,.wrap::before,.topline{display:none!important}
+  .totals::after{display:none!important}
+  .site-bar,.hero,.hero-card,.toolbar,.doc,.totals,.site-foot,.paste-box,.sku-bar{
+    background-image:none!important;box-shadow:none!important;
+  }
+  .sb-logo,.brand-logo,.sf-l img{box-shadow:none!important}
+  .btn{box-shadow:none!important}
+  .grand .gv{
+    background:none!important;-webkit-text-fill-color:currentColor;
+    color:var(--ink)!important;filter:none!important;
+    font-family:var(--font)!important;
+  }
+  table.items th{background:var(--th-bg)!important;box-shadow:none!important;
+    font-family:var(--font)!important;text-transform:none!important;letter-spacing:normal!important;font-size:inherit!important}
+  .party-card input,.party-card textarea,.doc-fields input{box-shadow:none!important}
+  .tilt{transform:none!important}
   .spot::before{display:none!important}
   .btn-print::before,.btn-print::after{display:none!important}
   .split-w{opacity:1!important;transform:none!important;animation:none!important}
@@ -1797,6 +2025,35 @@ function mountAurora(){
   document.body.prepend(a);
 }
 
+/* A lit hairline across the top of the window. */
+function mountTopline(){
+  const l = document.createElement('div');
+  l.className = 'topline';
+  l.setAttribute('aria-hidden','true');
+  document.body.prepend(l);
+}
+
+/* Tilt — the hero card leans a few degrees toward the cursor. */
+function mountTilt(){
+  if(!HOVERS || REDUCED) return;
+  const card = document.querySelector('.hero-card');
+  if(!card) return;
+  card.classList.add('tilt');
+  let queued = false, rx = 0, ry = 0;
+  card.addEventListener('pointermove', e => {
+    const r = card.getBoundingClientRect();
+    ry = ((e.clientX - (r.left + r.width / 2)) / r.width) * 7;
+    rx = -((e.clientY - (r.top + r.height / 2)) / r.height) * 7;
+    if(queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      card.style.transform = `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateY(-3px)`;
+      queued = false;
+    });
+  });
+  card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+}
+
 /* SplitText — break the headline into words that rise in one by one. */
 function splitHeadline(){
   const REDUCED_SPLIT = REDUCED;
@@ -1967,7 +2224,9 @@ function countTo(el, text){
 }
 
 function mountMotion(){
+  mountTopline();
   mountAurora();
+  mountTilt();
   splitHeadline();
   mountSpotlight();
   mountButtons();
