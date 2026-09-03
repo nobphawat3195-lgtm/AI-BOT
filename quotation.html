@@ -267,35 +267,77 @@ body::before{
 .wrap{max-width:1180px;position:relative;z-index:1;padding:0 16px 70px}
 
 /* top brand bar */
-.site-bar{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
-  padding:14px 18px;margin:14px 0 18px;border-radius:16px;
-  background:linear-gradient(120deg,rgba(10,18,34,.92),rgba(16,28,52,.78));
+.topnav{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  padding:12px 20px;margin:14px 0 18px;border-radius:16px;
+  background:linear-gradient(120deg,rgba(8,15,29,.94),rgba(13,23,44,.88));
   border:1px solid rgba(90,150,255,.16);box-shadow:var(--glow);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
 }
-.sb-brand{display:flex;align-items:center;gap:12px;min-width:0}
-.sb-logo{width:44px;height:44px;border-radius:11px;object-fit:cover;flex-shrink:0;
+.tn-brand{display:flex;align-items:center;gap:12px;min-width:0;flex-shrink:0}
+.tn-logo{width:42px;height:42px;border-radius:10px;object-fit:cover;flex-shrink:0;
   box-shadow:0 6px 20px rgba(255,190,60,.28)}
-.sb-name{font-family:var(--font);font-weight:700;font-size:17px;letter-spacing:1.5px;color:#fff;line-height:1.1}
-.sb-sub{font-size:9.5px;letter-spacing:2.6px;color:#7f9dcb;text-transform:uppercase;margin-top:3px}
-.sb-tabs{display:flex;gap:6px;flex-wrap:wrap}
-.sb-tab{
-  display:flex;align-items:center;gap:6px;padding:8px 15px;border-radius:10px;
-  font-size:12.5px;color:var(--sub);border:1px solid transparent;white-space:nowrap;
+.tn-name{font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:1.4px;color:#fff;line-height:1.1}
+.tn-sub{font-size:9px;letter-spacing:2.2px;color:#7f9dcb;text-transform:uppercase;margin-top:3px}
+
+.tn-menu{display:flex;gap:2px;flex-wrap:wrap}
+.tn-item{
+  position:relative;font-family:var(--font);
+  background:none;border:none;cursor:pointer;
+  padding:9px 13px;border-radius:9px;
+  font-size:12.5px;color:var(--sub);white-space:nowrap;
+  transition:color .2s ease;
 }
-.sb-tab.on{
-  color:#dbeaff;background:rgba(30,111,255,.16);
-  border-color:rgba(90,160,255,.38);box-shadow:0 0 20px rgba(30,111,255,.20) inset;
+.tn-item::after{
+  content:'';position:absolute;left:14px;right:14px;bottom:3px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--blue2),var(--cyan));
+  transform:scaleX(0);transform-origin:50% 50%;transition:transform .25s cubic-bezier(.22,1,.36,1);
 }
-.sb-user{display:flex;align-items:center;gap:9px}
-.sb-avatar{
+.tn-item:hover{color:#dbeaff}
+.tn-item:hover::after{transform:scaleX(1)}
+.tn-item.on{color:#eaf5ff;background:rgba(30,111,255,.14)}
+.tn-item.on::after{transform:scaleX(1)}
+
+.tn-tools{display:flex;align-items:center;gap:10px;position:relative;flex-shrink:0}
+.tn-bell{
+  position:relative;width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:#cfe0ff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .2s ease,border-color .2s ease;
+}
+.tn-bell:hover{background:rgba(30,111,255,.16);border-color:rgba(90,160,255,.35)}
+.tn-bell-dot{
+  position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:50%;
+  background:var(--amber);box-shadow:0 0 0 2px rgba(8,15,29,.9)
+}
+.tn-bell-pop,.tn-user-pop{
+  position:absolute;top:calc(100% + 10px);right:0;min-width:220px;z-index:60;
+  background:linear-gradient(150deg,rgba(20,32,58,.98),rgba(10,18,34,.98));
+  border:1px solid rgba(90,150,255,.22);border-radius:12px;box-shadow:0 18px 44px rgba(0,0,0,.5);
+  padding:8px;
+}
+.tn-bell-pop{right:44px;padding:14px 16px;color:var(--sub);font-size:12.5px;min-width:200px}
+.tn-user-pop button{
+  display:block;width:100%;text-align:left;background:none;border:none;color:#dbeaff;
+  font-family:var(--font);font-size:12.5px;padding:9px 10px;border-radius:8px;cursor:pointer;
+}
+.tn-user-pop button:hover{background:rgba(30,111,255,.14)}
+
+.tn-user{
+  display:flex;align-items:center;gap:9px;background:none;border:none;cursor:pointer;padding:4px 6px 4px 4px;
+  border-radius:12px;transition:background .2s ease;
+}
+.tn-user:hover{background:rgba(255,255,255,.05)}
+.tn-avatar{
   width:34px;height:34px;border-radius:50%;flex-shrink:0;
   background:linear-gradient(135deg,var(--blue),var(--cyan));
   display:flex;align-items:center;justify-content:center;font-size:16px;
 }
-.sb-uname{font-size:12px;color:#cfe0ff;line-height:1.2}
-.sb-urole{font-size:9.5px;color:#6f8db8}
+.tn-user-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.25}
+.tn-uname{font-size:12px;color:#cfe0ff}
+.tn-urole{font-size:9.5px;color:#6f8db8}
+.tn-caret{font-size:9px;color:#6f8db8}
 
 /* hero */
 .hero{
@@ -436,10 +478,19 @@ table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
   .hero{grid-template-columns:1fr;padding:26px 20px}
   .hero h1{font-size:26px}
 }
+@media (max-width:900px){
+  .tn-menu{
+    order:3;flex-basis:100%;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;
+    padding-top:8px;margin-top:6px;border-top:1px solid rgba(255,255,255,.08);
+  }
+  .tn-item{flex-shrink:0}
+}
 @media (max-width:640px){
   .wrap{padding:0 10px 50px}
-  .site-bar{padding:12px 14px}
-  .sb-tabs{display:none}
+  .topnav{padding:10px 14px;gap:10px}
+  .tn-sub{display:none}
+  .tn-item{padding:8px 10px;font-size:11.5px}
   .hero{padding:22px 16px;border-radius:16px}
   .hero h1{font-size:22px}
   .hero p{font-size:12.5px}
@@ -578,9 +629,7 @@ body::before{ animation:gridDrift 32s linear infinite; }
 .trow .tv,.tv{font-variant-numeric:tabular-nums}
 
 /* ── Sliding indicator under the active nav tab ───────────────── */
-.sb-tabs{position:relative}
-.sb-tab{position:relative;transition:color .25s ease}
-.sb-tab:hover{color:#cfe2ff}
+.tn-menu{position:relative}
 
 /* ── Lift on hover for the cards that are not the sheet ───────── */
 .hero-card,.totals,.hero-badge{
@@ -652,13 +701,13 @@ body::after{
 
 /* ── Gradient hairline borders. A flat rgba border is the giveaway of
       a quick build; a border that catches light along one edge is not ── */
-.site-bar,.hero,.hero-card,.toolbar,.doc,.totals,.site-foot,.paste-box,.sku-bar{
+.topnav,.hero,.hero-card,.toolbar,.doc,.totals,.site-foot,.paste-box,.sku-bar{
   border:1px solid transparent!important;
   background-origin:border-box;
   background-clip:padding-box,border-box;
   box-shadow:var(--lift)!important;
 }
-.site-bar{
+.topnav{
   background-image:
     linear-gradient(125deg,var(--glass),var(--glass-2)),
     linear-gradient(120deg,rgba(150,200,255,.42),rgba(150,200,255,.05) 42%,rgba(232,201,138,.24));
@@ -695,7 +744,7 @@ body::after{
 }
 
 /* ── Micro-labels: the uppercase detailing that carries a luxury feel ── */
-.sb-sub,.hero-badge div span,.hc-sub,.doc-title small,.sf-tag,.sb-urole{
+.tn-sub,.hero-badge div span,.hc-sub,.doc-title small,.sf-tag,.tn-urole{
   font-family:var(--font-display);
   letter-spacing:.26em!important;
   text-transform:uppercase;
@@ -703,7 +752,7 @@ body::after{
   font-size:8.5px!important;
   color:#8fa6c6;
 }
-.sb-name,.sf-name{
+.tn-name,.sf-name{
   font-family:var(--font-display);
   font-weight:700;letter-spacing:.16em;
 }
@@ -712,7 +761,7 @@ body::after{
 .hero h1{letter-spacing:-.008em;text-wrap:balance}
 
 /* ── The logo gets a ring of light, like a badge on a bonnet ──────── */
-.sb-logo,.brand-logo,.sf-l img{
+.tn-logo,.brand-logo,.sf-l img{
   box-shadow:
     0 0 0 1px rgba(232,201,138,.42),
     0 0 0 4px rgba(232,201,138,.09),
@@ -977,12 +1026,147 @@ table.items input:focus{
   .cine-scene>*{transform:none!important}
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   APP PAGES — the dashboard, and the lightweight views the new nav
+   opens (services, customers, history, reports, settings, contact).
+   Screen only; @media print forces #view-quote regardless of which
+   of these is on screen when Ctrl+P fires.
+   ═══════════════════════════════════════════════════════════════ */
+.view-head{margin:6px 0 22px}
+.view-head h2{
+  font-family:var(--font-display);font-size:clamp(22px,3vw,30px);font-weight:700;
+  color:#fff;margin:0 0 8px;letter-spacing:-.01em;
+}
+.view-head p{color:var(--sub);font-size:13.5px;margin:0;max-width:62ch}
+
+.note-banner{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:rgba(30,111,255,.10);border:1px solid rgba(90,150,255,.24);
+  border-radius:10px;padding:11px 15px;margin:0 0 18px;
+  font-size:12.5px;color:#a9c1e4;line-height:1.6;
+}
+
+.empty-note{
+  padding:34px 20px;text-align:center;color:var(--sub);font-size:13px;
+  border:1px dashed rgba(120,160,220,.28);border-radius:12px;
+}
+
+/* ── dashboard stat cards ── */
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0 6px}
+.stat-card{
+  display:flex;align-items:center;gap:14px;padding:18px 18px;border-radius:14px;
+  background:linear-gradient(160deg,rgba(22,38,68,.82),rgba(10,19,36,.88));
+  border:1px solid rgba(100,170,255,.22);box-shadow:var(--lift);
+}
+.stat-ico{font-size:24px;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(90,160,255,.5))}
+.stat-card b{
+  display:block;font-family:var(--font-display);font-weight:700;
+  font-size:22px;color:#fff;line-height:1.15;font-variant-numeric:tabular-nums;
+}
+.stat-card span{display:block;margin-top:3px;font-size:10.5px;color:var(--sub);letter-spacing:.04em}
+.stat-foot-note{font-size:11.5px;color:#5f7699;margin:10px 2px 26px}
+
+/* ── two-up panel row (recent list + quick actions) ── */
+.dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:28px}
+.panel-card{
+  padding:20px 22px;border-radius:14px;
+  background:linear-gradient(150deg,rgba(18,30,54,.86),rgba(9,16,30,.9));
+  border:1px solid rgba(100,160,255,.2);box-shadow:var(--lift);
+}
+.panel-head{font-family:var(--font-display);font-weight:600;color:#eaf2ff;font-size:14.5px;margin-bottom:14px}
+.panel-sub{color:var(--sub);font-size:12.5px;margin:0 0 12px}
+.recent-list{display:flex;flex-direction:column;gap:2px}
+.recent-row{
+  display:grid;grid-template-columns:1fr 1.3fr .9fr auto;gap:10px;align-items:center;
+  padding:10px 4px;border-bottom:1px solid rgba(255,255,255,.06);font-size:12.5px;
+}
+.recent-row:last-child{border-bottom:none}
+.rr-doc{color:#8fa9cf;font-family:var(--font-mono, monospace);font-size:11.5px}
+.rr-name{color:#dbeaff}
+.rr-date{color:var(--sub);font-size:11px}
+.rr-sum{color:var(--gold);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+
+.section-label{
+  font-family:var(--font-display);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:#7f9dcb;margin:8px 2px 14px;
+}
+
+/* ── service module cards ── */
+.service-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:26px}
+.service-card{
+  display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;
+  padding:20px 20px 18px;border-radius:14px;cursor:pointer;
+  background:linear-gradient(155deg,rgba(20,34,62,.82),rgba(9,16,30,.88));
+  border:1px solid rgba(100,160,255,.2);box-shadow:var(--lift);
+  color:inherit;font-family:var(--font);
+  transition:transform .28s cubic-bezier(.22,1,.36,1), border-color .28s ease, box-shadow .28s ease;
+}
+.service-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(120,190,255,.5);
+  box-shadow:var(--lift), 0 0 34px rgba(30,111,255,.28);
+}
+.service-card .sc-ico{font-size:26px;margin-bottom:4px}
+.service-card b{font-family:var(--font-display);font-size:14.5px;color:#fff}
+.service-card span{font-size:12px;color:var(--sub);line-height:1.6}
+.service-card.static{cursor:default}
+.service-card.static button{margin-top:10px}
+
+/* ── plain data tables shared by history / customers ── */
+.mini-table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:640px}
+.mini-table th{
+  text-align:left;font-family:var(--font-display);font-weight:600;font-size:10.5px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--th-ink);
+  background:var(--th-bg);padding:10px 12px;white-space:nowrap;
+}
+.mini-table td{padding:10px 12px;border-bottom:1px solid var(--line2);color:#dbeaff}
+.mini-table td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--gold)}
+.mini-table tbody tr:hover td{background:rgba(30,111,255,.07)}
+
+/* ── reports bars ── */
+.rep-bars{display:flex;flex-direction:column;gap:12px}
+.rep-bar-row{display:grid;grid-template-columns:70px 1fr 90px;gap:12px;align-items:center;font-size:12px}
+.rep-bar-label{color:var(--sub)}
+.rep-bar-track{height:9px;border-radius:5px;background:rgba(255,255,255,.06);overflow:hidden}
+.rep-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--blue2),var(--cyan))}
+.rep-bar-val{text-align:right;color:#dbeaff;font-variant-numeric:tabular-nums}
+
+/* ── contact card ── */
+.contact-card{max-width:520px}
+.contact-row{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:13px;color:#dbeaff}
+.contact-row:last-child{border-bottom:none}
+.cr-label{flex:0 0 90px;color:var(--sub);font-size:11.5px;letter-spacing:.04em}
+.linklike{background:none;border:none;color:var(--cyan);text-decoration:underline;cursor:pointer;font-size:inherit;font-family:inherit;padding:0}
+
+/* ── hero CTA row (home only) ── */
+.cine-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+
+@media (max-width:900px){
+  .dash-stats{grid-template-columns:repeat(2,1fr)}
+  .dash-grid{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .dash-stats{grid-template-columns:1fr 1fr;gap:10px}
+  .stat-card{padding:14px}
+  .stat-card b{font-size:18px}
+  .recent-row{grid-template-columns:1fr;gap:2px}
+  .rr-sum{text-align:left}
+}
+
 /* print mirrors: <input>/<textarea> clip long values, so on paper we print
    a wrapping text copy of the fields that can legitimately run long. */
 .pmirror,.cell-print{display:none}
 
 /* PRINT — A4, single sheet, forced desktop layout */
+.view.view-enter{animation:viewFadeIn .42s cubic-bezier(.22,1,.36,1) both}
+@keyframes viewFadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.view.view-enter{animation:none}}
+
 @media print{
+  /* whichever view is on screen, the printed page is always the
+     quotation document — never the dashboard, never a placeholder */
+  .view{display:none!important}
+  #view-quote{display:block!important;animation:none!important;opacity:1!important;transform:none!important}
   /* flip the screen theme back to paper: white sheet, dark ink */
   :root{
     --ink:#0f1e33; --sub:#5b7290;
@@ -999,10 +1183,10 @@ table.items input:focus{
   .aurora,.spark{display:none!important}
   body::after,.wrap::before,.topline{display:none!important}
   .totals::after{display:none!important}
-  .site-bar,.hero,.hero-card,.toolbar,.doc,.totals,.site-foot,.paste-box,.sku-bar{
+  .topnav,.hero,.hero-card,.toolbar,.doc,.totals,.site-foot,.paste-box,.sku-bar{
     background-image:none!important;box-shadow:none!important;
   }
-  .sb-logo,.brand-logo,.sf-l img{box-shadow:none!important}
+  .tn-logo,.brand-logo,.sf-l img{box-shadow:none!important}
   .btn{box-shadow:none!important}
   .grand .gv{
     background:none!important;-webkit-text-fill-color:currentColor;
@@ -1020,7 +1204,7 @@ table.items input:focus{
   .magnet{transform:none!important}
   .counting{animation:none!important}
   .hero h1 .accent.shine-ready{animation:none!important}
-  .site-bar,.hero,.hero.cine,.site-foot{display:none!important}
+  .topnav,.hero,.hero.cine,.site-foot{display:none!important}
   .cine-scene,.cine-copy{display:none!important}
   .cine-grid,.cine-glow,.cine-blueprint{display:none!important}
   .no-print{display:none!important}
@@ -1146,28 +1330,46 @@ table.items input:focus{
 
 <div class="wrap">
 
-  <!-- BRAND BAR -->
-  <header class="site-bar no-print">
-    <div class="sb-brand">
-      <img class="sb-logo" id="brandLogo" alt="AUTO 1">
+  <!-- TOP NAV -->
+  <header class="topnav no-print">
+    <div class="tn-brand">
+      <img class="tn-logo" id="brandLogo" alt="AUTO 1">
       <div>
-        <div class="sb-name">AUTO 1</div>
-        <div class="sb-sub">Premium Automotive Service</div>
+        <div class="tn-name">AUTO 1</div>
+        <div class="tn-sub">Premium Automotive Service</div>
       </div>
     </div>
-    <nav class="sb-tabs">
-      <span class="sb-tab on">📄 ใบเสนอราคา</span>
+    <nav class="tn-menu" id="tnMenu">
+      <button class="tn-item" data-view="home">หน้าแรก</button>
+      <button class="tn-item" data-view="services">บริการของเรา</button>
+      <button class="tn-item" data-view="quote">ใบเสนอราคา</button>
+      <button class="tn-item" data-view="customers">จัดการลูกค้า</button>
+      <button class="tn-item" data-view="history">ประวัติใบเสนอราคา</button>
+      <button class="tn-item" data-view="reports">รายงาน</button>
+      <button class="tn-item" data-view="contact">ติดต่อเรา</button>
     </nav>
-    <div class="sb-user">
-      <div class="sb-avatar">🔧</div>
-      <div>
-        <div class="sb-uname" id="sbBranch">สาขาฟิวเจอร์รังสิต</div>
-        <div class="sb-urole">ฝ่ายขาย</div>
+    <div class="tn-tools">
+      <button class="tn-bell" id="tnBell" title="การแจ้งเตือน" aria-haspopup="true">
+        🔔<span class="tn-bell-dot" id="tnBellDot" hidden></span>
+      </button>
+      <div class="tn-bell-pop no-print" id="tnBellPop" hidden></div>
+      <button class="tn-user" id="tnUserBtn">
+        <span class="tn-avatar">🔧</span>
+        <span class="tn-user-text">
+          <span class="tn-uname" id="tnBranch">สาขาฟิวเจอร์รังสิต</span>
+          <span class="tn-urole">ฝ่ายขาย</span>
+        </span>
+        <span class="tn-caret">▾</span>
+      </button>
+      <div class="tn-user-pop no-print" id="tnUserPop" hidden>
+        <button data-view="settings">⚙️ ตั้งค่าระบบ</button>
+        <button id="tnClearDevice">🗑️ ล้างข้อมูลเครื่องนี้</button>
       </div>
     </div>
   </header>
 
-  <!-- HERO -->
+  <!-- ═══════════ HOME / DASHBOARD ═══════════ -->
+  <section id="view-home" class="view">
   <section class="hero cine no-print">
     <!-- the scene is drawn, not photographed: no external asset to fetch,
          nothing to license, and it stays sharp at any size -->
@@ -1277,10 +1479,78 @@ table.items input:focus{
         <span>มาตรฐานสูง</span><i>·</i><span>บริการด้วยใจ</span><i>·</i>
         <span>ราคาเป็นธรรม</span><i>·</i><span>รับประกันคุณภาพ</span>
       </div>
+      <div class="cine-cta">
+        <button class="btn btn-print" data-view="quote">+ สร้างใบเสนอราคา</button>
+        <button class="btn btn-ghost" data-view="services">ดูบริการของเรา</button>
+      </div>
+    </div>
+  </section>
+    <div class="dash-stats no-print">
+      <div class="stat-card reveal">
+        <span class="stat-ico">📄</span>
+        <div><b id="statQuotes">0</b><span>ใบเสนอราคาทั้งหมด</span></div>
+      </div>
+      <div class="stat-card reveal">
+        <span class="stat-ico">👥</span>
+        <div><b id="statCustomers">0</b><span>ลูกค้าทั้งหมด</span></div>
+      </div>
+      <div class="stat-card reveal">
+        <span class="stat-ico">💰</span>
+        <div><b id="statValue">0.00</b><span>มูลค่ารวม (บาท)</span></div>
+      </div>
+      <div class="stat-card reveal">
+        <span class="stat-ico">📊</span>
+        <div><b id="statAvg">0.00</b><span>เฉลี่ยต่อใบ (บาท)</span></div>
+      </div>
+    </div>
+    <p class="stat-foot-note no-print">ตัวเลขทั้งหมดนับจากใบเสนอราคาที่กดพิมพ์จากเครื่องนี้เท่านั้น — เริ่มจาก 0 และโตขึ้นตามการใช้งานจริง</p>
+
+    <div class="dash-grid no-print">
+      <div class="panel-card reveal">
+        <div class="panel-head">ใบเสนอราคาล่าสุด</div>
+        <div id="homeRecentList" class="recent-list"></div>
+        <button class="btn btn-ghost" data-view="history" style="margin-top:14px">ดูทั้งหมด →</button>
+      </div>
+      <div class="panel-card reveal">
+        <div class="panel-head">สร้างใบเสนอราคาใหม่</div>
+        <p class="panel-sub">เริ่มต้นสร้างใบเสนอราคาให้กับลูกค้าของคุณ</p>
+        <button class="btn btn-print" data-view="quote" style="width:100%;margin-top:6px">+ สร้างใบเสนอราคา</button>
+        <button class="btn btn-ghost" data-view="customers" style="width:100%;margin-top:10px">🔍 จัดการลูกค้า</button>
+        <button class="btn btn-ghost" data-view="history" style="width:100%;margin-top:10px">🕘 ประวัติใบเสนอราคา</button>
+      </div>
+    </div>
+
+    <div class="section-label no-print">โมดูลของระบบ</div>
+    <div class="service-grid no-print">
+      <button class="service-card reveal" data-view="quote">
+        <span class="sc-ico">🧾</span>
+        <b>ใบเสนอราคา</b><span>สร้าง แก้ไข และพิมพ์ใบเสนอราคา</span>
+      </button>
+      <button class="service-card reveal" data-view="customers">
+        <span class="sc-ico">👥</span>
+        <b>จัดการลูกค้า</b><span>ข้อมูลลูกค้าและประวัติการซื้อ</span>
+      </button>
+      <button class="service-card reveal" data-view="history">
+        <span class="sc-ico">🕘</span>
+        <b>ประวัติใบเสนอราคา</b><span>ย้อนดูใบเสนอราคาที่เคยออก</span>
+      </button>
+      <button class="service-card reveal" data-view="reports">
+        <span class="sc-ico">📈</span>
+        <b>รายงานวิเคราะห์</b><span>สรุปยอดขายและแนวโน้ม</span>
+      </button>
+      <button class="service-card reveal" data-view="settings">
+        <span class="sc-ico">⚙️</span>
+        <b>ตั้งค่าระบบ</b><span>ข้อมูลร้าน โลโก้ คลังรหัส SKU</span>
+      </button>
     </div>
   </section>
 
-  <div class="toolbar no-print">
+  <!-- ═══════════ QUOTATION TOOL (unchanged function) ═══════════ -->
+  <section id="view-quote" class="view" hidden>
+
+  <!-- HERO -->
+
+  <div class="toolbar no-print reveal">
     <div class="tb-title">🔧 ระบบสร้างใบเสนอราคาอะไหล่รถยนต์</div>
     <div class="tb-actions">
       <span class="save-note"><span class="save-dot"></span><span id="saveNote">บันทึกอัตโนมัติ</span></span>
@@ -1296,11 +1566,11 @@ table.items input:focus{
         <option value="Trirong">ฟอนต์: Trirong (ไทยทางการ)</option>
       </select>
       <button class="btn btn-ghost" onclick="resetForm()">🗑️ ล้างฟอร์ม</button>
-      <button class="btn btn-print" onclick="syncPrintMirrors();window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
+      <button class="btn btn-print" onclick="syncPrintMirrors();logQuoteToHistory();window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
     </div>
   </div>
 
-  <div class="doc" id="doc">
+  <div class="doc reveal" id="doc">
 
     <!-- BANNER -->
     <div class="banner">
@@ -1522,7 +1792,128 @@ table.items input:focus{
 
   </div>
 
-  <footer class="site-foot no-print">
+  </section>
+  <!-- ═══════════ /QUOTATION TOOL ═══════════ -->
+
+  <section id="view-services" class="view" hidden>
+    <div class="view-head">
+      <h2>บริการของเรา</h2>
+      <p>สิ่งที่ระบบนี้ช่วยร้าน AUTO 1 ทำได้ตอนนี้ — ทุกโมดูลทำงานจากเบราว์เซอร์เดียว ไม่ต้องติดตั้งอะไรเพิ่ม</p>
+    </div>
+    <div class="service-grid">
+      <div class="service-card static reveal">
+        <span class="sc-ico">🧾</span>
+        <b>ใบเสนอราคาอัจฉริยะ</b>
+        <span>วางข้อความราคาจากซัพพลายเออร์แล้วแปลงเป็นรายการอัตโนมัติ คิดราคาขาย ส่วนลด และ VAT ให้ครบ พิมพ์เป็น A4 หน้าเดียวพร้อมส่งลูกค้าทันที</span>
+        <button class="btn btn-ghost" data-view="quote">เปิดใช้งาน →</button>
+      </div>
+      <div class="service-card static reveal">
+        <span class="sc-ico">👥</span>
+        <b>จัดการลูกค้า</b>
+        <span>ระบบรวบรวมรายชื่อลูกค้าจากใบเสนอราคาที่เคยออกให้อัตโนมัติ พร้อมยอดสะสมและวันที่ติดต่อล่าสุด</span>
+        <button class="btn btn-ghost" data-view="customers">เปิดใช้งาน →</button>
+      </div>
+      <div class="service-card static reveal">
+        <span class="sc-ico">🕘</span>
+        <b>ประวัติใบเสนอราคา</b>
+        <span>ย้อนดูทุกใบเสนอราคาที่เคยพิมพ์จากเครื่องนี้ พร้อมยอดเงินและรายละเอียดลูกค้า</span>
+        <button class="btn btn-ghost" data-view="history">เปิดใช้งาน →</button>
+      </div>
+      <div class="service-card static reveal">
+        <span class="sc-ico">📈</span>
+        <b>รายงานวิเคราะห์</b>
+        <span>สรุปยอดขายรวม ค่าเฉลี่ยต่อใบ และแนวโน้มยอดขายรายเดือนจากข้อมูลจริงในเครื่อง</span>
+        <button class="btn btn-ghost" data-view="reports">เปิดใช้งาน →</button>
+      </div>
+      <div class="service-card static reveal">
+        <span class="sc-ico">🗂️</span>
+        <b>คลังรหัส SKU</b>
+        <span>นำเข้ารายการรหัสอะไหล่ของร้านเอง ให้ระบบเติมรหัส SKU ให้อัตโนมัติเวลาพิมพ์ชื่อสินค้า</span>
+        <button class="btn btn-ghost" data-view="quote">เปิดใช้งาน →</button>
+      </div>
+      <div class="service-card static reveal">
+        <span class="sc-ico">⚙️</span>
+        <b>ตั้งค่าระบบ</b>
+        <span>แก้ไขข้อมูลร้าน โลโก้ เลขผู้เสียภาษี และเลือกฟอนต์ที่ใช้พิมพ์ใบเสนอราคา</span>
+        <button class="btn btn-ghost" data-view="settings">เปิดใช้งาน →</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-customers" class="view" hidden>
+    <div class="view-head">
+      <h2>จัดการลูกค้า</h2>
+      <p>รวบรวมจากใบเสนอราคาที่เคยออกให้ลูกค้าแต่ละราย</p>
+    </div>
+    <div class="note-banner">📍 ข้อมูลชุดนี้เก็บอยู่ในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่ซิงค์กับเครื่องอื่นหรือสาขาอื่น</div>
+    <div id="customersTableWrap"></div>
+  </section>
+
+  <section id="view-history" class="view" hidden>
+    <div class="view-head">
+      <h2>ประวัติใบเสนอราคา</h2>
+      <p>ทุกใบที่กดพิมพ์จากเครื่องนี้ จะถูกบันทึกไว้ที่นี่โดยอัตโนมัติ</p>
+    </div>
+    <div class="note-banner">📍 ข้อมูลชุดนี้เก็บอยู่ในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่ซิงค์กับเครื่องอื่นหรือสาขาอื่น
+      <button class="btn btn-danger" id="btnClearHistory" style="margin-left:auto">ล้างประวัติ</button>
+    </div>
+    <div id="historyTableWrap"></div>
+  </section>
+
+  <section id="view-reports" class="view" hidden>
+    <div class="view-head">
+      <h2>รายงานวิเคราะห์</h2>
+      <p>สรุปจากประวัติใบเสนอราคาในเครื่องนี้</p>
+    </div>
+    <div class="note-banner">📍 รายงานนี้คำนวณจากข้อมูลในเครื่องนี้เท่านั้น หากต้องการภาพรวมทุกสาขารวมกัน ต้องต่อฐานข้อมูลกลางเพิ่มเติม</div>
+    <div class="dash-stats">
+      <div class="stat-card"><span class="stat-ico">📄</span><div><b id="repTotalQuotes">0</b><span>ใบเสนอราคาทั้งหมด</span></div></div>
+      <div class="stat-card"><span class="stat-ico">💰</span><div><b id="repTotalValue">0.00 บาท</b><span>มูลค่ารวม</span></div></div>
+      <div class="stat-card"><span class="stat-ico">📊</span><div><b id="repAvgValue">0.00 บาท</b><span>เฉลี่ยต่อใบ</span></div></div>
+    </div>
+    <div class="panel-card">
+      <div class="panel-head">ยอดขายรายเดือน</div>
+      <div id="repBars" class="rep-bars"></div>
+    </div>
+  </section>
+
+  <section id="view-settings" class="view" hidden>
+    <div class="view-head">
+      <h2>ตั้งค่าระบบ</h2>
+      <p>ข้อมูลร้าน โลโก้ ฟอนต์ และคลังรหัส SKU อยู่ในหน้าใบเสนอราคา แตะเพื่อเปิดตรงจุดนั้นได้เลย</p>
+    </div>
+    <div class="service-grid">
+      <button class="service-card reveal" onclick="showView('quote');setTimeout(()=>document.querySelector('.party-card')?.scrollIntoView({behavior:'smooth',block:'start'}),380)">
+        <span class="sc-ico">🏢</span><b>ข้อมูลร้าน / ใบกำกับภาษี</b><span>ชื่อนิติบุคคล ที่อยู่ เลขผู้เสียภาษี สาขา</span>
+      </button>
+      <button class="service-card reveal" onclick="showView('quote');setTimeout(()=>document.getElementById('logoBox')?.scrollIntoView({behavior:'smooth',block:'center'}),380)">
+        <span class="sc-ico">🖼️</span><b>โลโก้ร้าน</b><span>เปลี่ยนโลโก้ที่แสดงบนหัวใบเสนอราคา</span>
+      </button>
+      <button class="service-card reveal" onclick="showView('quote');setTimeout(()=>document.querySelector('.sku-bar')?.setAttribute('open',''),380);setTimeout(()=>document.querySelector('.sku-bar')?.scrollIntoView({behavior:'smooth',block:'start'}),420)">
+        <span class="sc-ico">🗂️</span><b>คลังรหัส SKU</b><span>นำเข้า/รีเซ็ตรายการรหัสอะไหล่ของร้าน</span>
+      </button>
+      <button class="service-card reveal" onclick="showView('quote');setTimeout(()=>document.getElementById('fontSelect')?.scrollIntoView({behavior:'smooth',block:'center'}),380)">
+        <span class="sc-ico">🔤</span><b>ฟอนต์เอกสาร</b><span>เลือกฟอนต์ที่ใช้แสดงและพิมพ์ใบเสนอราคา</span>
+      </button>
+    </div>
+    <div class="note-banner" style="margin-top:22px">🗑️ ต้องการล้างข้อมูลทั้งหมดในเครื่องนี้ (ประวัติ ลูกค้า คลัง SKU)? ไปที่เมนูผู้ใช้มุมขวาบน → ล้างข้อมูลเครื่องนี้</div>
+  </section>
+
+  <section id="view-contact" class="view" hidden>
+    <div class="view-head">
+      <h2>ติดต่อเรา</h2>
+      <p>ข้อมูลติดต่อของสาขา ดึงจากข้อมูลร้านที่ตั้งค่าไว้</p>
+    </div>
+    <div class="panel-card contact-card">
+      <div class="contact-row"><span class="cr-label">ชื่อร้าน</span><span id="ccName">—</span></div>
+      <div class="contact-row"><span class="cr-label">สาขา</span><span id="ccBranch">—</span></div>
+      <div class="contact-row"><span class="cr-label">โทร</span><span id="ccPhone">—</span></div>
+      <div class="contact-row"><span class="cr-label">ที่อยู่</span><span id="ccAddress">—</span></div>
+    </div>
+    <p class="stat-foot-note">แก้ไขข้อมูลเหล่านี้ได้ที่ <button class="linklike" data-view="settings">ตั้งค่าระบบ</button></p>
+  </section>
+
+  <footer class="site-foot no-print reveal">
     <div class="sf-l">
       <img id="footLogo" alt="AUTO 1">
       <div>
@@ -2161,7 +2552,7 @@ function syncPrintMirrors(){
 function syncBrandChrome(){
   const src = document.getElementById('logoImg').src;
   ['brandLogo','footLogo'].forEach(id=>{ const el=document.getElementById(id); if(el) el.src=src; });
-  const b = document.getElementById('sbBranch');
+  const b = document.getElementById('tnBranch');
   if(b) b.textContent = document.getElementById('shopBranch').textContent || 'สาขา';
 }
 
@@ -2355,7 +2746,7 @@ function splitHeadline(){
 /* SpotlightCard — panels light up under the cursor. */
 function mountSpotlight(){
   if(!HOVERS || REDUCED) return;
-  document.querySelectorAll('.site-bar,.toolbar,.totals,.paste-box,.sku-bar,.site-foot')
+  document.querySelectorAll('.topnav,.toolbar,.totals,.paste-box,.sku-bar,.site-foot')
     .forEach(el => {
       el.classList.add('spot');
       let queued = false, x = 0, y = 0;
@@ -2425,19 +2816,22 @@ function mountSparks(){
 }
 
 /* AnimatedContent — sections rise as they scroll into view. */
+let revealIO = null;
+function scanReveals(){
+  if(!revealIO) return;
+  document.querySelectorAll('.reveal:not(.seen)').forEach((el, i) => {
+    if(!el.style.transitionDelay) el.style.transitionDelay = (Math.min(i, 6) * 0.06).toFixed(2) + 's';
+    revealIO.observe(el);
+  });
+}
 function mountReveal(){
   if(REDUCED || !('IntersectionObserver' in window)) return;
-  const targets = document.querySelectorAll('.toolbar, .doc, .site-foot');
-  const io = new IntersectionObserver(entries => {
+  revealIO = new IntersectionObserver(entries => {
     entries.forEach(en => {
-      if(en.isIntersecting){ en.target.classList.add('seen'); io.unobserve(en.target); }
+      if(en.isIntersecting){ en.target.classList.add('seen'); revealIO.unobserve(en.target); }
     });
   }, { threshold: 0.06 });
-  targets.forEach((el, i) => {
-    el.classList.add('reveal');
-    el.style.transitionDelay = (i * 0.07).toFixed(2) + 's';
-    io.observe(el);
-  });
+  scanReveals();
 }
 
 /* CountUp — totals roll to their new value instead of snapping.
@@ -2513,7 +2907,278 @@ function mountMotion(){
   mountReveal();
 }
 
+  /* ═══════════════════════════════════════════════════════════════
+   LOCAL QUOTE LOG — this browser's own record of quotes it has
+   printed. There is no server behind this tool, so this is real data
+   about real quotes made on this device, not a shared company-wide
+   log. Every screen that reads it says so.
+   ═══════════════════════════════════════════════════════════════ */
+const HISTORY_KEY = 'autoPartsQuoteHistory';
+
+function loadHistory(){
+  try{
+    const arr = JSON.parse(localStorage.getItem(HISTORY_KEY));
+    return Array.isArray(arr) ? arr : [];
+  }catch(e){ return []; }
+}
+
+function logQuoteToHistory(){
+  const named = items.filter(it => it.name.trim());
+  if(!named.length) return;                 // nothing real to log
+  const grand = parseFloat(String(document.getElementById('tGrand').textContent||'0').replace(/,/g,'')) || 0;
+  const entry = {
+    id: Date.now() + '-' + Math.random().toString(36).slice(2,7),
+    date: new Date().toISOString(),
+    docNo: document.getElementById('docNo').value,
+    custName: document.getElementById('custName').value.trim(),
+    custPhone: document.getElementById('custPhone').value.trim(),
+    custCar: document.getElementById('custCar').value.trim(),
+    itemCount: named.length,
+    grandTotal: grand,
+  };
+  const hist = loadHistory();
+  hist.unshift(entry);
+  if(hist.length > 500) hist.length = 500;   // a device-local log, not a database
+  try{ localStorage.setItem(HISTORY_KEY, JSON.stringify(hist)); }catch(e){}
+}
+
+function fmtBaht(n){ return (n||0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtDate(iso){
+  try{ return new Date(iso).toLocaleDateString('th-TH', {day:'numeric', month:'short', year:'numeric'}); }
+  catch(e){ return iso; }
+}
+
+const EMPTY_LOG_NOTE = 'ยังไม่มีข้อมูล — จะเริ่มบันทึกอัตโนมัติทันทีที่คุณกดพิมพ์ใบเสนอราคาใบแรกจากเครื่องนี้';
+const DEVICE_LOCAL_NOTE = 'ข้อมูลชุดนี้เก็บอยู่ในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่ซิงค์กับเครื่องอื่นหรือสาขาอื่น';
+
+function renderHomeStats(){
+  const hist = loadHistory();
+  const totalQuotes = hist.length;
+  const totalValue = hist.reduce((s,h)=>s+(h.grandTotal||0),0);
+  const custKeySet = new Set(hist.map(h => (h.custName+'|'+h.custPhone).trim()).filter(k => k !== '|'));
+  const avg = totalQuotes ? totalValue/totalQuotes : 0;
+
+  const setStat = (id, text) => { const el = document.getElementById(id); if(el) countTo(el, text); };
+  setStat('statQuotes', String(totalQuotes));
+  setStat('statCustomers', String(custKeySet.size));
+  setStat('statValue', fmtBaht(totalValue));
+  setStat('statAvg', fmtBaht(avg));
+
+  const recentBox = document.getElementById('homeRecentList');
+  if(recentBox){
+    if(!hist.length){
+      recentBox.innerHTML = `<div class="empty-note">${EMPTY_LOG_NOTE}</div>`;
+    } else {
+      recentBox.innerHTML = hist.slice(0,4).map(h => `
+        <div class="recent-row">
+          <div class="rr-doc">${h.docNo || '(ไม่มีเลขที่)'}</div>
+          <div class="rr-name">${h.custName || 'ไม่ระบุชื่อลูกค้า'}</div>
+          <div class="rr-date">${fmtDate(h.date)}</div>
+          <div class="rr-sum">${fmtBaht(h.grandTotal)} บาท</div>
+        </div>`).join('');
+    }
+  }
+}
+
+function renderHistoryView(){
+  const box = document.getElementById('historyTableWrap');
+  if(!box) return;
+  const hist = loadHistory();
+  if(!hist.length){
+    box.innerHTML = `<div class="empty-note">${EMPTY_LOG_NOTE}</div>`;
+    return;
+  }
+  box.innerHTML = `<div class="tw"><table class="mini-table">
+    <thead><tr><th>วันที่</th><th>เลขที่ใบ</th><th>ลูกค้า</th><th>รถ</th><th>จำนวนรายการ</th><th>ยอดสุทธิ</th></tr></thead>
+    <tbody>${hist.map(h => `
+      <tr>
+        <td>${fmtDate(h.date)}</td>
+        <td>${h.docNo || '-'}</td>
+        <td>${h.custName || '-'}</td>
+        <td>${h.custCar || '-'}</td>
+        <td>${h.itemCount}</td>
+        <td class="num">${fmtBaht(h.grandTotal)}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+function renderCustomersView(){
+  const box = document.getElementById('customersTableWrap');
+  if(!box) return;
+  const hist = loadHistory();
+  const map = new Map();
+  hist.forEach(h => {
+    const key = (h.custName + '|' + h.custPhone).trim();
+    if(key === '|') return;
+    if(!map.has(key)) map.set(key, { name:h.custName||'-', phone:h.custPhone||'-', car:h.custCar||'-', count:0, total:0, last:h.date });
+    const c = map.get(key);
+    c.count++; c.total += (h.grandTotal||0);
+    if(new Date(h.date) > new Date(c.last)){ c.last = h.date; c.car = h.custCar || c.car; }
+  });
+  const rows = [...map.values()].sort((a,b) => new Date(b.last)-new Date(a.last));
+  if(!rows.length){
+    box.innerHTML = `<div class="empty-note">${EMPTY_LOG_NOTE}</div>`;
+    return;
+  }
+  box.innerHTML = `<div class="tw"><table class="mini-table">
+    <thead><tr><th>ลูกค้า</th><th>เบอร์โทร</th><th>รถล่าสุด</th><th>จำนวนใบเสนอราคา</th><th>ยอดรวมสะสม</th><th>ติดต่อล่าสุด</th></tr></thead>
+    <tbody>${rows.map(c => `
+      <tr>
+        <td>${c.name}</td><td>${c.phone}</td><td>${c.car}</td>
+        <td>${c.count}</td><td class="num">${fmtBaht(c.total)}</td><td>${fmtDate(c.last)}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+function renderReports(){
+  const hist = loadHistory();
+  const totalQuotes = hist.length;
+  const totalValue = hist.reduce((s,h)=>s+(h.grandTotal||0),0);
+  const avg = totalQuotes ? totalValue/totalQuotes : 0;
+  const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+  set('repTotalQuotes', String(totalQuotes));
+  set('repTotalValue', fmtBaht(totalValue) + ' บาท');
+  set('repAvgValue', fmtBaht(avg) + ' บาท');
+
+  const byMonth = new Map();
+  hist.forEach(h => {
+    const d = new Date(h.date);
+    const key = isNaN(d) ? 'ไม่ทราบวันที่' : `${d.getMonth()+1}/${d.getFullYear()+543}`;
+    byMonth.set(key, (byMonth.get(key)||0) + (h.grandTotal||0));
+  });
+  const bars = [...byMonth.entries()].slice(0,6).reverse();
+  const max = Math.max(1, ...bars.map(([,v]) => v));
+  const barsBox = document.getElementById('repBars');
+  if(barsBox){
+    barsBox.innerHTML = bars.length
+      ? bars.map(([label,v]) => `
+          <div class="rep-bar-row">
+            <span class="rep-bar-label">${label}</span>
+            <div class="rep-bar-track"><div class="rep-bar-fill" style="width:${(v/max*100).toFixed(1)}%"></div></div>
+            <span class="rep-bar-val">${fmtBaht(v)}</span>
+          </div>`).join('')
+      : `<div class="empty-note">${EMPTY_LOG_NOTE}</div>`;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   APP SHELL — nav-driven view switching. Still one static file, no
+   router library: each "page" is a <section class="view"> already in
+   the document, and showView() toggles which one is visible.
+   ═══════════════════════════════════════════════════════════════ */
+const VIEWS = ['home','services','quote','customers','history','reports','settings','contact'];
+
+function showView(name){
+  if(!VIEWS.includes(name)) name = 'home';
+  document.querySelectorAll('.view').forEach(v=>{
+    const isTarget = v.id === 'view-' + name;
+    v.hidden = !isTarget;
+    if(isTarget){
+      v.classList.remove('view-enter');
+      void v.offsetWidth;          // restart the animation on repeat visits
+      v.classList.add('view-enter');
+    }
+  });
+  document.querySelectorAll('.tn-item[data-view]').forEach(b=>{
+    b.classList.toggle('on', b.dataset.view === name);
+  });
+  if(location.hash.slice(1) !== name) history.replaceState(null, '', '#' + name);
+  window.scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
+  if(name === 'reports') renderReports();
+  if(name === 'history') renderHistoryView();
+  if(name === 'customers') renderCustomersView();
+  if(name === 'home') renderHomeStats();
+  if(name === 'contact') mountContactView();
+  scanReveals();
+  closePopovers();
+}
+
+function closePopovers(){
+  document.getElementById('tnBellPop').hidden = true;
+  document.getElementById('tnUserPop').hidden = true;
+}
+
+function mountContactView(){
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val && val.trim() ? val : '—'; };
+  const g = id => document.getElementById(id)?.value || document.getElementById(id)?.textContent || '';
+  set('ccName', g('shopLegalName') || g('shopName'));
+  set('ccBranch', g('shopBranch'));
+  set('ccPhone', g('shopBranchPhone') || g('shopPhone'));
+  set('ccAddress', g('shopAddress'));
+}
+
+function mountHistoryControls(){
+  const btn = document.getElementById('btnClearHistory');
+  if(!btn) return;
+  btn.addEventListener('click', () => {
+    if(!confirm('ล้างประวัติใบเสนอราคาทั้งหมดในเครื่องนี้? ทำแล้วกู้คืนไม่ได้')) return;
+    localStorage.removeItem(HISTORY_KEY);
+    renderHistoryView();
+    renderHomeStats();
+  });
+}
+
+function mountNav(){
+  document.querySelectorAll('[data-view]').forEach(el=>{
+    el.addEventListener('click', () => showView(el.dataset.view));
+  });
+
+  const bell = document.getElementById('tnBell');
+  const bellPop = document.getElementById('tnBellPop');
+  bell.addEventListener('click', e => {
+    e.stopPropagation();
+    const opening = bellPop.hidden;
+    closePopovers();
+    bellPop.hidden = !opening;
+    if(opening) bellPop.innerHTML = buildNotifications();
+  });
+
+  const userBtn = document.getElementById('tnUserBtn');
+  const userPop = document.getElementById('tnUserPop');
+  userBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const opening = userPop.hidden;
+    closePopovers();
+    userPop.hidden = !opening;
+  });
+
+  document.addEventListener('click', closePopovers);
+  document.getElementById('tnClearDevice').addEventListener('click', () => {
+    if(confirm('ล้างข้อมูลทั้งหมดที่เก็บไว้ในเครื่องนี้ ได้แก่ ประวัติใบเสนอราคา รายชื่อลูกค้า และคลังรหัส SKU ที่นำเข้าเอง — ยืนยันหรือไม่?')){
+      localStorage.removeItem(HISTORY_KEY);
+      localStorage.removeItem(SKU_STORE_KEY);
+      location.reload();
+    }
+  });
+
+  window.addEventListener('hashchange', () => showView(location.hash.slice(1)));
+  showView(location.hash.slice(1) || 'home');
+}
+
+/* A generator, not a fixed number: it looks at the actual local
+   quotation log rather than showing a canned figure. Empty until the
+   shop has printed or saved at least one quote from this browser. */
+function buildNotifications(){
+  const days = parseInt(document.getElementById('docValid')?.value, 10) || 7;
+  const list = [];
+  if(days > 0){
+    list.push(`<div style="margin-bottom:8px">📄 ใบเสนอราคาฉบับปัจจุบันยืนราคาไว้ ${days} วัน</div>`);
+  }
+  const hist = loadHistory();
+  if(hist.length === 0){
+    list.push('<div>ยังไม่มีการแจ้งเตือนอื่น — ระบบนี้ยังไม่ได้ต่อฐานข้อมูลกลาง การแจ้งเตือนที่นี่มาจากข้อมูลในเครื่องนี้เท่านั้น</div>');
+  } else {
+    list.push(`<div>บันทึกใบเสนอราคาไว้แล้ว ${hist.length} ใบในเครื่องนี้</div>`);
+  }
+  return list.join('');
+}
+
+
 document.addEventListener('DOMContentLoaded',()=>{
+  mountNav();
+  mountHistoryControls();
   ['shopLegalName','shopAddress','shopBranchCode','shopPhone','shopTaxId','custName','custPhone','custCar','appraiserName','approverName','docNo','docDate','docValid','notes'].forEach(id=>{
     document.getElementById(id).addEventListener('input', save);
   });
