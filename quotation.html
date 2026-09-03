@@ -817,6 +817,162 @@ table.items input:focus{
   .topline{height:2px}
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   CINEMATIC HERO — a full-bleed night scene with the copy set over it.
+   Drawn rather than photographed, so there is no asset to fetch and it
+   stays sharp at any size. Screen only; the hero never prints.
+   ═══════════════════════════════════════════════════════════════ */
+.hero.cine{
+  display:block!important;
+  position:relative;overflow:hidden;
+  min-height:clamp(460px,74vh,720px);
+  padding:0!important;
+  border-radius:22px;
+  background-image:none!important;
+  border:1px solid rgba(150,190,240,.16)!important;
+}
+.hero.cine::after{content:none}
+
+.cine-scene{position:absolute;inset:0;z-index:0}
+
+/* sky: night at the top, a held warmth at the horizon */
+.cine-sky{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(90% 34% at 46% 78%, rgba(255,171,96,.30), transparent 62%),
+    radial-gradient(80% 52% at 78% 8%, rgba(96,150,225,.24), transparent 62%),
+    linear-gradient(#04070f 0%, #071427 34%, #0c2242 62%, #163559 84%, #24486e 100%);
+}
+
+/* the moon, and the light it throws */
+.cine-moon{
+  position:absolute;right:17%;top:13%;width:54px;height:54px;border-radius:50%;
+  background:radial-gradient(circle at 50% 50%, #fffdf7 0%, #f7f0df 46%, rgba(238,229,206,.62) 63%, rgba(238,229,206,.18) 70%, rgba(238,229,206,0) 76%);
+  box-shadow:
+    0 0 40px 14px rgba(240,231,206,.22),
+    0 0 130px 56px rgba(150,190,240,.13),
+    0 0 300px 130px rgba(96,150,225,.09);
+  opacity:.92;
+}
+
+.cine-stars{position:absolute;inset:0 0 44% 0}
+.cine-stars i{
+  position:absolute;display:block;border-radius:50%;background:#fff;
+}
+@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:1}}
+
+.cine-ridges{position:absolute;left:0;right:0;bottom:0;width:100%;height:66%}
+
+/* a scatter of town lights along the valley floor */
+.cine-town{position:absolute;left:0;right:0;bottom:16%;height:12%}
+.cine-town i{
+  position:absolute;display:block;width:2px;height:2px;border-radius:50%;
+  background:#ffcf8f;box-shadow:0 0 6px 1px rgba(255,190,110,.85);
+}
+
+/* the light that is kept on */
+.cine-cabin{position:absolute;left:68%;bottom:18%;width:0;height:0;z-index:1}
+.cabin-window{
+  position:absolute;width:11px;height:9px;border-radius:2px;
+  background:linear-gradient(#fff0cf,#ffbf6a);
+  box-shadow:0 0 16px 5px rgba(255,180,90,.75);
+}
+.cabin-halo{
+  position:absolute;left:-52px;top:-52px;width:116px;height:116px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,176,86,.24),transparent 68%);
+  animation:lampBreathe 6.5s ease-in-out infinite;
+}
+@keyframes lampBreathe{0%,100%{opacity:.72;transform:scale(1)}50%{opacity:1;transform:scale(1.09)}}
+
+/* the ground the copy sits on, so type stays legible over any part */
+.cine-fade{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(78deg, rgba(3,6,12,.86) 0%, rgba(3,6,12,.62) 34%, rgba(3,6,12,.12) 62%, transparent 78%),
+    linear-gradient(0deg, rgba(3,6,12,.80) 0%, transparent 46%);
+}
+
+/* ── the copy, set like a magazine spread ── */
+.cine-copy{
+  position:relative;z-index:2;
+  padding:clamp(30px,5vw,64px);
+  max-width:940px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  min-height:clamp(460px,74vh,720px);
+}
+.cine-eyebrow{
+  font-family:var(--font-display);
+  font-size:10px;letter-spacing:.34em;text-transform:uppercase;
+  color:rgba(232,201,138,.92);margin:0 0 18px;font-weight:600;
+}
+.hero.cine h1{
+  font-family:'Trirong',serif;
+  font-weight:400;
+  font-size:clamp(34px,5.6vw,74px);
+  line-height:1.16;
+  letter-spacing:-.005em;
+  color:#f4f7fb;
+  text-shadow:0 2px 40px rgba(0,0,0,.7);
+  margin:0;
+  text-wrap:balance;
+}
+.hero.cine h1 em{
+  font-style:italic;font-weight:300;
+  background:linear-gradient(96deg,#ffe6b8,#fff9ec 42%,#e9c891);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.cine-lede{
+  margin:22px 0 0;max-width:52ch;
+  font-size:clamp(13px,1.25vw,15.5px);line-height:2;
+  color:rgba(214,228,246,.84);
+}
+.cine-stats{
+  display:flex;flex-wrap:wrap;gap:clamp(22px,4vw,54px);
+  margin-top:clamp(26px,3.4vw,42px);
+  padding-top:22px;border-top:1px solid rgba(190,215,250,.16);
+}
+.cs b{
+  display:block;font-family:var(--font-display);font-weight:600;
+  font-size:clamp(21px,2.5vw,31px);letter-spacing:-.01em;
+  color:#fff;line-height:1.1;
+}
+.cs span{
+  display:block;margin-top:7px;
+  font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(160,186,220,.9);font-family:var(--font-display);
+}
+.cine-marks{
+  margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  font-size:11.5px;color:rgba(176,200,232,.78);
+}
+.cine-marks i{font-style:normal;color:rgba(232,201,138,.6)}
+
+/* parallax: each layer is nudged a different distance */
+.cine-scene>*{will-change:transform}
+
+@media (max-width:900px){
+  .hero.cine{min-height:clamp(420px,64vh,560px)}
+  .cine-copy{min-height:clamp(420px,64vh,560px);padding:26px 22px}
+  .cine-moon{width:64px;height:64px;right:9%;top:7%}
+  .cine-lede{font-size:13px;line-height:1.95}
+}
+@media (max-width:640px){
+  .hero.cine{border-radius:16px;min-height:470px}
+  .cine-copy{min-height:470px;padding:24px 18px}
+  .hero.cine h1{font-size:31px;line-height:1.22}
+  .cine-stats{gap:20px 26px;margin-top:24px}
+  .cine-cabin{left:78%;bottom:24%}
+  .cine-moon{width:52px;height:52px;right:8%;top:4.5%}
+  .cine-fade{background:
+    linear-gradient(0deg, rgba(3,6,12,.9) 8%, rgba(3,6,12,.45) 52%, transparent 82%),
+    linear-gradient(78deg, rgba(3,6,12,.7), transparent 76%)}
+}
+@media (prefers-reduced-motion:reduce){
+  .cabin-halo,.cine-stars i{animation:none!important}
+  .cine-scene>*{transform:none!important}
+}
+
 /* print mirrors: <input>/<textarea> clip long values, so on paper we print
    a wrapping text copy of the fields that can legitimately run long. */
 .pmirror,.cell-print{display:none}
@@ -860,7 +1016,8 @@ table.items input:focus{
   .magnet{transform:none!important}
   .counting{animation:none!important}
   .hero h1 .accent.shine-ready{animation:none!important}
-  .site-bar,.hero,.site-foot{display:none!important}
+  .site-bar,.hero,.hero.cine,.site-foot{display:none!important}
+  .cine-scene,.cine-copy{display:none!important}
   .no-print{display:none!important}
   .doc{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#fff!important}
   .party-card{background:none!important}
@@ -1006,28 +1163,64 @@ table.items input:focus{
   </header>
 
   <!-- HERO -->
-  <section class="hero no-print">
-    <div class="hero-l">
-      <h1>ระบบประเมินราคา<br><span class="accent">และใบเสนอราคาอะไหล่รถยนต์</span></h1>
-      <p>ระบบที่ออกแบบมาเพื่อความรวดเร็ว แม่นยำ และมืออาชีพ<br>ช่วยให้คุณปิดการขายได้ง่ายยิ่งขึ้น</p>
-      <div class="hero-badges">
-        <div class="hero-badge"><span class="hb-ico">⚡</span><div><b>รวดเร็ว</b><span>Fast</span></div></div>
-        <div class="hero-badge"><span class="hb-ico">🎯</span><div><b>แม่นยำ</b><span>Accurate</span></div></div>
-        <div class="hero-badge"><span class="hb-ico">🛡️</span><div><b>น่าเชื่อถือ</b><span>Reliable</span></div></div>
-        <div class="hero-badge"><span class="hb-ico">⭐</span><div><b>มืออาชีพ</b><span>Professional</span></div></div>
+  <section class="hero cine no-print">
+    <!-- the scene is drawn, not photographed: no external asset to fetch,
+         nothing to license, and it stays sharp at any size -->
+    <div class="cine-scene" aria-hidden="true">
+      <div class="cine-sky"></div>
+      <div class="cine-moon"></div>
+      <div class="cine-stars" id="cineStars"></div>
+      <svg class="cine-ridges" viewBox="0 0 1440 560" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <linearGradient id="r1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1b3a5e"/><stop offset="100%" stop-color="#12283f"/>
+          </linearGradient>
+          <linearGradient id="r2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0e2036"/><stop offset="100%" stop-color="#081525"/>
+          </linearGradient>
+          <linearGradient id="r3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#050d18"/><stop offset="100%" stop-color="#02060d"/>
+          </linearGradient>
+        </defs>
+        <!-- far range: tall, soft, hazed by distance -->
+        <path class="ridge ridge-far" fill="url(#r1)" opacity=".92"
+              d="M0,300 L96,214 L168,268 L252,150 L338,246 L404,206 L492,286 L586,168 L668,258
+                 L742,222 L836,296 L928,190 L1010,262 L1092,224 L1188,300 L1276,238 L1352,286
+                 L1440,246 L1440,560 L0,560 Z"/>
+        <!-- middle range -->
+        <path class="ridge ridge-mid" fill="url(#r2)"
+              d="M0,392 L88,318 L182,372 L286,262 L372,348 L458,300 L556,386 L664,286 L764,362
+                 L866,316 L964,398 L1074,304 L1168,372 L1268,330 L1360,394 L1440,352
+                 L1440,560 L0,560 Z"/>
+        <!-- near range: the darkest silhouette, closest to the eye -->
+        <path class="ridge ridge-near" fill="url(#r3)"
+              d="M0,486 L120,430 L232,478 L356,396 L472,468 L604,412 L730,486 L858,420
+                 L986,490 L1112,428 L1246,494 L1360,446 L1440,482 L1440,560 L0,560 Z"/>
+      </svg>
+      <div class="cine-town" id="cineTown"></div>
+      <div class="cine-cabin">
+        <span class="cabin-window"></span>
+        <span class="cabin-halo"></span>
+      </div>
+      <div class="cine-fade"></div>
+    </div>
+
+    <div class="cine-copy">
+      <p class="cine-eyebrow">AUTO 1 · สาขาฟิวเจอร์รังสิต</p>
+      <h1>ไฟในร้านยังไม่ดับ<br><em>รออะไหล่คันของคุณอยู่</em></h1>
+      <p class="cine-lede">ใบเสนอราคาที่ออกได้ในสองนาที ราคาตรง ไม่ต้องเดา
+        พิมพ์ลง A4 หน้าเดียว ส่งลูกค้าได้ทันทีตั้งแต่ยังยืนอยู่หน้าเคาน์เตอร์</p>
+      <div class="cine-stats">
+        <div class="cs"><b>10,000+</b><span>คันที่ไว้วางใจ</span></div>
+        <div class="cs"><b>2 นาที</b><span>ต่อหนึ่งใบ</span></div>
+        <div class="cs"><b>A4</b><span>หน้าเดียวจบ</span></div>
+        <div class="cs"><b>+50%</b><span>คิดกำไรอัตโนมัติ</span></div>
+      </div>
+      <div class="cine-marks">
+        <span>มาตรฐานสูง</span><i>·</i><span>บริการด้วยใจ</span><i>·</i>
+        <span>ราคาเป็นธรรม</span><i>·</i><span>รับประกันคุณภาพ</span>
       </div>
     </div>
-    <aside class="hero-card">
-      <h3>AUTO 1</h3>
-      <div class="hc-sub">Premium Service</div>
-      <ul>
-        <li><i>✓</i> มาตรฐานสูง</li>
-        <li><i>✓</i> บริการด้วยใจ</li>
-        <li><i>✓</i> ราคาเป็นธรรม</li>
-        <li><i>✓</i> รับประกันคุณภาพ</li>
-      </ul>
-      <div class="hc-foot"><b>10,000+ คัน</b>ที่ไว้วางใจเรา</div>
-    </aside>
   </section>
 
   <div class="toolbar no-print">
@@ -2107,7 +2300,7 @@ function splitHeadline(){
 /* SpotlightCard — panels light up under the cursor. */
 function mountSpotlight(){
   if(!HOVERS || REDUCED) return;
-  document.querySelectorAll('.site-bar,.hero,.hero-card,.toolbar,.totals,.paste-box,.sku-bar,.site-foot')
+  document.querySelectorAll('.site-bar,.toolbar,.totals,.paste-box,.sku-bar,.site-foot')
     .forEach(el => {
       el.classList.add('spot');
       let queued = false, x = 0, y = 0;
@@ -2223,7 +2416,69 @@ function countTo(el, text){
   countTimers.set(el, requestAnimationFrame(step));
 }
 
+/* Fill the sky and the valley floor. Doing this here rather than in the
+   markup keeps a few hundred elements out of the source file. */
+function mountScene(){
+  const sky = document.getElementById('cineStars');
+  if(sky){
+    let html = '';
+    for(let i = 0; i < 150; i++){
+      const size = Math.random() < 0.86 ? 1 : 2;
+      const top  = Math.pow(Math.random(), 1.5) * 100;   // denser toward the top
+      const dim  = 0.22 + Math.random() * 0.68;
+      const tw   = !REDUCED && Math.random() < 0.22
+        ? `animation:twinkle ${(2.4 + Math.random() * 4).toFixed(1)}s ease-in-out ${(Math.random()*5).toFixed(1)}s infinite;`
+        : '';
+      html += `<i style="left:${(Math.random()*100).toFixed(2)}%;top:${top.toFixed(2)}%;`
+            + `width:${size}px;height:${size}px;opacity:${dim.toFixed(2)};${tw}"></i>`;
+    }
+    sky.innerHTML = html;
+  }
+
+  const town = document.getElementById('cineTown');
+  if(town){
+    let html = '';
+    for(let i = 0; i < 90; i++){
+      // cluster the lights toward the middle of the valley
+      const x = 6 + Math.pow(Math.random(), 0.85) * 88;
+      html += `<i style="left:${x.toFixed(2)}%;top:${(Math.random()*100).toFixed(2)}%;`
+            + `opacity:${(0.3 + Math.random()*0.7).toFixed(2)}"></i>`;
+    }
+    town.innerHTML = html;
+  }
+}
+
+/* Parallax — the layers separate as the cursor crosses the scene. */
+function mountParallax(){
+  if(!HOVERS || REDUCED) return;
+  const hero = document.querySelector('.hero.cine');
+  if(!hero) return;
+  const layers = [
+    ['.cine-stars', 10], ['.cine-moon', 16], ['.cine-ridges', 5],
+    ['.cine-town', 12], ['.cine-cabin', 18]
+  ].map(([sel, d]) => [hero.querySelector(sel), d]).filter(([el]) => el);
+  let queued = false, nx = 0, ny = 0;
+  hero.addEventListener('pointermove', e => {
+    const r = hero.getBoundingClientRect();
+    nx = (e.clientX - (r.left + r.width / 2)) / r.width;
+    ny = (e.clientY - (r.top + r.height / 2)) / r.height;
+    if(queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      layers.forEach(([el, d]) => {
+        el.style.transform = `translate3d(${(-nx * d).toFixed(2)}px, ${(-ny * d * 0.5).toFixed(2)}px, 0)`;
+      });
+      queued = false;
+    });
+  });
+  hero.addEventListener('pointerleave', () => {
+    layers.forEach(([el]) => { el.style.transform = ''; });
+  });
+}
+
 function mountMotion(){
+  mountScene();
+  mountParallax();
   mountTopline();
   mountAurora();
   mountTilt();
