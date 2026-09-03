@@ -813,9 +813,10 @@ table.items input:focus{
 
 
 /* ═══════════════════════════════════════════════════════════════
-   CINEMATIC HERO — a full-bleed night scene with the copy set over it.
-   Drawn rather than photographed, so there is no asset to fetch and it
-   stays sharp at any size. Screen only; the hero never prints.
+   AUTOMOTIVE BLUEPRINT HERO — a technical line-drawing of a car,
+   scanned by a moving beam, with the copy set over it. Drawn rather
+   than photographed: no asset to fetch, stays sharp at any size.
+   Screen only; the hero never prints.
    ═══════════════════════════════════════════════════════════════ */
 .hero.cine{
   display:block!important;
@@ -830,61 +831,54 @@ table.items input:focus{
 
 .cine-scene{position:absolute;inset:0;z-index:0}
 
-/* sky: night at the top, a held warmth at the horizon */
 .cine-sky{
   position:absolute;inset:0;
-  background:
-    radial-gradient(90% 34% at 46% 78%, rgba(255,171,96,.30), transparent 62%),
-    radial-gradient(80% 52% at 78% 8%, rgba(96,150,225,.24), transparent 62%),
-    linear-gradient(#04070f 0%, #071427 34%, #0c2242 62%, #163559 84%, #24486e 100%);
+  background:linear-gradient(160deg,#050a13 0%,#081726 46%,#0b2036 100%);
+}
+.cine-glow{
+  position:absolute;inset:0;
+  background:radial-gradient(58% 62% at 68% 54%, rgba(72,180,255,.16), transparent 68%);
 }
 
-/* the moon, and the light it throws */
-.cine-moon{
-  position:absolute;right:17%;top:13%;width:54px;height:54px;border-radius:50%;
-  background:radial-gradient(circle at 50% 50%, #fffdf7 0%, #f7f0df 46%, rgba(238,229,206,.62) 63%, rgba(238,229,206,.18) 70%, rgba(238,229,206,0) 76%);
-  box-shadow:
-    0 0 40px 14px rgba(240,231,206,.22),
-    0 0 130px 56px rgba(150,190,240,.13),
-    0 0 300px 130px rgba(96,150,225,.09);
-  opacity:.92;
+.cine-grid{position:absolute;inset:0;width:100%;height:100%}
+
+.cine-blueprint{position:absolute;right:0;bottom:0;width:78%;height:92%}
+.dim-lines{fill:none;stroke:rgba(140,195,255,.34);stroke-width:1;stroke-dasharray:2 3}
+.dim-lines path{stroke-dasharray:none}
+
+.car-line{fill:none}
+.car-dim .car-body,
+.car-dim .car-glass{stroke:rgba(150,205,255,.42);stroke-width:2}
+.car-dim .car-crease{stroke:rgba(150,205,255,.26);stroke-width:1.2}
+.car-dim .car-mirror{stroke:rgba(150,205,255,.42);stroke-width:1.4}
+.car-dim .car-light{fill:none;stroke:rgba(255,205,140,.55);stroke-width:1.4}
+.car-dim .wheel circle{stroke:rgba(150,205,255,.4);stroke-width:1.6}
+.car-dim .wheel line{stroke:rgba(150,205,255,.3);stroke-width:1.2}
+
+.car-bright use{stroke:#eaf6ff;stroke-width:2.4;fill:none;
+  filter:drop-shadow(0 0 6px rgba(150,215,255,.9));}
+.scan-band{animation:scanSweep 4.5s linear infinite}
+@keyframes scanSweep{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(900px)}
 }
 
-.cine-stars{position:absolute;inset:0 0 44% 0}
-.cine-stars i{
-  position:absolute;display:block;border-radius:50%;background:#fff;
+.crosshair{
+  fill:none;stroke:rgba(150,220,255,.7);stroke-width:1.3;
+  animation:crossPulse 3.2s ease-in-out infinite;animation-delay:var(--d,0s);
 }
-@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:1}}
-
-.cine-ridges{position:absolute;left:0;right:0;bottom:0;width:100%;height:66%}
-
-/* a scatter of town lights along the valley floor */
-.cine-town{position:absolute;left:0;right:0;bottom:16%;height:12%}
-.cine-town i{
-  position:absolute;display:block;width:2px;height:2px;border-radius:50%;
-  background:#ffcf8f;box-shadow:0 0 6px 1px rgba(255,190,110,.85);
+.crosshair circle{fill:rgba(150,220,255,.08)}
+@keyframes crossPulse{
+  0%,100%{opacity:.35;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.12)}
 }
-
-/* the light that is kept on */
-.cine-cabin{position:absolute;left:68%;bottom:18%;width:0;height:0;z-index:1}
-.cabin-window{
-  position:absolute;width:11px;height:9px;border-radius:2px;
-  background:linear-gradient(#fff0cf,#ffbf6a);
-  box-shadow:0 0 16px 5px rgba(255,180,90,.75);
-}
-.cabin-halo{
-  position:absolute;left:-52px;top:-52px;width:116px;height:116px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,176,86,.24),transparent 68%);
-  animation:lampBreathe 6.5s ease-in-out infinite;
-}
-@keyframes lampBreathe{0%,100%{opacity:.72;transform:scale(1)}50%{opacity:1;transform:scale(1.09)}}
 
 /* the ground the copy sits on, so type stays legible over any part */
 .cine-fade{
   position:absolute;inset:0;
   background:
-    linear-gradient(78deg, rgba(3,6,12,.86) 0%, rgba(3,6,12,.62) 34%, rgba(3,6,12,.12) 62%, transparent 78%),
-    linear-gradient(0deg, rgba(3,6,12,.80) 0%, transparent 46%);
+    linear-gradient(78deg, rgba(3,6,12,.90) 0%, rgba(3,6,12,.68) 36%, rgba(3,6,12,.16) 64%, transparent 80%),
+    linear-gradient(0deg, rgba(3,6,12,.72) 0%, transparent 42%);
 }
 
 /* ── the copy, set like a magazine spread ── */
@@ -898,7 +892,7 @@ table.items input:focus{
 .cine-eyebrow{
   font-family:var(--font-display);
   font-size:10px;letter-spacing:.34em;text-transform:uppercase;
-  color:rgba(232,201,138,.92);margin:0 0 18px;font-weight:600;
+  color:rgba(150,215,255,.92);margin:0 0 18px;font-weight:600;
 }
 .hero.cine h1{
   font-family:'Trirong',serif;
@@ -913,7 +907,7 @@ table.items input:focus{
 }
 .hero.cine h1 em{
   font-style:italic;font-weight:300;
-  background:linear-gradient(96deg,#ffe6b8,#fff9ec 42%,#e9c891);
+  background:linear-gradient(96deg,#9fd8ff,#eaf8ff 42%,#7bc8ff);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .cine-lede{
@@ -948,92 +942,26 @@ table.items input:focus{
 @media (max-width:900px){
   .hero.cine{min-height:clamp(420px,64vh,560px)}
   .cine-copy{min-height:clamp(420px,64vh,560px);padding:26px 22px}
-  .cine-moon{width:64px;height:64px;right:9%;top:7%}
   .cine-lede{font-size:13px;line-height:1.95}
 }
 
-/* ── continuous ambient motion, no cursor required ──────────────
-   The reference clip's scene never sits still: a nebula breathes
-   behind the moon, thin cloud wisps drift past, and the whole frame
-   creeps in a slow Ken-Burns push. This is that, built to be cheap
-   (transform/opacity only) and to fully stop under reduced motion. */
-
-.cine-scene{ animation:sceneDrift 70s ease-in-out infinite alternate; transform-origin:52% 62% }
+/* ── continuous ambient motion, no cursor required ────────────── */
+.cine-scene{ animation:sceneDrift 70s ease-in-out infinite alternate; transform-origin:60% 60% }
 @keyframes sceneDrift{
   0%{transform:scale(1) translate3d(0,0,0)}
-  100%{transform:scale(1.045) translate3d(-1.1%,-0.6%,0)}
+  100%{transform:scale(1.04) translate3d(-1%,-0.5%,0)}
 }
-
-/* nebula: soft colour drifting behind and around the moon, like the
-   reference's swirling light — blurred blobs, not a texture image */
-.cine-nebula{
-  position:absolute;right:2%;top:-6%;width:52%;height:56%;
-  pointer-events:none;filter:blur(30px);mix-blend-mode:screen;
-}
-.cine-nebula i{position:absolute;display:block;border-radius:50%;opacity:.55}
-.cine-nebula i:nth-child(1){
-  width:70%;height:70%;right:6%;top:8%;
-  background:radial-gradient(circle,rgba(150,190,255,.40),transparent 68%);
-  animation:nebA 22s ease-in-out infinite;
-}
-.cine-nebula i:nth-child(2){
-  width:56%;height:56%;right:32%;top:26%;
-  background:radial-gradient(circle,rgba(255,205,150,.30),transparent 66%);
-  animation:nebB 27s ease-in-out infinite;
-}
-.cine-nebula i:nth-child(3){
-  width:44%;height:44%;right:12%;top:38%;
-  background:radial-gradient(circle,rgba(190,160,255,.26),transparent 66%);
-  animation:nebC 33s ease-in-out infinite;
-}
-@keyframes nebA{
-  0%,100%{transform:translate(0,0) scale(1)}
-  50%{transform:translate(-6%,4%) scale(1.14)}
-}
-@keyframes nebB{
-  0%,100%{transform:translate(0,0) scale(1.06)}
-  50%{transform:translate(5%,-5%) scale(.92)}
-}
-@keyframes nebC{
-  0%,100%{transform:translate(0,0) scale(.96)}
-  50%{transform:translate(-4%,-6%) scale(1.1)}
-}
-
-/* thin cloud wisps drifting slowly across the upper scene */
-.cine-clouds{position:absolute;inset:0 0 46% 0;overflow:hidden;pointer-events:none}
-.cine-clouds i{
-  position:absolute;display:block;border-radius:50%;
-  background:radial-gradient(ellipse at center, rgba(210,225,245,.16), transparent 70%);
-  filter:blur(6px);
-}
-.cine-clouds i:nth-child(1){width:46%;height:20%;top:14%;left:-30%;animation:driftA 46s linear infinite}
-.cine-clouds i:nth-child(2){width:60%;height:24%;top:32%;left:-46%;animation:driftB 64s linear infinite;animation-delay:-18s}
-.cine-clouds i:nth-child(3){width:38%;height:16%;top:4%;left:-24%;animation:driftA 38s linear infinite;animation-delay:-9s}
-@keyframes driftA{ to{ transform:translateX(220%) } }
-@keyframes driftB{ to{ transform:translateX(190%) } }
-
-/* the moon itself breathes very gently, so it never reads as a cut-out */
-.cine-moon{ animation:moonBreathe 9s ease-in-out infinite }
-@keyframes moonBreathe{
-  0%,100%{ filter:brightness(1) }
-  50%{ filter:brightness(1.08) }
-}
-
-/* shooting stars: rare, quick, diagonal — injected by JS at random
-   intervals so they never repeat on a fixed beat */
-.shooter{
-  position:absolute;height:1.5px;width:90px;border-radius:2px;
-  background:linear-gradient(90deg,rgba(255,255,255,.95),rgba(255,255,255,0));
-  transform-origin:0 0;pointer-events:none;
-}
+.cine-grid{ animation:gridDriftHero 40s linear infinite }
+@keyframes gridDriftHero{ to{ background-position:42px 42px } }
 
 @media (prefers-reduced-motion:reduce){
   .cine-scene{animation:none}
-  .cine-nebula i,.cine-clouds i,.cine-moon{animation:none}
+  .cine-grid{animation:none}
+  .scan-band{animation:none}
+  .crosshair{animation:none}
 }
 @media (max-width:640px){
-  .cine-nebula{width:74%;height:40%;top:-8%}
-  .cine-clouds i:nth-child(2){display:none}   /* keep the small screen calm */
+  .cine-blueprint{width:96%;height:82%;right:2%}
 }
 
 @media (max-width:640px){
@@ -1041,14 +969,11 @@ table.items input:focus{
   .cine-copy{min-height:470px;padding:24px 18px}
   .hero.cine h1{font-size:31px;line-height:1.22}
   .cine-stats{gap:20px 26px;margin-top:24px}
-  .cine-cabin{left:78%;bottom:24%}
-  .cine-moon{width:52px;height:52px;right:8%;top:4.5%}
   .cine-fade{background:
     linear-gradient(0deg, rgba(3,6,12,.9) 8%, rgba(3,6,12,.45) 52%, transparent 82%),
-    linear-gradient(78deg, rgba(3,6,12,.7), transparent 76%)}
+    linear-gradient(78deg, rgba(3,6,12,.75), transparent 76%)}
 }
 @media (prefers-reduced-motion:reduce){
-  .cabin-halo,.cine-stars i{animation:none!important}
   .cine-scene>*{transform:none!important}
 }
 
@@ -1097,7 +1022,7 @@ table.items input:focus{
   .hero h1 .accent.shine-ready{animation:none!important}
   .site-bar,.hero,.hero.cine,.site-foot{display:none!important}
   .cine-scene,.cine-copy{display:none!important}
-  .cine-nebula,.cine-clouds,.cine-shooters{display:none!important}
+  .cine-grid,.cine-glow,.cine-blueprint{display:none!important}
   .no-print{display:none!important}
   .doc{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#fff!important}
   .party-card{background:none!important}
@@ -1248,43 +1173,92 @@ table.items input:focus{
          nothing to license, and it stays sharp at any size -->
     <div class="cine-scene" aria-hidden="true">
       <div class="cine-sky"></div>
-      <div class="cine-nebula" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="cine-moon"></div>
-      <div class="cine-clouds" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="cine-stars" id="cineStars"></div>
-      <div class="cine-shooters" id="cineShooters" aria-hidden="true"></div>
-      <svg class="cine-ridges" viewBox="0 0 1440 560" preserveAspectRatio="xMidYMax slice">
+      <div class="cine-glow"></div>
+      <svg class="cine-grid" aria-hidden="true">
         <defs>
-          <linearGradient id="r1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#1b3a5e"/><stop offset="100%" stop-color="#12283f"/>
-          </linearGradient>
-          <linearGradient id="r2" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#0e2036"/><stop offset="100%" stop-color="#081525"/>
-          </linearGradient>
-          <linearGradient id="r3" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#050d18"/><stop offset="100%" stop-color="#02060d"/>
-          </linearGradient>
+          <pattern id="bpGrid" width="42" height="42" patternUnits="userSpaceOnUse">
+            <path d="M42,0 L0,0 L0,42" fill="none" stroke="rgba(120,190,255,.10)" stroke-width="1"/>
+          </pattern>
         </defs>
-        <!-- far range: tall, soft, hazed by distance -->
-        <path class="ridge ridge-far" fill="url(#r1)" opacity=".92"
-              d="M0,300 L96,214 L168,268 L252,150 L338,246 L404,206 L492,286 L586,168 L668,258
-                 L742,222 L836,296 L928,190 L1010,262 L1092,224 L1188,300 L1276,238 L1352,286
-                 L1440,246 L1440,560 L0,560 Z"/>
-        <!-- middle range -->
-        <path class="ridge ridge-mid" fill="url(#r2)"
-              d="M0,392 L88,318 L182,372 L286,262 L372,348 L458,300 L556,386 L664,286 L764,362
-                 L866,316 L964,398 L1074,304 L1168,372 L1268,330 L1360,394 L1440,352
-                 L1440,560 L0,560 Z"/>
-        <!-- near range: the darkest silhouette, closest to the eye -->
-        <path class="ridge ridge-near" fill="url(#r3)"
-              d="M0,486 L120,430 L232,478 L356,396 L472,468 L604,412 L730,486 L858,420
-                 L986,490 L1112,428 L1246,494 L1360,446 L1440,482 L1440,560 L0,560 Z"/>
+        <rect width="100%" height="100%" fill="url(#bpGrid)"/>
       </svg>
-      <div class="cine-town" id="cineTown"></div>
-      <div class="cine-cabin">
-        <span class="cabin-window"></span>
-        <span class="cabin-halo"></span>
-      </div>
+
+      <svg class="cine-blueprint" viewBox="0 0 900 380" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <path id="carBodyPath" d="M150,300 L150,278 Q150,264 164,258 L230,244 Q246,210 292,198
+                   Q300,168 350,158 Q420,146 480,146 Q560,148 592,168 L620,206
+                   Q664,214 700,232 Q736,240 750,262 L750,286 Q750,296 738,300
+                   L706,300 A46,46 0 0 1 614,300 L316,300 A46,46 0 0 1 224,300 Z"/>
+          <linearGradient id="scanGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fff" stop-opacity="0"/>
+            <stop offset="82%" stop-color="#fff" stop-opacity=".95"/>
+            <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+          </linearGradient>
+          <mask id="scanMask" maskUnits="userSpaceOnUse" x="0" y="0" width="900" height="380">
+            <rect class="scan-band" x="0" y="-140" width="900" height="140" fill="url(#scanGrad)"/>
+          </mask>
+        </defs>
+
+        <!-- dimension lines: blueprint convention, decorative only -->
+        <g class="dim-lines">
+          <line x1="150" y1="330" x2="750" y2="330"/>
+          <line x1="150" y1="316" x2="150" y2="336"/>
+          <line x1="750" y1="316" x2="750" y2="336"/>
+          <path d="M150,330 l10,-4 M150,330 l10,4"/>
+          <path d="M750,330 l-10,-4 M750,330 l-10,4"/>
+          <line x1="112" y1="300" x2="112" y2="146"/>
+          <line x1="100" y1="300" x2="124" y2="300"/>
+          <line x1="100" y1="146" x2="124" y2="146"/>
+          <path d="M112,146 l-4,10 M112,146 l4,10"/>
+          <path d="M112,300 l-4,-10 M112,300 l4,-10"/>
+          <line x1="270" y1="352" x2="660" y2="352"/>
+          <line x1="270" y1="344" x2="270" y2="360"/>
+          <line x1="660" y1="344" x2="660" y2="360"/>
+        </g>
+
+        <!-- the car: a resting wireframe pass, plus a brighter twin that
+             only shows through the scan band as it sweeps -->
+        <g class="car-line car-dim">
+          <use href="#carBodyPath" class="car-body"/>
+          <path class="car-glass" d="M300,197 Q306,176 351,164 Q420,153 480,153 Q554,155 584,173
+                   L607,204 L579,204 Q554,180 480,179 Q426,179 357,189 Q327,193 300,206 Z"/>
+          <line class="car-crease" x1="230" y1="234" x2="620" y2="231"/>
+          <path class="car-mirror" d="M296,196 L282,190 L280,200 Z"/>
+          <rect class="car-light" x="152" y="262" width="10" height="8" rx="2"/>
+          <rect class="car-light" x="740" y="266" width="10" height="8" rx="2"/>
+          <g class="wheel">
+            <circle cx="270" cy="300" r="46"/>
+            <circle cx="270" cy="300" r="21"/>
+            <line x1="270" y1="279" x2="270" y2="321"/>
+            <line x1="249" y1="300" x2="291" y2="300"/>
+            <line x1="255" y1="285" x2="285" y2="315"/>
+            <line x1="285" y1="285" x2="255" y2="315"/>
+          </g>
+          <g class="wheel">
+            <circle cx="660" cy="300" r="46"/>
+            <circle cx="660" cy="300" r="21"/>
+            <line x1="660" y1="279" x2="660" y2="321"/>
+            <line x1="639" y1="300" x2="681" y2="300"/>
+            <line x1="645" y1="285" x2="675" y2="315"/>
+            <line x1="675" y1="285" x2="645" y2="315"/>
+          </g>
+        </g>
+        <g class="car-line car-bright" mask="url(#scanMask)">
+          <use href="#carBodyPath"/>
+        </g>
+
+        <!-- inspection points: soft pulsing crosshairs -->
+        <g class="crosshair" style="--d:0s" transform="translate(270,300)">
+          <circle r="9"/><line x1="-15" y1="0" x2="15" y2="0"/><line x1="0" y1="-15" x2="0" y2="15"/>
+        </g>
+        <g class="crosshair" style="--d:.9s" transform="translate(230,220)">
+          <circle r="9"/><line x1="-15" y1="0" x2="15" y2="0"/><line x1="0" y1="-15" x2="0" y2="15"/>
+        </g>
+        <g class="crosshair" style="--d:1.8s" transform="translate(660,300)">
+          <circle r="9"/><line x1="-15" y1="0" x2="15" y2="0"/><line x1="0" y1="-15" x2="0" y2="15"/>
+        </g>
+      </svg>
+
       <div class="cine-fade"></div>
     </div>
 
@@ -2497,76 +2471,16 @@ function countTo(el, text){
   countTimers.set(el, requestAnimationFrame(step));
 }
 
-/* Fill the sky and the valley floor. Doing this here rather than in the
-   markup keeps a few hundred elements out of the source file. */
-/* A shooting star every so often — randomised so it never falls into a
-   visible rhythm. Off entirely under reduced motion. */
-function mountShooters(){
-  if(REDUCED) return;
-  const box = document.getElementById('cineShooters');
-  if(!box) return;
-  const fire = () => {
-    const s = document.createElement('span');
-    s.className = 'shooter';
-    const x = 8 + Math.random() * 70, y = 6 + Math.random() * 34;
-    const ang = 24 + Math.random() * 10;
-    s.style.left = x + '%'; s.style.top = y + '%';
-    s.style.transform = `rotate(${ang}deg)`;
-    box.appendChild(s);
-    const dist = 160 + Math.random() * 90;
-    s.animate([
-      { transform: `rotate(${ang}deg) translateX(0)`, opacity: 0 },
-      { transform: `rotate(${ang}deg) translateX(${dist * 0.18}px)`, opacity: 1, offset: 0.12 },
-      { transform: `rotate(${ang}deg) translateX(${dist}px)`, opacity: 0 }
-    ], { duration: 900 + Math.random() * 400, easing: 'cubic-bezier(.2,.6,.3,1)' });
-    setTimeout(() => s.remove(), 1400);
-  };
-  const loop = () => {
-    fire();
-    setTimeout(loop, 5000 + Math.random() * 7000);
-  };
-  setTimeout(loop, 2200 + Math.random() * 2000);
-}
-
-function mountScene(){
-  const sky = document.getElementById('cineStars');
-  if(sky){
-    let html = '';
-    for(let i = 0; i < 150; i++){
-      const size = Math.random() < 0.86 ? 1 : 2;
-      const top  = Math.pow(Math.random(), 1.5) * 100;   // denser toward the top
-      const dim  = 0.22 + Math.random() * 0.68;
-      const tw   = !REDUCED && Math.random() < 0.22
-        ? `animation:twinkle ${(2.4 + Math.random() * 4).toFixed(1)}s ease-in-out ${(Math.random()*5).toFixed(1)}s infinite;`
-        : '';
-      html += `<i style="left:${(Math.random()*100).toFixed(2)}%;top:${top.toFixed(2)}%;`
-            + `width:${size}px;height:${size}px;opacity:${dim.toFixed(2)};${tw}"></i>`;
-    }
-    sky.innerHTML = html;
-  }
-
-  const town = document.getElementById('cineTown');
-  if(town){
-    let html = '';
-    for(let i = 0; i < 90; i++){
-      // cluster the lights toward the middle of the valley
-      const x = 6 + Math.pow(Math.random(), 0.85) * 88;
-      html += `<i style="left:${x.toFixed(2)}%;top:${(Math.random()*100).toFixed(2)}%;`
-            + `opacity:${(0.3 + Math.random()*0.7).toFixed(2)}"></i>`;
-    }
-    town.innerHTML = html;
-  }
-}
-
-/* Parallax — the layers separate as the cursor crosses the scene. */
+/* Parallax — the blueprint's layers separate as the cursor crosses the
+   scene: the grid drifts least, the dimension lines a little more, the
+   car itself the most, like planes at different depths under the beam. */
 function mountParallax(){
   if(!HOVERS || REDUCED) return;
   const hero = document.querySelector('.hero.cine');
   if(!hero) return;
   const layers = [
-    ['.cine-stars', 10], ['.cine-moon', 16], ['.cine-ridges', 5],
-    ['.cine-town', 12], ['.cine-cabin', 18]
-  ].map(([sel, d]) => [hero.querySelector(sel), d]).filter(([el]) => el);
+    ['.cine-grid', 6], ['.dim-lines', 10], ['.car-line', 16], ['.crosshair', 20]
+  ].map(([sel, d]) => [[...hero.querySelectorAll(sel)], d]);
   let queued = false, nx = 0, ny = 0;
   hero.addEventListener('pointermove', e => {
     const r = hero.getBoundingClientRect();
@@ -2575,20 +2489,19 @@ function mountParallax(){
     if(queued) return;
     queued = true;
     requestAnimationFrame(() => {
-      layers.forEach(([el, d]) => {
-        el.style.transform = `translate3d(${(-nx * d).toFixed(2)}px, ${(-ny * d * 0.5).toFixed(2)}px, 0)`;
+      layers.forEach(([els, d]) => {
+        const t = `translate3d(${(-nx * d).toFixed(2)}px, ${(-ny * d * 0.5).toFixed(2)}px, 0)`;
+        els.forEach(el => { el.style.transform = t; });
       });
       queued = false;
     });
   });
   hero.addEventListener('pointerleave', () => {
-    layers.forEach(([el]) => { el.style.transform = ''; });
+    layers.forEach(([els]) => els.forEach(el => { el.style.transform = ''; }));
   });
 }
 
 function mountMotion(){
-  mountScene();
-  mountShooters();
   mountParallax();
   mountTopline();
   mountAurora();
