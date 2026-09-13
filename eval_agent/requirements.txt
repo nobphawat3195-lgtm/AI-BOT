@@ -1,0 +1,6 @@
+# The rule checks run on the standard library alone.
+# anthropic is only needed for the optional --llm commentary.
+anthropic>=0.40.0
+
+# development / tests
+pytest>=8.3.0

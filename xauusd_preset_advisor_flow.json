@@ -1,0 +1,326 @@
+{
+  "id": "xauusd-preset-advisor",
+  "name": "XAUUSD Preset Advisor",
+  "description": "Reads gold market context, asks an LLM for a BUY/SELL/HOLD verdict with levels, and publishes it to the trading bridge.",
+  "is_component": false,
+  "last_tested_version": "1.1.0",
+  "endpoint_name": "xauusd-advisor",
+  "data": {
+    "viewport": { "x": 0, "y": 0, "zoom": 0.75 },
+    "nodes": [
+      {
+        "id": "ChatInput-mkt01",
+        "type": "genericNode",
+        "position": { "x": -420, "y": 120 },
+        "data": {
+          "id": "ChatInput-mkt01",
+          "type": "ChatInput",
+          "node": {
+            "display_name": "Market Context",
+            "description": "Paste the current gold picture: price, trend, ATR, session, news.",
+            "base_classes": ["Message"],
+            "documentation": "",
+            "beta": false,
+            "outputs": [
+              {
+                "types": ["Message"],
+                "selected": "Message",
+                "name": "message",
+                "display_name": "Message",
+                "method": "message_response"
+              }
+            ],
+            "field_order": ["input_value", "sender", "sender_name"],
+            "template": {
+              "_type": "Component",
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "show": true,
+                "multiline": true,
+                "name": "input_value",
+                "display_name": "Text",
+                "advanced": false,
+                "input_types": ["Message"],
+                "value": "XAUUSD price 2412.50, H1 uptrend, ATR(14) 4.8, London session, DXY softening, no red-folder news for 3 hours."
+              },
+              "sender": {
+                "type": "str",
+                "required": false,
+                "show": false,
+                "name": "sender",
+                "display_name": "Sender Type",
+                "advanced": true,
+                "value": "User"
+              },
+              "sender_name": {
+                "type": "str",
+                "required": false,
+                "show": false,
+                "name": "sender_name",
+                "display_name": "Sender Name",
+                "advanced": true,
+                "value": "User"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "Prompt-advis02",
+        "type": "genericNode",
+        "position": { "x": -60, "y": 90 },
+        "data": {
+          "id": "Prompt-advis02",
+          "type": "Prompt",
+          "node": {
+            "display_name": "Advisor Prompt",
+            "description": "Pins the model to a strict, machine-readable answer.",
+            "base_classes": ["Message"],
+            "documentation": "",
+            "beta": false,
+            "outputs": [
+              {
+                "types": ["Message"],
+                "selected": "Message",
+                "name": "prompt",
+                "display_name": "Prompt Message",
+                "method": "build_prompt"
+              }
+            ],
+            "field_order": ["template", "context"],
+            "template": {
+              "_type": "Component",
+              "template": {
+                "type": "prompt",
+                "required": true,
+                "show": true,
+                "multiline": true,
+                "name": "template",
+                "display_name": "Template",
+                "advanced": false,
+                "value": "You are a disciplined XAUUSD (gold) intraday analyst.\n\nMarket context:\n{context}\n\nDecide whether to BUY, SELL, or HOLD. Be conservative: answer HOLD unless the setup is clear.\n\nReply with ONLY a JSON object, no prose and no code fences:\n{\n  \"side\": \"BUY\" | \"SELL\" | \"HOLD\",\n  \"confidence\": 0.0-1.0,\n  \"entry\": number or null,\n  \"stop_loss\": number or null,\n  \"take_profit\": number or null,\n  \"rationale\": \"one short sentence\"\n}\n\nRules:\n- A BUY stop_loss sits BELOW entry; a SELL stop_loss sits ABOVE entry.\n- Target at least 1.5x the stop distance.\n- Keep the stop within roughly 1-2x ATR.\n- Use confidence below 0.6 when unsure; the bridge will reject it, which is the safe outcome."
+              },
+              "context": {
+                "type": "str",
+                "required": false,
+                "show": true,
+                "multiline": true,
+                "name": "context",
+                "display_name": "context",
+                "advanced": false,
+                "input_types": ["Message", "Text"],
+                "value": ""
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "OpenAIModel-llm03",
+        "type": "genericNode",
+        "position": { "x": 300, "y": 90 },
+        "data": {
+          "id": "OpenAIModel-llm03",
+          "type": "OpenAIModel",
+          "node": {
+            "display_name": "LLM",
+            "description": "Swap this node for Anthropic or Google if you prefer another provider.",
+            "base_classes": ["Message"],
+            "documentation": "",
+            "beta": false,
+            "outputs": [
+              {
+                "types": ["Message"],
+                "selected": "Message",
+                "name": "text_output",
+                "display_name": "Text",
+                "method": "text_response"
+              }
+            ],
+            "field_order": ["input_value", "model_name", "temperature", "api_key"],
+            "template": {
+              "_type": "Component",
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "show": true,
+                "name": "input_value",
+                "display_name": "Input",
+                "advanced": false,
+                "input_types": ["Message"],
+                "value": ""
+              },
+              "model_name": {
+                "type": "str",
+                "required": false,
+                "show": true,
+                "name": "model_name",
+                "display_name": "Model Name",
+                "advanced": false,
+                "value": "gpt-4o-mini"
+              },
+              "temperature": {
+                "type": "float",
+                "required": false,
+                "show": true,
+                "name": "temperature",
+                "display_name": "Temperature",
+                "advanced": false,
+                "value": 0.1
+              },
+              "api_key": {
+                "type": "str",
+                "required": true,
+                "show": true,
+                "password": true,
+                "name": "api_key",
+                "display_name": "OpenAI API Key",
+                "advanced": false,
+                "value": ""
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "PythonFunction-pub04",
+        "type": "genericNode",
+        "position": { "x": 660, "y": 110 },
+        "data": {
+          "id": "PythonFunction-pub04",
+          "type": "PythonFunction",
+          "node": {
+            "display_name": "Publish To Bridge",
+            "description": "Parses the LLM's JSON and POSTs it to the FastAPI bridge. Edit BRIDGE_URL and API_TOKEN below.",
+            "base_classes": ["Message"],
+            "documentation": "",
+            "beta": false,
+            "outputs": [
+              {
+                "types": ["Message"],
+                "selected": "Message",
+                "name": "output",
+                "display_name": "Result",
+                "method": "execute"
+              }
+            ],
+            "field_order": ["function_code", "input_value"],
+            "template": {
+              "_type": "Component",
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "show": true,
+                "name": "input_value",
+                "display_name": "Input",
+                "advanced": false,
+                "input_types": ["Message"],
+                "value": ""
+              },
+              "function_code": {
+                "type": "code",
+                "required": true,
+                "show": true,
+                "multiline": true,
+                "name": "function_code",
+                "display_name": "Code",
+                "advanced": false,
+                "value": "import json, re, urllib.request, urllib.error\n\n# --- edit these two -------------------------------------------------\nBRIDGE_URL = \"http://127.0.0.1:8000\"\nAPI_TOKEN  = \"change-me\"\n# --------------------------------------------------------------------\n\ndef publish(text: str) -> str:\n    \"\"\"Parse the model's JSON verdict and forward it to the bridge.\"\"\"\n    raw = str(text).strip()\n    # Models often wrap JSON in code fences; take the first object.\n    match = re.search(r\"\\{.*\\}\", raw, re.S)\n    if not match:\n        return f\"ERROR: no JSON found in model output: {raw[:200]}\"\n    try:\n        verdict = json.loads(match.group(0))\n    except json.JSONDecodeError as exc:\n        return f\"ERROR: bad JSON from model ({exc})\"\n\n    side = str(verdict.get(\"side\", \"\")).upper()\n    if side not in {\"BUY\", \"SELL\", \"HOLD\"}:\n        return f\"ERROR: unexpected side {side!r}\"\n    if side == \"HOLD\":\n        return \"HOLD - nothing sent to the bridge.\"\n\n    payload = {\n        \"symbol\": \"XAUUSD\",\n        \"side\": side,\n        \"confidence\": float(verdict.get(\"confidence\", 0)),\n        \"rationale\": str(verdict.get(\"rationale\", \"\"))[:500],\n        \"source\": \"langflow\",\n    }\n    for key in (\"entry\", \"stop_loss\", \"take_profit\"):\n        value = verdict.get(key)\n        if value not in (None, \"\", 0):\n            payload[key] = float(value)\n\n    request = urllib.request.Request(\n        f\"{BRIDGE_URL}/api/signals\",\n        data=json.dumps(payload).encode(),\n        headers={\"Content-Type\": \"application/json\", \"X-API-Token\": API_TOKEN},\n        method=\"POST\",\n    )\n    try:\n        with urllib.request.urlopen(request, timeout=15) as resp:\n            result = json.loads(resp.read().decode())\n    except urllib.error.HTTPError as exc:\n        return f\"ERROR: bridge returned HTTP {exc.code}: {exc.read().decode()[:200]}\"\n    except urllib.error.URLError as exc:\n        return f\"ERROR: cannot reach the bridge - {exc.reason}\"\n\n    status = \"ACCEPTED\" if result.get(\"accepted\") else \"REJECTED\"\n    return f\"{status}: {result.get('reason', '')}\"\n"
+              }
+            }
+          }
+        }
+      },
+      {
+        "id": "ChatOutput-out05",
+        "type": "genericNode",
+        "position": { "x": 1020, "y": 130 },
+        "data": {
+          "id": "ChatOutput-out05",
+          "type": "ChatOutput",
+          "node": {
+            "display_name": "Result",
+            "description": "What the bridge decided.",
+            "base_classes": ["Message"],
+            "documentation": "",
+            "beta": false,
+            "outputs": [
+              {
+                "types": ["Message"],
+                "selected": "Message",
+                "name": "message",
+                "display_name": "Message",
+                "method": "message_response"
+              }
+            ],
+            "field_order": ["input_value"],
+            "template": {
+              "_type": "Component",
+              "input_value": {
+                "type": "str",
+                "required": false,
+                "show": true,
+                "name": "input_value",
+                "display_name": "Text",
+                "advanced": false,
+                "input_types": ["Message"],
+                "value": ""
+              }
+            }
+          }
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "e-mkt01-advis02",
+        "source": "ChatInput-mkt01",
+        "target": "Prompt-advis02",
+        "sourceHandle": "{œdataTypeœ:œChatInputœ,œidœ:œChatInput-mkt01œ,œnameœ:œmessageœ,œoutput_typesœ:[œMessageœ]}",
+        "targetHandle": "{œfieldNameœ:œcontextœ,œidœ:œPrompt-advis02œ,œinputTypesœ:[œMessageœ,œTextœ],œtypeœ:œstrœ}",
+        "data": {
+          "sourceHandle": { "dataType": "ChatInput", "id": "ChatInput-mkt01", "name": "message", "output_types": ["Message"] },
+          "targetHandle": { "fieldName": "context", "id": "Prompt-advis02", "inputTypes": ["Message", "Text"], "type": "str" }
+        },
+        "className": ""
+      },
+      {
+        "id": "e-advis02-llm03",
+        "source": "Prompt-advis02",
+        "target": "OpenAIModel-llm03",
+        "sourceHandle": "{œdataTypeœ:œPromptœ,œidœ:œPrompt-advis02œ,œnameœ:œpromptœ,œoutput_typesœ:[œMessageœ]}",
+        "targetHandle": "{œfieldNameœ:œinput_valueœ,œidœ:œOpenAIModel-llm03œ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "data": {
+          "sourceHandle": { "dataType": "Prompt", "id": "Prompt-advis02", "name": "prompt", "output_types": ["Message"] },
+          "targetHandle": { "fieldName": "input_value", "id": "OpenAIModel-llm03", "inputTypes": ["Message"], "type": "str" }
+        },
+        "className": ""
+      },
+      {
+        "id": "e-llm03-pub04",
+        "source": "OpenAIModel-llm03",
+        "target": "PythonFunction-pub04",
+        "sourceHandle": "{œdataTypeœ:œOpenAIModelœ,œidœ:œOpenAIModel-llm03œ,œnameœ:œtext_outputœ,œoutput_typesœ:[œMessageœ]}",
+        "targetHandle": "{œfieldNameœ:œinput_valueœ,œidœ:œPythonFunction-pub04œ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "data": {
+          "sourceHandle": { "dataType": "OpenAIModel", "id": "OpenAIModel-llm03", "name": "text_output", "output_types": ["Message"] },
+          "targetHandle": { "fieldName": "input_value", "id": "PythonFunction-pub04", "inputTypes": ["Message"], "type": "str" }
+        },
+        "className": ""
+      },
+      {
+        "id": "e-pub04-out05",
+        "source": "PythonFunction-pub04",
+        "target": "ChatOutput-out05",
+        "sourceHandle": "{œdataTypeœ:œPythonFunctionœ,œidœ:œPythonFunction-pub04œ,œnameœ:œoutputœ,œoutput_typesœ:[œMessageœ]}",
+        "targetHandle": "{œfieldNameœ:œinput_valueœ,œidœ:œChatOutput-out05œ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "data": {
+          "sourceHandle": { "dataType": "PythonFunction", "id": "PythonFunction-pub04", "name": "output", "output_types": ["Message"] },
+          "targetHandle": { "fieldName": "input_value", "id": "ChatOutput-out05", "inputTypes": ["Message"], "type": "str" }
+        },
+        "className": ""
+      }
+    ]
+  }
+}
