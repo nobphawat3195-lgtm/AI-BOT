@@ -21,34 +21,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Sanity-check Dukascopy XAUUSD M5
+      - name: Download current MT5 XAUUSD M5 dataset
         run: |
           mkdir -p research/python_xau_backtest/data
-          npx -y dukascopy-node@1.50.0 \
-            -i xauusd \
-            -from 2025-09-16 \
-            -to 2025-09-17 \
-            -t m5 \
-            -p bid \
-            -f csv \
-            -dir research/python_xau_backtest/data \
-            -fn sanity \
-            -r 3
-          test -s research/python_xau_backtest/data/sanity.csv
-          head -n 3 research/python_xau_backtest/data/sanity.csv
-      - name: Download 1Y XAUUSD M5
-        run: |
-          rm -rf research/python_xau_backtest/data/parts
-          npx -y dukascopy-node@1.50.0 \
-            -i xauusd \
-            -from 2025-09-16 \
-            -to 2026-09-16 \
-            -t m5 \
-            -p bid \
-            -f csv \
-            -dir research/python_xau_backtest/data \
-            -fn xauusd_m5 \
-            -r 3
+          curl -L --fail --retry 3 --retry-delay 2 \
+            "https://raw.githubusercontent.com/simom1/XAUUSD-history/main/Gold-Cash/XAUUSD/XAUUSD_M5.csv" \
+            -o research/python_xau_backtest/data/xauusd_m5.csv
           test -s research/python_xau_backtest/data/xauusd_m5.csv
           ls -lh research/python_xau_backtest/data/xauusd_m5.csv
           head -n 2 research/python_xau_backtest/data/xauusd_m5.csv
