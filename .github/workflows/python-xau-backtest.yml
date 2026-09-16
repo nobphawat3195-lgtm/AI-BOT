@@ -18,6 +18,27 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Download XAUUSD M5 from Dukascopy
+        run: |
+          mkdir -p research/python_xau_backtest/data
+          npx -y dukascopy-node@1.50.0 \
+            -i xauusd \
+            -from 2025-09-16 \
+            -to 2026-09-16 \
+            -t m5 \
+            -p bid \
+            -v \
+            -f csv \
+            -dir research/python_xau_backtest/data \
+            -fn xauusd_m5.csv \
+            -r 3 \
+            -re \
+            -bs 20 \
+            -bp 250
+          ls -lh research/python_xau_backtest/data
       - name: Install
         run: pip install pandas numpy
       - name: Run UT Bot 1-year screen
