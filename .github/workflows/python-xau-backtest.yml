@@ -25,7 +25,7 @@ jobs:
         run: |
           mkdir -p research/python_xau_backtest/data
           curl -L --fail --retry 3 --retry-delay 2 \
-            "https://raw.githubusercontent.com/simom1/XAUUSD-history/main/Gold-Cash/XAUUSD/XAUUSD_M5.csv" \
+            "https://raw.githubusercontent.com/simom1/XAUUSD-history/9b1f323866d0150ed2422c0e0cf1b97aa1bfcb22/Gold-Cash/XAUUSD/XAUUSD_M5.csv" \
             -o research/python_xau_backtest/data/xauusd_m5.csv
           test -s research/python_xau_backtest/data/xauusd_m5.csv
           ls -lh research/python_xau_backtest/data/xauusd_m5.csv
