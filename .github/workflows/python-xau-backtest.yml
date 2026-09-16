@@ -1,0 +1,30 @@
+name: Python XAUUSD 1Y Backtest
+
+on:
+  push:
+    branches:
+      - research/python-xau-backtest-20260916
+    paths:
+      - "research/python_xau_backtest/**"
+      - ".github/workflows/python-xau-backtest.yml"
+  workflow_dispatch:
+
+jobs:
+  utbot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install pandas numpy
+      - name: Run UT Bot 1-year screen
+        run: python research/python_xau_backtest/utbot_backtest.py
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: utbot-backtest-results
+          path: research/python_xau_backtest/output/
