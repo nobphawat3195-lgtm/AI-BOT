@@ -32,7 +32,7 @@ jobs:
             -p bid \
             -f csv \
             -dir research/python_xau_backtest/data \
-            -fn sanity.csv \
+            -fn sanity \
             -r 3
           test -s research/python_xau_backtest/data/sanity.csv
           head -n 3 research/python_xau_backtest/data/sanity.csv
@@ -50,7 +50,7 @@ jobs:
           i = 0
           while cur < end:
               nxt = min(cur + timedelta(days=7), end)
-              fn = f"part_{i:03d}.csv"
+              fn = f"part_{i:03d}"
               cmd = [
                   "npx","-y","dukascopy-node@1.50.0",
                   "-i","xauusd",
@@ -65,7 +65,7 @@ jobs:
               ]
               print("RUN", cur, "->", nxt, flush=True)
               subprocess.run(cmd, check=True)
-              p = out/fn
+              p = out/f"{fn}.csv"
               if not p.exists() or p.stat().st_size == 0:
                   raise RuntimeError(f"empty chunk {cur}->{nxt}")
               cur = nxt
