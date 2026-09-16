@@ -36,60 +36,22 @@ jobs:
             -r 3
           test -s research/python_xau_backtest/data/sanity.csv
           head -n 3 research/python_xau_backtest/data/sanity.csv
-      - name: Download 1Y XAUUSD M5 in short chunks
+      - name: Download 1Y XAUUSD M5
         run: |
-          python - <<'PY'
-          import subprocess
-          from datetime import date, timedelta
-          from pathlib import Path
-          out = Path("research/python_xau_backtest/data/parts")
-          out.mkdir(parents=True, exist_ok=True)
-          start = date(2025,9,16)
-          end = date(2026,9,16)
-          cur = start
-          i = 0
-          while cur < end:
-              nxt = min(cur + timedelta(days=7), end)
-              fn = f"part_{i:03d}"
-              cmd = [
-                  "npx","-y","dukascopy-node@1.50.0",
-                  "-i","xauusd",
-                  "-from",cur.isoformat(),
-                  "-to",nxt.isoformat(),
-                  "-t","m5",
-                  "-p","bid",
-                  "-f","csv",
-                  "-dir",str(out),
-                  "-fn",fn,
-                  "-r","3"
-              ]
-              print("RUN", cur, "->", nxt, flush=True)
-              subprocess.run(cmd, check=True)
-              p = out/f"{fn}.csv"
-              if not p.exists() or p.stat().st_size == 0:
-                  raise RuntimeError(f"empty chunk {cur}->{nxt}")
-              cur = nxt
-              i += 1
-          PY
-      - name: Merge chunks
-        run: |
-          python - <<'PY'
-          import pandas as pd
-          from pathlib import Path
-          parts = sorted(Path("research/python_xau_backtest/data/parts").glob("*.csv"))
-          if not parts:
-              raise SystemExit("no parts")
-          dfs = [pd.read_csv(p) for p in parts]
-          df = pd.concat(dfs, ignore_index=True)
-          key = "timestamp" if "timestamp" in df.columns else ("time" if "time" in df.columns else None)
-          if key:
-              df = df.drop_duplicates(subset=[key]).sort_values(key)
-          out = Path("research/python_xau_backtest/data/xauusd_m5.csv")
-          df.to_csv(out,index=False)
-          print("merged", len(parts), "files,", len(df), "rows ->", out)
-          print(df.head(2).to_string())
-          print(df.tail(2).to_string())
-          PY
+          rm -rf research/python_xau_backtest/data/parts
+          npx -y dukascopy-node@1.50.0 \
+            -i xauusd \
+            -from 2025-09-16 \
+            -to 2026-09-16 \
+            -t m5 \
+            -p bid \
+            -f csv \
+            -dir research/python_xau_backtest/data \
+            -fn xauusd_m5 \
+            -r 3
+          test -s research/python_xau_backtest/data/xauusd_m5.csv
+          ls -lh research/python_xau_backtest/data/xauusd_m5.csv
+          head -n 2 research/python_xau_backtest/data/xauusd_m5.csv
       - name: Install
         run: pip install pandas numpy
       - name: Run UT Bot 1-year screen
