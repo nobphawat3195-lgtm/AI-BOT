@@ -202,10 +202,37 @@ def metrics(trades,equity,final_balance):
         "avg_loss_R":float(losses.r.mean()) if len(losses) else None
     }
 
+
+def normalized_risk_metrics(trades, initial_balance=10000.0, risk_pct=0.01):
+    """Replay the exact trade R-sequence with fixed fractional risk.
+    This removes the repo's win-streak anti-martingale sizing from the screening DD.
+    """
+    if trades.empty:
+        return {"initial_balance": initial_balance, "risk_pct": risk_pct,
+                "final_balance": initial_balance, "return_pct": 0.0,
+                "max_drawdown_pct": 0.0}
+    bal = float(initial_balance)
+    peak = bal
+    max_dd = 0.0
+    for r in trades["r"].astype(float):
+        bal *= (1.0 + risk_pct * r)
+        peak = max(peak, bal)
+        dd = (bal - peak) / peak * 100.0
+        max_dd = min(max_dd, dd)
+    return {
+        "initial_balance": initial_balance,
+        "risk_pct": risk_pct,
+        "final_balance": bal,
+        "return_pct": (bal / initial_balance - 1.0) * 100.0,
+        "max_drawdown_pct": max_dd,
+    }
+
 def main():
     df,start,end=load_data()
     trades,equity,final_balance=backtest(df)
     m=metrics(trades,equity,final_balance)
+    norm = normalized_risk_metrics(trades, initial_balance=10000.0, risk_pct=0.01)
+    m["normalized_fixed_risk_1pct"] = norm
     m["data_start"]=str(start)
     m["data_end"]=str(end)
     m["strategy"]="shreyg19/xauusd-algo UT Bot v6 Python logic"
@@ -220,8 +247,8 @@ def main():
     print("\n=== UT BOT 1Y RESULT ===")
     print(json.dumps(m,indent=2))
     if m.get("trades",0) > 0:
-        gate = (m["profit_factor"] >= 1.20 and abs(m["max_drawdown_pct"]) <= 20 and m["expectancy_R"] > 0)
-        print("SCREEN_GATE:", "PASS" if gate else "FAIL")
+        gate = (m["profit_factor"] >= 1.20 and abs(norm["max_drawdown_pct"]) <= 20 and m["expectancy_R"] > 0)
+        print("SCREEN_GATE_NORMALIZED_1PCT:", "PASS" if gate else "FAIL")
     else:
         print("SCREEN_GATE: FAIL")
 if __name__=="__main__":
