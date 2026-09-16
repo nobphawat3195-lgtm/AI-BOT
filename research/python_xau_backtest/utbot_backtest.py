@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-DATA_URL = "https://raw.githubusercontent.com/simom1/XAUUSD-history/main/Gold-Cash/XAUUSD/XAUUSD_M5.csv"
+DATA_FILE = Path("research/python_xau_backtest/data/xauusd_m5.csv")
 OUTDIR = Path("research/python_xau_backtest/output")
 OUTDIR.mkdir(parents=True, exist_ok=True)
 
@@ -60,15 +60,21 @@ def get_lot_size(balance, consec_wins, consec_losses, sl_distance):
     return round(lot, 2)
 
 def load_data():
-    print("Downloading:", DATA_URL, flush=True)
-    df = pd.read_csv(DATA_URL)
-    cols = {c.lower().strip(): c for c in df.columns}
-    required = ["time","open","high","low","close"]
-    for c in required:
-        if c not in cols:
-            raise RuntimeError(f"missing column {c}; got {list(df.columns)}")
-    df = df.rename(columns={cols[k]:k for k in cols if k in ["time","open","high","low","close","tick_volume"]})
-    df["time"] = pd.to_datetime(df["time"], utc=True, errors="coerce")
+    print("Loading:", DATA_FILE, flush=True)
+    if not DATA_FILE.exists():
+        raise RuntimeError(f"data file not found: {DATA_FILE}")
+    df = pd.read_csv(DATA_FILE)
+    cols = {str(c).lower().strip(): c for c in df.columns}
+    if "time" not in cols and "timestamp" in cols:
+        df["time"] = pd.to_datetime(df[cols["timestamp"]], unit="ms", utc=True, errors="coerce")
+    elif "time" in cols:
+        df["time"] = pd.to_datetime(df[cols["time"]], utc=True, errors="coerce")
+    else:
+        raise RuntimeError(f"missing time/timestamp column; got {list(df.columns)}")
+    for c0 in ["open","high","low","close"]:
+        if c0 not in cols:
+            raise RuntimeError(f"missing column {c0}; got {list(df.columns)}")
+    df = df.rename(columns={cols[k]:k for k in cols if k in ["open","high","low","close","volume","tick_volume"]})
     df = df.dropna(subset=["time","open","high","low","close"]).sort_values("time").drop_duplicates("time")
     latest = df["time"].max()
     start = latest - pd.Timedelta(days=365)
