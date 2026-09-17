@@ -260,19 +260,27 @@ def monthly_consistency(trades):
         "monthly_R": {str(k): float(v) for k,v in m.items()}
     }
 
-def half_year_oos(df):
-    midpoint = df["time"].min() + (df["time"].max() - df["time"].min())/2
+def half_year_oos_from_trades(trades):
+    if trades.empty:
+        return {}
+    t=trades.copy()
+    t["entry_time_dt"]=pd.to_datetime(t["entry_time"], utc=True)
+    midpoint=t["entry_time_dt"].min() + (t["entry_time_dt"].max()-t["entry_time_dt"].min())/2
     out={}
-    for name,part in [("H1",df[df["time"]<=midpoint]),("H2",df[df["time"]>midpoint])]:
-        tr,eq,bal=backtest(part, spread_points=20, slippage_points=0)
-        rm=r_metrics(tr)
-        rm["normalized_fixed_risk_1pct"]=normalized_risk_metrics(tr,10000.0,0.01)
-        rm["start"]=str(part["time"].min())
-        rm["end"]=str(part["time"].max())
+    for name,part in [("H1",t[t["entry_time_dt"]<=midpoint]),("H2",t[t["entry_time_dt"]>midpoint])]:
+        rm=r_metrics(part)
+        rm["normalized_fixed_risk_1pct"]=normalized_risk_metrics(part,10000.0,0.01)
+        rm["start"]=str(part["entry_time_dt"].min())
+        rm["end"]=str(part["entry_time_dt"].max())
         out[name]=rm
     return out
 
-def stress_suite(df):
+def stress_suite_from_trades(trades):
+    if trades.empty:
+        return {}
+    base=trades.copy()
+    # Recover original stop distance in price from TP=2.5R or SL=1R.
+    base["n_loss"]=(base["tp"].astype(float)-base["entry"].astype(float)).abs()/RR_RATIO
     scenarios=[
         ("base_s20_slip0",20,0),
         ("spread30",30,0),
@@ -283,11 +291,17 @@ def stress_suite(df):
     ]
     out={}
     for name,sp,sl in scenarios:
-        tr,eq,bal=backtest(df, spread_points=sp, slippage_points=sl)
-        rm=r_metrics(tr)
-        rm["normalized_fixed_risk_1pct"]=normalized_risk_metrics(tr,10000.0,0.01)
+        t=base.copy()
+        extra_entry=max(0,sp-SPREAD_POINTS)*POINT_VALUE
+        extra_slip_roundtrip=2*sl*POINT_VALUE
+        extra_cost=extra_entry+extra_slip_roundtrip
+        t["r"]=t["r"].astype(float) - (extra_cost/t["n_loss"].replace(0,np.nan))
+        t=t.dropna(subset=["r"])
+        rm=r_metrics(t)
+        rm["normalized_fixed_risk_1pct"]=normalized_risk_metrics(t,10000.0,0.01)
         rm["spread_points"]=sp
         rm["slippage_points"]=sl
+        rm["stress_method"]="cost-deduction on frozen base trade stream; signals/exits unchanged"
         out[name]=rm
     return out
 
@@ -295,8 +309,8 @@ def main():
     df,start,end=load_data()
     trades,equity,final_balance=backtest(df)
     m=metrics(trades,equity,final_balance)
-    m["stress_suite"]=stress_suite(df)
-    m["half_year_oos"]=half_year_oos(df)
+    m["stress_suite"]=stress_suite_from_trades(trades)
+    m["half_year_oos"]=half_year_oos_from_trades(trades)
     m["monthly_consistency"]=monthly_consistency(trades)
     norm = normalized_risk_metrics(trades, initial_balance=10000.0, risk_pct=0.01)
     m["normalized_fixed_risk_1pct"] = norm
