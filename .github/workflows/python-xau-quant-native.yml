@@ -30,7 +30,7 @@ jobs:
           import pandas as pd, glob
           for fn in glob.glob('/tmp/quant-csv/*.csv'):
               d=pd.read_csv(fn)
-              t=pd.to_datetime(d['time'],utc=True)
+              t=pd.to_datetime(d['time'],utc=True,format='mixed')
               # feed-level spread model: median ~1.8p, rollover ~4.4p.
               # Gold point=.01 / pip=.1 => spread points = pips*10.
               d['spread']=18
