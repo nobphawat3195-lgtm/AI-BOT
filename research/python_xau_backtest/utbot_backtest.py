@@ -86,7 +86,7 @@ def load_data():
     print(f"M15 bars={len(m15):,}", flush=True)
     return m15, start, latest
 
-def backtest(df):
+def backtest(df, spread_points=SPREAD_POINTS, slippage_points=0):
     df = df.copy()
     df["atr"] = calc_atr(df, ATR_PERIOD)
     df["ema50"] = calc_ema(df["close"], EMA_PERIOD)
@@ -97,7 +97,8 @@ def backtest(df):
     balance=ACCOUNT_BALANCE
     position=None
     trailing_stop=0.0
-    spread=SPREAD_POINTS*POINT_VALUE
+    spread=spread_points*POINT_VALUE
+    slippage=slippage_points*POINT_VALUE
     consec_wins=0
     consec_losses=0
     equity=[balance]
@@ -114,14 +115,14 @@ def backtest(df):
             exit_price=exit_reason=None
             if position["direction"]=="buy":
                 if row["low"] <= position["sl"]:
-                    exit_price,exit_reason=position["sl"],"SL"
+                    exit_price,exit_reason=position["sl"]-slippage,"SL"
                 elif row["high"] >= position["tp"]:
-                    exit_price,exit_reason=position["tp"],"TP"
+                    exit_price,exit_reason=position["tp"]-slippage,"TP"
             else:
                 if row["high"] >= position["sl"]:
-                    exit_price,exit_reason=position["sl"],"SL"
+                    exit_price,exit_reason=position["sl"]+slippage,"SL"
                 elif row["low"] <= position["tp"]:
-                    exit_price,exit_reason=position["tp"],"TP"
+                    exit_price,exit_reason=position["tp"]+slippage,"TP"
             if exit_price is not None:
                 diff=(exit_price-position["entry"]) if position["direction"]=="buy" else (position["entry"]-exit_price)
                 pnl=diff*position["lot"]*LOT_SIZE_UNIT
@@ -163,8 +164,8 @@ def backtest(df):
         short_signal=(close1<trailing_stop) and (close1<ema_val)
 
         if position is None:
-            ask=row["open"]+spread
-            bid=row["open"]-spread
+            ask=row["open"]+spread+slippage
+            bid=row["open"]-spread-slippage
             if long_signal:
                 lot=get_lot_size(balance,consec_wins,consec_losses,n_loss)
                 position={"direction":"buy","entry_time":row["time"],"entry":ask,
@@ -227,10 +228,76 @@ def normalized_risk_metrics(trades, initial_balance=10000.0, risk_pct=0.01):
         "max_drawdown_pct": max_dd,
     }
 
+
+def r_metrics(trades):
+    if trades.empty:
+        return {"trades":0,"win_rate_pct":0.0,"profit_factor_R":0.0,"expectancy_R":0.0}
+    r = trades["r"].astype(float)
+    wins = r[r > 0]
+    losses = r[r <= 0]
+    gp = float(wins.sum())
+    gl = float(abs(losses.sum()))
+    return {
+        "trades": int(len(r)),
+        "win_rate_pct": float((r > 0).mean()*100),
+        "profit_factor_R": float(gp/gl) if gl else float("inf"),
+        "expectancy_R": float(r.mean()),
+        "median_R": float(r.median())
+    }
+
+def monthly_consistency(trades):
+    if trades.empty:
+        return {"months":0,"positive_months":0,"positive_month_ratio":0.0,"best_month_R":0.0,"worst_month_R":0.0}
+    t=trades.copy()
+    t["entry_time"]=pd.to_datetime(t["entry_time"], utc=True)
+    m=t.groupby(t["entry_time"].dt.to_period("M"))["r"].sum()
+    return {
+        "months": int(len(m)),
+        "positive_months": int((m>0).sum()),
+        "positive_month_ratio": float((m>0).mean()),
+        "best_month_R": float(m.max()),
+        "worst_month_R": float(m.min()),
+        "monthly_R": {str(k): float(v) for k,v in m.items()}
+    }
+
+def half_year_oos(df):
+    midpoint = df["time"].min() + (df["time"].max() - df["time"].min())/2
+    out={}
+    for name,part in [("H1",df[df["time"]<=midpoint]),("H2",df[df["time"]>midpoint])]:
+        tr,eq,bal=backtest(part, spread_points=20, slippage_points=0)
+        rm=r_metrics(tr)
+        rm["normalized_fixed_risk_1pct"]=normalized_risk_metrics(tr,10000.0,0.01)
+        rm["start"]=str(part["time"].min())
+        rm["end"]=str(part["time"].max())
+        out[name]=rm
+    return out
+
+def stress_suite(df):
+    scenarios=[
+        ("base_s20_slip0",20,0),
+        ("spread30",30,0),
+        ("spread40",40,0),
+        ("spread60",60,0),
+        ("slip5",20,5),
+        ("slip10",20,10),
+    ]
+    out={}
+    for name,sp,sl in scenarios:
+        tr,eq,bal=backtest(df, spread_points=sp, slippage_points=sl)
+        rm=r_metrics(tr)
+        rm["normalized_fixed_risk_1pct"]=normalized_risk_metrics(tr,10000.0,0.01)
+        rm["spread_points"]=sp
+        rm["slippage_points"]=sl
+        out[name]=rm
+    return out
+
 def main():
     df,start,end=load_data()
     trades,equity,final_balance=backtest(df)
     m=metrics(trades,equity,final_balance)
+    m["stress_suite"]=stress_suite(df)
+    m["half_year_oos"]=half_year_oos(df)
+    m["monthly_consistency"]=monthly_consistency(trades)
     norm = normalized_risk_metrics(trades, initial_balance=10000.0, risk_pct=0.01)
     m["normalized_fixed_risk_1pct"] = norm
     m["data_start"]=str(start)
@@ -244,6 +311,7 @@ def main():
     ]
     trades.to_csv(OUTDIR/"utbot_trades.csv",index=False)
     with open(OUTDIR/"utbot_metrics.json","w") as f: json.dump(m,f,indent=2)
+    pd.DataFrame([{**{"scenario":k}, **v, "norm_return_pct":v["normalized_fixed_risk_1pct"]["return_pct"], "norm_dd_pct":v["normalized_fixed_risk_1pct"]["max_drawdown_pct"]} for k,v in m["stress_suite"].items()]).to_csv(OUTDIR/"utbot_stress.csv",index=False)
     print("\n=== UT BOT 1Y RESULT ===")
     print(json.dumps(m,indent=2))
     if m.get("trades",0) > 0:
