@@ -1,0 +1,37 @@
+name: Python XAUUSD Remaining Backtests
+on:
+  push:
+    branches: [research/python-xau-backtest-20260916]
+    paths:
+      - "research/python_xau_backtest/volume_profile_backtest.py"
+      - "research/python_xau_backtest/ict_backtest.py"
+      - "research/python_xau_backtest/quant_proxy_backtest.py"
+      - ".github/workflows/python-xau-remaining.yml"
+  workflow_dispatch:
+jobs:
+  remaining:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Download pinned XAUUSD M5
+        run: |
+          mkdir -p research/python_xau_backtest/data
+          curl -L --fail "https://raw.githubusercontent.com/simom1/XAUUSD-history/9b1f323866d0150ed2422c0e0cf1b97aa1bfcb22/Gold-Cash/XAUUSD/XAUUSD_M5.csv" -o research/python_xau_backtest/data/xauusd_m5.csv
+      - name: Install
+        run: pip install pandas numpy
+      - name: Volume Profile fixed
+        run: python research/python_xau_backtest/volume_profile_backtest.py
+      - name: ICT fixed
+        if: ${{ hashFiles('research/python_xau_backtest/ict_backtest.py') != '' }}
+        run: python research/python_xau_backtest/ict_backtest.py
+      - name: Quant proxy
+        if: ${{ hashFiles('research/python_xau_backtest/quant_proxy_backtest.py') != '' }}
+        run: python research/python_xau_backtest/quant_proxy_backtest.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: remaining-backtest-results
+          path: research/python_xau_backtest/output/
