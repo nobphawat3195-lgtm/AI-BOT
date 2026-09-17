@@ -1,0 +1,50 @@
+name: Python XAUUSD Quant Native Screen
+on:
+  push:
+    branches: [research/python-xau-backtest-20260916]
+    paths:
+      - "research/python_xau_backtest/quant_native_screen.py"
+      - ".github/workflows/python-xau-quant-native.yml"
+  workflow_dispatch:
+jobs:
+  quant:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Clone upstream Quant engine
+        run: git clone --depth 1 https://github.com/Aarayanc49/xauusd-quant-backtest.git /tmp/xau-quant
+      - name: Install
+        run: pip install numpy pandas
+      - name: Download pinned multi-timeframe XAUUSD
+        run: |
+          mkdir -p /tmp/quant-csv
+          for tf in M1 M5 M15 H1 H4 D1; do
+            curl -L --fail --retry 3 "https://raw.githubusercontent.com/simom1/XAUUSD-history/9b1f323866d0150ed2422c0e0cf1b97aa1bfcb22/Gold-Cash/XAUUSD/XAUUSD_${tf}.csv" -o "/tmp/quant-csv/XAUUSD_${tf}.csv"
+          done
+      - name: Add synthetic broker spread for screening
+        run: |
+          python - <<'PY'
+          import pandas as pd, glob
+          for fn in glob.glob('/tmp/quant-csv/*.csv'):
+              d=pd.read_csv(fn)
+              t=pd.to_datetime(d['time'],utc=True)
+              # feed-level spread model: median ~1.8p, rollover ~4.4p.
+              # Gold point=.01 / pip=.1 => spread points = pips*10.
+              d['spread']=18
+              d.loc[t.dt.hour.isin([21,22]),'spread']=44
+              d.to_csv(fn,index=False)
+              print(fn,len(d))
+          PY
+      - name: Build native bar store
+        working-directory: /tmp/xau-quant
+        run: python -m research.fetch csv /tmp/quant-csv
+      - name: Run frozen SWING 1Y
+        run: python research/python_xau_backtest/quant_native_screen.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quant-native-screen-results
+          path: research/python_xau_backtest/output/
