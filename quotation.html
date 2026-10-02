@@ -201,6 +201,12 @@ table.items td:nth-child(3) input:placeholder-shown{
 }
 table.items input.num{text-align:right}
 table.items input.qty,table.items input.unit{text-align:center}
+table.items td.cost-cell{display:flex;flex-direction:column;gap:3px;padding:5px 5px}
+table.items .cat-select{
+  width:100%;border:1px solid var(--line2);border-radius:6px;background:#fff;
+  color:var(--sub);font-size:9.5px;padding:2px 3px;font-family:var(--font);outline:none;
+}
+table.items .cat-select:hover{border-color:var(--line)}
 .row-total{font-weight:600;text-align:right;padding-right:10px;white-space:nowrap}
 .del-btn{background:none;border:none;color:var(--red);font-size:15px;cursor:pointer;opacity:.6;padding:4px}
 .del-btn:hover{opacity:1}
@@ -219,6 +225,7 @@ table.items td.sku-auto{position:relative}
 .totals{width:100%;max-width:320px;margin-top:6px}
 .trow{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;color:var(--sub)}
 .trow input{width:90px;border:1px solid var(--line);border-radius:7px;padding:5px 8px;text-align:right;font-family:var(--font);font-size:12px}
+.trow select{border:1px solid var(--line);border-radius:7px;padding:5px 6px;font-family:var(--font);font-size:12px;margin-left:5px;background:transparent;color:inherit}
 .trow.vat label,.trow.disc label{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--sub)}
 .trow.off{opacity:.42}
 .trow.off input[type=number]{pointer-events:none}
@@ -419,9 +426,10 @@ body::before{
 .upload-btn{background:rgba(20,36,64,.8);border-color:rgba(90,150,255,.26);color:#d5e6ff}
 .photo-empty{color:#7c96bd}
 .rowcount-bar .hint,.paste-bar .hint{color:#829cc2}
-.rowcount-bar input[type=number],.paste-row textarea,.trow input{
+.rowcount-bar input[type=number],.paste-row textarea,.trow input,.trow select{
   background:var(--input-bg);border-color:var(--line);color:var(--ink)
 }
+.trow select option{background:#0d1a30;color:#e8f1ff}
 .paste-row textarea::placeholder{color:#5d769c}
 .btn-ghost{background:rgba(20,36,64,.8);border:1px solid rgba(90,150,255,.26);color:#d5e6ff}
 .btn-ghost:hover{border-color:rgba(120,185,255,.5)}
@@ -439,6 +447,8 @@ table.items input{color:var(--ink)}
 table.items input:hover{border-color:var(--line)}
 table.items input:focus{background:rgba(10,20,40,.92);border-color:var(--blue2);box-shadow:0 0 0 2px rgba(30,111,255,.20)}
 table.items input::placeholder{color:#546d92}
+table.items .cat-select{background:var(--input-bg);border-color:var(--line);color:var(--ink)}
+table.items .cat-select option{background:#0d1a30;color:#e8f1ff}
 table.items td:nth-child(2) input:placeholder-shown,
 table.items td:nth-child(3) input:placeholder-shown{border-bottom-color:#4a6a99}
 .row-total{color:#ffffff}
@@ -1210,7 +1220,7 @@ table.items input:focus{
   .no-print{display:none!important}
   .doc{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#fff!important}
   .party-card{background:none!important}
-  table.items th{background:var(--th-bg)!important;color:var(--th-ink)!important;border-bottom:1px solid #dbe4f0!important}
+  table.items th{background:var(--th-bg)!important;color:var(--th-ink)!important;border:1px solid #b9c4d6!important}
   table.items tbody tr:hover td{background:none!important}
   .row-total{color:var(--ink)!important}
   .totals{background:none!important;border:none!important;box-shadow:none!important;padding:0!important;max-width:340px}
@@ -1302,10 +1312,10 @@ table.items input:focus{
   table.items td{padding:0 2px}
   table.items input{font-size:10.5px}
   table.items th{padding:4px 5px;font-size:9.5px}
-  table.items td{padding:0 5px;border-bottom:1px solid #e6ecf5}
+  table.items td{padding:0 5px;border:1px solid #d7e0ee}
   table.items input{padding:1px 4px;font-size:12px}
   table.items tr{break-inside:avoid;page-break-inside:avoid}
-  table.items input,.field input,.field textarea,.trow input{border-color:transparent!important;background:transparent!important;box-shadow:none!important}
+  table.items input,.field input,.field textarea,.trow input,.trow select{border-color:transparent!important;background:transparent!important;box-shadow:none!important;-webkit-appearance:none!important;appearance:none!important}
   table.items td:nth-child(2) input:placeholder-shown,
   table.items td:nth-child(3) input:placeholder-shown{border-bottom:1px dashed #999!important}
   input::placeholder,textarea::placeholder{color:transparent!important;opacity:0!important}
@@ -1738,7 +1748,7 @@ table.items input:focus{
       </table>
       </div>
       <button class="add-row-btn no-print" onclick="addRow()">+ เพิ่มรายการ</button>
-      <div style="font-size:10.5px;color:var(--sub);margin-top:6px" class="no-print">💡 ราคาทุนใช้คำนวณภายในเท่านั้น ราคาขาย = ทุน + 50% จะถูกปัดเศษและแสดงในใบเสนอราคา (คอลัมน์ราคาทุนจะไม่ปรากฏตอนพิมพ์)</div>
+      <div style="font-size:10.5px;color:var(--sub);margin-top:6px" class="no-print">💡 ราคาทุนใช้คำนวณภายในเท่านั้น เลือกหมวดราคาได้ต่อแถวใต้ช่องราคาทุน — «ปกติ» = ทุน×1.5 หรือ «หมวดใหม่» = ทุน×1.7 หักส่วนลด 15% ราคาขายที่คำนวณได้จะปัดเศษและแสดงในใบเสนอราคา (คอลัมน์ราคาทุน/หมวดราคาจะไม่ปรากฏตอนพิมพ์)</div>
 
       <label class="show-total-toggle no-print" title="ติ๊กออกถ้าไม่ต้องการให้ยอดรวมสุทธิปรากฏในใบที่พิมพ์">
         <input type="checkbox" id="showTotalToggle" checked onchange="toggleShowTotal()">
@@ -1750,7 +1760,11 @@ table.items input:focus{
           <div class="trow" id="rowLineDiscount"><span>ส่วนลดรายการ</span><span id="tLineDiscount">0.00</span></div>
           <div class="trow disc" id="rowDiscount">
             <label><input type="checkbox" id="discountToggle" onchange="recalc()"> ส่วนลดเพิ่มเติม</label>
-            <span><input type="number" id="discountInput" value="0" min="0" oninput="recalc()"> บาท</span>
+            <span><input type="number" id="discountInput" value="0" min="0" oninput="recalc()">
+              <select id="discountTypeSelect" onchange="recalc()">
+                <option value="baht">บาท</option>
+                <option value="pct">%</option>
+              </select></span>
           </div>
           <div class="trow" id="rowAfterDiscount"><span>ยอดหลังหักส่วนลด</span><span id="tAfterDiscount">0.00</span></div>
           <div class="trow vat">
@@ -1944,9 +1958,15 @@ let photoDataUrl = null;
 let logoDataUrl = null;
 
 const MARKUP = 1.5;
+const ALT_MARKUP = 1.7;
+const ALT_DISCOUNT = 0.15;
+const PRICE_CATS = {
+  std: { label: 'ปกติ (ทุน×1.5)', calc: cost => cost * MARKUP },
+  alt: { label: 'หมวดใหม่ (ทุน×1.7-15%)', calc: cost => cost * ALT_MARKUP * (1 - ALT_DISCOUNT) },
+};
 const RESET_ROW_COUNT = 0;
 
-function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', price:'', disc:'', direct:true, skuAuto:true }; }
+function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', price:'', disc:'', direct:true, cat:'std', skuAuto:true }; }
 
 function defaultCatalog(){
   return [
@@ -1970,7 +1990,8 @@ function hasPrice(it){
 }
 function sellPrice(it){
   if(it.direct) return parseFloat(it.price)||0;
-  return (parseFloat(it.cost)||0) * MARKUP;
+  const cat = PRICE_CATS[it.cat] ? it.cat : 'std';
+  return PRICE_CATS[cat].calc(parseFloat(it.cost)||0);
 }
 function lineGross(it){ return (parseFloat(it.qty)||0) * sellPrice(it); }
 // A line discount is entered either as a baht amount ("29000") or a
@@ -2170,7 +2191,12 @@ function renderItems(){
     const priced = hasPrice(it);
     const costCell = it.direct
       ? `<td class="num no-print center" style="color:var(--sub)">—</td>`
-      : `<td class="num no-print"><input class="num" type="number" min="0" step="0.01" value="${it.cost}" oninput="updateItem(${i},'cost',this.value)"></td>`;
+      : `<td class="num no-print cost-cell">
+          <input class="num" type="number" min="0" step="0.01" value="${it.cost}" oninput="updateItem(${i},'cost',this.value)">
+          <select class="cat-select" title="หมวดราคา" onchange="updateItem(${i},'cat',this.value)">
+            ${Object.keys(PRICE_CATS).map(k=>`<option value="${k}"${(it.cat||'std')===k?' selected':''}>${PRICE_CATS[k].label}</option>`).join('')}
+          </select>
+        </td>`;
     const sellCell = it.direct
       ? `<td class="num"><input class="num cell-in" type="number" min="0" step="0.01" value="${it.price}" oninput="updateItem(${i},'price',this.value)"><span class="cell-print">${priced ? fmt(sellPrice(it)) : ''}</span></td>`
       : `<td class="num sell-price">${priced ? fmt(sellPrice(it)) : ''}</td>`;
@@ -2366,7 +2392,7 @@ function parseLineToItem(line){
   text = text.replace(/[()]/g,'').replace(/(ค่ะ|คะ|ครับ|นะคะ|นะครับ)\s*$/,'').replace(/\s+/g,' ').trim();
   if(!text && cost===null) return null;
   const nm = text || line.trim();
-  return { sku: lookupSku(nm), name: nm, qty: qty||1, unit, cost: cost!==null ? cost : '', skuAuto:true };
+  return { sku: lookupSku(nm), name: nm, qty: qty||1, unit, cost: cost!==null ? cost : '', cat:'std', skuAuto:true };
 }
 
 function parsePasteText(){
@@ -2390,7 +2416,12 @@ function recalc(){
   const subtotal = items.reduce((s,it)=>s+lineGross(it),0);
   const lineDisc = items.reduce((s,it)=>s+lineDiscount(it),0);
   const discountOn = document.getElementById('discountToggle').checked;
-  const extraDisc = discountOn ? (parseFloat(document.getElementById('discountInput').value)||0) : 0;
+  const discountType = document.getElementById('discountTypeSelect').value;
+  const discountRaw = parseFloat(document.getElementById('discountInput').value) || 0;
+  const baseForExtraDisc = Math.max(subtotal - lineDisc, 0);
+  const extraDisc = discountOn
+    ? Math.min(discountType === 'pct' ? baseForExtraDisc * discountRaw / 100 : discountRaw, baseForExtraDisc)
+    : 0;
   const totalDisc = lineDisc + extraDisc;
   const afterDiscount = Math.max(subtotal - totalDisc, 0);
   // Discount lines are noise on a quotation that has no discount, so each one
@@ -2523,6 +2554,7 @@ function collectState(){
     photoDataUrl,
     items,
     discount: document.getElementById('discountInput').value,
+    discountType: document.getElementById('discountTypeSelect').value,
     discountOn: document.getElementById('discountToggle').checked,
     vat: document.getElementById('vatToggle').checked,
     showTotal: document.getElementById('showTotalToggle').checked,
@@ -2601,6 +2633,7 @@ function startNewJob(){
   document.getElementById('appraiserName').value = '';
   document.getElementById('approverName').value = '';
   document.getElementById('discountInput').value = 0;
+  document.getElementById('discountTypeSelect').value = 'baht';
   document.getElementById('discountToggle').checked = false;
   document.getElementById('vatToggle').checked = false;
   document.getElementById('notes').value = '';
