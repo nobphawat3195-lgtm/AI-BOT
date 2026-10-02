@@ -671,6 +671,8 @@ border-radius:10px;padding:10px 12px;
         <div style="margin-top:5px;font-size:9px;color:var(--text3)">
           Claude: console.anthropic.com · GPT: platform.openai.com · Gemini: aistudio.google.com
         </div>
+        <button class="btn btn-ghost btn-full" style="margin-top:8px;font-size:10px;padding:9px" onclick="checkAiLimit()">🔍 เช็คลิมิต Token</button>
+        <div class="msg info" id="ai-limit-result"></div>
       </div>
       <div class="msg info show" style="margin-bottom:10px;margin-top:0">
         💡 ทดสอบด้วย <strong>GPT-4o</strong> ก่อนเลยครับ ราคาถูก เร็ว และแม่นยำดี
@@ -1240,6 +1242,83 @@ function selectAI(model, el) {
 function selectAIModel(model) {
   const btn = document.querySelector('.ai-btn.'+model);
   if(btn) selectAI(model,btn);
+}
+
+// ═══════════════════════════════════════════════
+// AI TOKEN / RATE LIMIT CHECK
+// ยิง request เล็กที่สุด (max_tokens:1) ไปหา provider แล้วอ่าน
+// rate-limit จาก response header เพราะ endpoint แชทปกติไม่มี
+// endpoint แยกไว้เช็คโควต้าโดยตรง
+// ═══════════════════════════════════════════════
+async function checkAiLimit() {
+  const model = S.aiModel;
+  const key = document.getElementById('inp-aikey').value.trim();
+  const box = document.getElementById('ai-limit-result');
+  box.className = 'msg info show';
+  box.textContent = '⏳ กำลังเช็คลิมิต...';
+
+  if(!key) { box.className='msg err show'; box.textContent='⚠️ กรอก API Key ก่อนครับ'; return; }
+
+  if(model==='gemini') {
+    box.className='msg info show';
+    box.textContent='ℹ️ Gemini API ไม่ส่ง rate-limit header กลับมา · เช็คโควต้าได้ที่ aistudio.google.com/app/apikey';
+    return;
+  }
+
+  try {
+    let res, rows;
+    if(model==='claude') {
+      res = await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{
+          'x-api-key':key,
+          'anthropic-version':'2023-06-01',
+          'anthropic-dangerous-direct-browser-access':'true',
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({model:'claude-3-5-haiku-20241022',max_tokens:1,messages:[{role:'user',content:'hi'}]})
+      });
+      rows = {
+        'Requests Limit': res.headers.get('anthropic-ratelimit-requests-limit'),
+        'Requests เหลือ': res.headers.get('anthropic-ratelimit-requests-remaining'),
+        'Tokens Limit': res.headers.get('anthropic-ratelimit-tokens-limit'),
+        'Tokens เหลือ': res.headers.get('anthropic-ratelimit-tokens-remaining'),
+        'Reset': res.headers.get('anthropic-ratelimit-tokens-reset')
+      };
+    } else {
+      const url = model==='gpt' ? 'https://api.openai.com/v1/chat/completions' : 'https://api.x.ai/v1/chat/completions';
+      const m = model==='gpt' ? 'gpt-4o-mini' : 'grok-beta';
+      res = await fetch(url,{
+        method:'POST',
+        headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
+        body:JSON.stringify({model:m,max_tokens:1,messages:[{role:'user',content:'hi'}]})
+      });
+      rows = {
+        'Requests Limit': res.headers.get('x-ratelimit-limit-requests'),
+        'Requests เหลือ': res.headers.get('x-ratelimit-remaining-requests'),
+        'Tokens Limit': res.headers.get('x-ratelimit-limit-tokens'),
+        'Tokens เหลือ': res.headers.get('x-ratelimit-remaining-tokens'),
+        'Reset Tokens': res.headers.get('x-ratelimit-reset-tokens')
+      };
+    }
+
+    if(res.status===401) { box.className='msg err show'; box.textContent='⚠️ API Key ไม่ถูกต้อง (401)'; return; }
+
+    const found = Object.entries(rows).filter(([,v])=>v);
+    if(!found.length) {
+      box.className='msg err show';
+      box.textContent='⚠️ Provider นี้ไม่คืน rate-limit header กลับมา (หรือ CORS บล็อกการอ่าน header) · HTTP '+res.status;
+      log('AI limit check: no headers exposed · HTTP '+res.status,'la');
+      return;
+    }
+    box.className='msg ok show';
+    box.innerHTML = found.map(([k,v])=>`<div>${k}: <strong>${v}</strong></div>`).join('');
+    log('AI limit checked: '+model,'lp');
+  } catch(e) {
+    box.className='msg err show';
+    box.textContent='⚠️ เช็คไม่ได้ (เครือข่าย/CORS): '+e.message;
+    log('AI limit check failed: '+e.message,'la');
+  }
 }
 
 // ═══════════════════════════════════════════════
