@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>XAUUSD Auto Trading — แดชบอร์ด</title>
+<style>
+  :root {
+    --bg: #0f1420; --panel: #161d2d; --line: #263149; --text: #e8edf7;
+    --muted: #93a1bd; --up: #2fbf71; --down: #ef4d5a; --accent: #f0b429;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text); min-height: 100vh; padding: 16px;
+    font-family: "Segoe UI", "Noto Sans Thai", system-ui, -apple-system, sans-serif;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  header {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding-bottom: 16px; border-bottom: 1px solid var(--line); margin-bottom: 20px;
+  }
+  h1 { font-size: 1.25rem; letter-spacing: .3px; }
+  .badge {
+    font-size: .72rem; padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--muted); white-space: nowrap;
+  }
+  .badge.paper { background: rgba(47,191,113,.12); color: var(--up); border-color: transparent; }
+  .badge.live  { background: rgba(239,77,90,.15); color: var(--down); border-color: transparent; }
+  .badge.halt  { background: rgba(240,180,41,.15); color: var(--accent); border-color: transparent; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--down); display: inline-block; }
+  .dot.on { background: var(--up); }
+  .spacer { flex: 1; }
+
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+  .card .label { font-size: .75rem; color: var(--muted); margin-bottom: 6px; }
+  .card .value { font-size: 1.5rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .up { color: var(--up); } .down { color: var(--down); }
+
+  section { margin-top: 24px; }
+  h2 { font-size: .95rem; color: var(--muted); font-weight: 600; margin-bottom: 10px; }
+  .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 640px; }
+  th, td { padding: 10px 12px; text-align: right; white-space: nowrap; }
+  th { background: #121a29; color: var(--muted); font-weight: 500; font-size: .75rem; }
+  th:first-child, td:first-child { text-align: left; }
+  tbody tr { border-top: 1px solid var(--line); }
+  td.num { font-variant-numeric: tabular-nums; }
+  .empty { padding: 24px; text-align: center; color: var(--muted); font-size: .85rem; }
+
+  button {
+    font: inherit; font-size: .82rem; padding: 8px 14px; border-radius: 8px;
+    border: 1px solid var(--line); background: #1d273b; color: var(--text); cursor: pointer;
+  }
+  button:hover { border-color: #3a4a6b; background: #24304a; }
+  button.danger { background: rgba(239,77,90,.16); border-color: transparent; color: #ff97a0; }
+  button.warn { background: rgba(240,180,41,.16); border-color: transparent; color: var(--accent); }
+  button.small { padding: 5px 10px; font-size: .75rem; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+
+  .setup { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+  .setup label { display: block; font-size: .75rem; color: var(--muted); margin-bottom: 6px; }
+  .setup input {
+    width: 100%; padding: 9px 12px; border-radius: 8px; font: inherit;
+    background: #0d1320; border: 1px solid var(--line); color: var(--text);
+  }
+  .row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .row > div { flex: 1; min-width: 200px; }
+  .hint { font-size: .75rem; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+  .pill { font-size: .7rem; padding: 2px 8px; border-radius: 999px; }
+  .pill.buy  { background: rgba(47,191,113,.15); color: var(--up); }
+  .pill.sell { background: rgba(239,77,90,.15); color: var(--down); }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>XAUUSD Auto Trading</h1>
+    <span class="badge" id="modeBadge">กำลังเชื่อมต่อ…</span>
+    <span class="badge" id="haltBadge" hidden>หยุดเทรด</span>
+    <span class="spacer"></span>
+    <span class="badge"><span class="dot" id="wsDot"></span> <span id="wsText">ออฟไลน์</span></span>
+  </header>
+
+  <div class="setup" id="setup">
+    <div class="row">
+      <div>
+        <label for="apiBase">ที่อยู่เซิร์ฟเวอร์ (API base)</label>
+        <input id="apiBase" value="/api" placeholder="http://127.0.0.1:8000/api">
+      </div>
+      <div>
+        <label for="token">รหัสผ่าน API (X-API-Token)</label>
+        <input id="token" type="password" placeholder="ใส่ค่า XAU_API_TOKEN">
+      </div>
+      <button id="connectBtn">เชื่อมต่อ</button>
+    </div>
+    <p class="hint">
+      รหัสจะถูกเก็บไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น (localStorage) ไม่ถูกส่งไปที่อื่น
+    </p>
+  </div>
+
+  <div id="app" class="hidden">
+    <section>
+      <div class="grid">
+        <div class="card"><div class="label">ยอดเงิน (Balance)</div><div class="value num" id="balance">—</div></div>
+        <div class="card"><div class="label">มูลค่าสุทธิ (Equity)</div><div class="value num" id="equity">—</div></div>
+        <div class="card"><div class="label">กำไร/ขาดทุนวันนี้</div><div class="value num" id="dayPnl">—</div></div>
+        <div class="card"><div class="label">ราคาทองล่าสุด</div><div class="value num" id="price">—</div></div>
+        <div class="card"><div class="label">ออร์เดอร์ที่เปิดอยู่</div><div class="value num" id="openCount">—</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>ควบคุม</h2>
+      <div class="actions">
+        <button class="warn" id="haltBtn">หยุดรับสัญญาณ</button>
+        <button id="resumeBtn">เริ่มรับสัญญาณ</button>
+        <button class="danger" id="closeAllBtn">ปิดออร์เดอร์ทั้งหมด</button>
+        <button id="refreshBtn">รีเฟรช</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>ออร์เดอร์ที่เปิดอยู่</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th>เวลาเปิด</th><th>ทิศทาง</th><th>ขนาด (lot)</th>
+            <th>ราคาเข้า</th><th>SL</th><th>TP</th><th></th>
+          </tr></thead>
+          <tbody id="positionsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>ประวัติการเทรด</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th>เวลาปิด</th><th>ทิศทาง</th><th>ขนาด</th>
+            <th>ราคาเข้า</th><th>ราคาปิด</th><th>กำไร/ขาดทุน</th>
+          </tr></thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>สัญญาณล่าสุด</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th>เวลา</th><th>ที่มา</th><th>ทิศทาง</th>
+            <th>ความมั่นใจ</th><th>ผล</th><th>เหตุผล</th>
+          </tr></thead>
+          <tbody id="signalsBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  const store = {
+    get base()  { return localStorage.getItem("xau_base") || "/api"; },
+    set base(v) { localStorage.setItem("xau_base", v); },
+    get token()  { return localStorage.getItem("xau_token") || ""; },
+    set token(v) { localStorage.setItem("xau_token", v); },
+  };
+
+  let ws = null;
+  let poller = null;
+
+  const money = (n) =>
+    (n === null || n === undefined || Number.isNaN(n))
+      ? "—"
+      : n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  const timeOf = (iso) => {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("th-TH", { hour12: false });
+  };
+
+  const signed = (el, value, suffix = "") => {
+    el.textContent = (value > 0 ? "+" : "") + money(value) + suffix;
+    el.classList.toggle("up", value > 0);
+    el.classList.toggle("down", value < 0);
+  };
+
+  async function api(path, options = {}) {
+    const res = await fetch(store.base + path, {
+      ...options,
+      headers: { "X-API-Token": store.token, "Content-Type": "application/json", ...(options.headers || {}) },
+    });
+    if (res.status === 401) throw new Error("รหัส API ไม่ถูกต้อง");
+    if (!res.ok) throw new Error(`เซิร์ฟเวอร์ตอบ ${res.status}`);
+    return res.json();
+  }
+
+  function renderAccount(state) {
+    $("balance").textContent = money(state.balance);
+    $("equity").textContent = money(state.equity);
+    $("openCount").textContent = state.open_positions;
+    signed($("dayPnl"), state.day_pnl, `  (${state.day_pnl_percent.toFixed(2)}%)`);
+
+    const badge = $("modeBadge");
+    const live = state.live_enabled;
+    badge.textContent = live ? "โหมดเงินจริง (LIVE)" : "โหมดจำลอง (PAPER)";
+    badge.className = "badge " + (live ? "live" : "paper");
+
+    const halt = $("haltBadge");
+    halt.hidden = !state.trading_halted;
+    halt.className = "badge halt";
+    halt.textContent = "หยุดเทรด: " + (state.halt_reason || "โดยผู้ใช้");
+  }
+
+  function renderPositions(rows) {
+    const body = $("positionsBody");
+    if (!rows.length) {
+      body.innerHTML = `<tr><td colspan="7" class="empty">ยังไม่มีออร์เดอร์เปิดอยู่</td></tr>`;
+      return;
+    }
+    body.innerHTML = rows.map((p) => `
+      <tr>
+        <td>${timeOf(p.opened_at)}</td>
+        <td><span class="pill ${p.side.toLowerCase()}">${p.side === "BUY" ? "ซื้อ" : "ขาย"}</span></td>
+        <td class="num">${p.volume.toFixed(2)}</td>
+        <td class="num">${money(p.entry_price)}</td>
+        <td class="num">${p.stop_loss ? money(p.stop_loss) : "—"}</td>
+        <td class="num">${p.take_profit ? money(p.take_profit) : "—"}</td>
+        <td><button class="small danger" data-close="${p.id}">ปิด</button></td>
+      </tr>`).join("");
+  }
+
+  function renderHistory(rows) {
+    const body = $("historyBody");
+    if (!rows.length) {
+      body.innerHTML = `<tr><td colspan="6" class="empty">ยังไม่มีประวัติ</td></tr>`;
+      return;
+    }
+    body.innerHTML = rows.map((p) => `
+      <tr>
+        <td>${timeOf(p.closed_at)}</td>
+        <td><span class="pill ${p.side.toLowerCase()}">${p.side === "BUY" ? "ซื้อ" : "ขาย"}</span></td>
+        <td class="num">${p.volume.toFixed(2)}</td>
+        <td class="num">${money(p.entry_price)}</td>
+        <td class="num">${money(p.close_price)}</td>
+        <td class="num ${p.profit >= 0 ? "up" : "down"}">${p.profit > 0 ? "+" : ""}${money(p.profit)}</td>
+      </tr>`).join("");
+  }
+
+  function renderSignals(rows) {
+    const body = $("signalsBody");
+    if (!rows.length) {
+      body.innerHTML = `<tr><td colspan="6" class="empty">ยังไม่มีสัญญาณเข้ามา</td></tr>`;
+      return;
+    }
+    body.innerHTML = rows.map((entry) => {
+      const s = entry.signal;
+      return `<tr>
+        <td>${timeOf(entry.created_at)}</td>
+        <td>${s.source || "—"}</td>
+        <td>${s.side}</td>
+        <td class="num">${(s.confidence * 100).toFixed(0)}%</td>
+        <td class="${entry.accepted ? "up" : "down"}">${entry.accepted ? "รับ" : "ปฏิเสธ"}</td>
+        <td style="text-align:left; white-space:normal">${entry.reason}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  async function refresh() {
+    try {
+      const [state, positions, history, signals] = await Promise.all([
+        api("/account"), api("/positions"), api("/positions/history?limit=20"), api("/signals?limit=20"),
+      ]);
+      renderAccount(state);
+      renderPositions(positions);
+      renderHistory(history);
+      renderSignals(signals);
+      try {
+        const q = await api("/quote");
+        $("price").textContent = money(q.bid) + " / " + money(q.ask);
+      } catch {
+        $("price").textContent = "ราคาไม่พร้อม";
+      }
+    } catch (err) {
+      alert("โหลดข้อมูลไม่สำเร็จ: " + err.message);
+      disconnect();
+    }
+  }
+
+  function connectSocket() {
+    if (ws) { try { ws.close(); } catch {} }
+    let url;
+    try {
+      url = new URL(store.base + "/ws", window.location.href);
+    } catch { return; }
+    url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
+    url.searchParams.set("token", store.token);
+
+    ws = new WebSocket(url.toString());
+    ws.onopen  = () => { $("wsDot").classList.add("on"); $("wsText").textContent = "เชื่อมต่อแล้ว"; };
+    ws.onclose = () => {
+      $("wsDot").classList.remove("on"); $("wsText").textContent = "ออฟไลน์";
+      ws = null;
+    };
+    ws.onmessage = (ev) => {
+      let msg;
+      try { msg = JSON.parse(ev.data); } catch { return; }
+      if (msg.event === "account") renderAccount(msg.data);
+      else refresh();
+    };
+  }
+
+  function connect() {
+    store.base = $("apiBase").value.trim().replace(/\/$/, "");
+    store.token = $("token").value.trim();
+    if (!store.token) { alert("กรุณาใส่รหัส API"); return; }
+    $("setup").classList.add("hidden");
+    $("app").classList.remove("hidden");
+    refresh();
+    connectSocket();
+    poller = setInterval(refresh, 15000);
+  }
+
+  function disconnect() {
+    if (poller) clearInterval(poller);
+    if (ws) { try { ws.close(); } catch {} }
+    $("setup").classList.remove("hidden");
+    $("app").classList.add("hidden");
+  }
+
+  $("connectBtn").onclick = connect;
+  $("refreshBtn").onclick = refresh;
+
+  $("haltBtn").onclick = async () => {
+    await api("/control/halt", { method: "POST" }); refresh();
+  };
+  $("resumeBtn").onclick = async () => {
+    await api("/control/resume", { method: "POST" }); refresh();
+  };
+  $("closeAllBtn").onclick = async () => {
+    if (!confirm("ยืนยันปิดออร์เดอร์ทั้งหมด?")) return;
+    await api("/positions/close-all", { method: "POST" }); refresh();
+  };
+  $("positionsBody").addEventListener("click", async (e) => {
+    const id = e.target.dataset.close;
+    if (!id) return;
+    if (!confirm("ยืนยันปิดออร์เดอร์นี้?")) return;
+    await api(`/positions/${id}/close`, { method: "POST" });
+    refresh();
+  });
+
+  // Restore a previous session so a refresh does not log the user out.
+  $("apiBase").value = store.base;
+  if (store.token) { $("token").value = store.token; connect(); }
+})();
+</script>
+</body>
+</html>
