@@ -1,0 +1,18 @@
+PREFLIGHT ONLY — not native compilation, MT5 execution, or backtest
+Source SHA256: 17226f5613bc418714afb85a1fe8590c48ce70f68455e9dc8ebfc79e17c44ec6
+test_average_and_executable_side (__main__.IndependentArithmeticFixtures.test_average_and_executable_side) ... ok
+test_equity_vs_balance_recovery (__main__.IndependentArithmeticFixtures.test_equity_vs_balance_recovery) ... ok
+test_full_reservation_bounds_adverse_entries (__main__.IndependentArithmeticFixtures.test_full_reservation_bounds_adverse_entries) ... ok
+test_gold_budget_can_reject_500 (__main__.IndependentArithmeticFixtures.test_gold_budget_can_reject_500) ... ok
+test_session_midnight_and_boundaries (__main__.IndependentArithmeticFixtures.test_session_midnight_and_boundaries) ... ok
+test_vwap_weighted_fixture (__main__.IndependentArithmeticFixtures.test_vwap_weighted_fixture) ... ok
+test_balanced_delimiters (__main__.SourceContracts.test_balanced_delimiters) ... ok
+test_bounded_inputs (__main__.SourceContracts.test_bounded_inputs) ... ok
+test_closed_bar_calls_and_execution_contract (__main__.SourceContracts.test_closed_bar_calls_and_execution_contract) ... ok
+test_native_interfaces (__main__.SourceContracts.test_native_interfaces) ... ok
+test_unique_functions (__main__.SourceContracts.test_unique_functions) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.003s
+
+OK
