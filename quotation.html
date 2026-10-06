@@ -181,7 +181,8 @@ html,body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 /* TABLE */
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table.items{width:100%;border-collapse:collapse;font-size:12.5px}
-@media (max-width:640px){ table.items{min-width:560px} }
+@media (max-width:640px){ table.items{min-width:720px} }
+table.items td.cost-cell{min-width:88px}
 table.items th{
   background:#f6f9ff;color:var(--navy1);font-weight:600;font-size:10.5px;letter-spacing:.5px;
   text-transform:uppercase;padding:9px 8px;text-align:left;border-bottom:1px solid var(--line);
@@ -201,7 +202,7 @@ table.items td:nth-child(3) input:placeholder-shown{
 }
 table.items input.num{text-align:right}
 table.items input.qty,table.items input.unit{text-align:center}
-table.items td.cost-cell{display:flex;flex-direction:column;gap:3px;padding:5px 5px}
+table.items .cost-stack{display:flex;flex-direction:column;gap:3px}
 table.items .cat-select{
   width:100%;border:1px solid var(--line2);border-radius:6px;background:#fff;
   color:var(--sub);font-size:9.5px;padding:2px 3px;font-family:var(--font);outline:none;
@@ -827,6 +828,8 @@ table.items th{
 table.items tbody tr{transition:background .18s ease}
 table.items tbody tr:hover td{background:rgba(48,120,235,.10)}
 table.items tbody tr:focus-within td{background:rgba(48,120,235,.15)}
+table.items th,table.items td{border:1px solid rgba(110,160,240,.22)}
+table.items th{border-color:rgba(110,160,240,.34)}
 table.items input:focus{
   box-shadow:0 0 0 1px rgba(72,216,255,.5), 0 0 18px rgba(30,111,255,.28)!important;
 }
@@ -1221,7 +1224,7 @@ table.items input:focus{
   .doc{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#fff!important}
   .party-card{background:none!important}
   table.items th{background:var(--th-bg)!important;color:var(--th-ink)!important;border:1px solid #b9c4d6!important}
-  table.items tbody tr:hover td{background:none!important}
+  table.items tbody tr:hover td,table.items tbody tr:focus-within td{background:none!important}
   .row-total{color:var(--ink)!important}
   .totals{background:none!important;border:none!important;box-shadow:none!important;padding:0!important;max-width:340px}
   .totals-wrap{padding:0;display:flex;justify-content:flex-end}
@@ -2191,12 +2194,12 @@ function renderItems(){
     const priced = hasPrice(it);
     const costCell = it.direct
       ? `<td class="num no-print center" style="color:var(--sub)">—</td>`
-      : `<td class="num no-print cost-cell">
+      : `<td class="num no-print cost-cell"><div class="cost-stack">
           <input class="num" type="number" min="0" step="0.01" value="${it.cost}" oninput="updateItem(${i},'cost',this.value)">
           <select class="cat-select" title="หมวดราคา" onchange="updateItem(${i},'cat',this.value)">
             ${Object.keys(PRICE_CATS).map(k=>`<option value="${k}"${(it.cat||'std')===k?' selected':''}>${PRICE_CATS[k].label}</option>`).join('')}
           </select>
-        </td>`;
+        </div></td>`;
     const sellCell = it.direct
       ? `<td class="num"><input class="num cell-in" type="number" min="0" step="0.01" value="${it.price}" oninput="updateItem(${i},'price',this.value)"><span class="cell-print">${priced ? fmt(sellPrice(it)) : ''}</span></td>`
       : `<td class="num sell-price">${priced ? fmt(sellPrice(it)) : ''}</td>`;
