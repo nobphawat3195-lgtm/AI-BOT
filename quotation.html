@@ -180,19 +180,19 @@ html,body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 
 /* TABLE */
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-table.items{width:100%;border-collapse:collapse;font-size:12.5px}
-@media (max-width:640px){ table.items{min-width:720px} }
+table.items{width:100%;border-collapse:collapse;font-size:14px}
+@media (max-width:640px){ table.items{min-width:880px} table.items th:nth-child(3){min-width:180px} }
 table.items td.cost-cell{min-width:88px}
 table.items th{
-  background:#f6f9ff;color:var(--navy1);font-weight:600;font-size:10.5px;letter-spacing:.5px;
+  background:#f6f9ff;color:var(--navy1);font-weight:600;font-size:12px;letter-spacing:.5px;
   text-transform:uppercase;padding:9px 8px;text-align:left;border-bottom:1px solid var(--line);
 }
-table.items td{padding:6px 6px;border-bottom:1px solid var(--line2);vertical-align:middle}
+table.items td{padding:8px 7px;border-bottom:1px solid var(--line2);vertical-align:middle}
 table.items th.num,table.items td.num{text-align:right}
 table.items th.center,table.items td.center{text-align:center}
 table.items input{
   width:100%;border:1px solid transparent;background:transparent;border-radius:6px;
-  padding:6px 7px;font-family:var(--font);font-size:12.5px;color:var(--ink);outline:none;
+  padding:7px 8px;font-family:var(--font);font-size:14px;color:var(--ink);outline:none;
 }
 table.items input:hover{border-color:var(--line)}
 table.items input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 2px rgba(30,111,255,.1)}
@@ -821,7 +821,7 @@ body::after{
 /* ── Table: quieter rules, a lit header, a highlighted active row ─── */
 table.items th{
   font-family:var(--font-display);
-  font-weight:600;letter-spacing:.09em;font-size:10.5px;text-transform:uppercase;
+  font-weight:600;letter-spacing:.06em;font-size:12px;text-transform:uppercase;
   background:linear-gradient(180deg,rgba(30,111,255,.17),rgba(30,111,255,.07))!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.07);
 }
@@ -1226,7 +1226,7 @@ table.items input:focus{
   table.items th{background:var(--th-bg)!important;color:var(--th-ink)!important;border:1px solid #b9c4d6!important}
   table.items tbody tr:hover td,table.items tbody tr:focus-within td{background:none!important}
   .row-total{color:var(--ink)!important}
-  .totals{background:none!important;border:none!important;box-shadow:none!important;padding:0!important;max-width:340px}
+  .totals{background:none!important;border:1px solid #b9c4d6!important;border-top:none!important;border-radius:0!important;box-shadow:none!important;padding:0!important;max-width:340px}
   .totals-wrap{padding:0;display:flex;justify-content:flex-end}
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;appearance:none;margin:0}
@@ -1268,7 +1268,7 @@ table.items input:focus{
   .doc-fields .dfrow{justify-content:flex-end!important}
 
   /* header block */
-  .banner-mechanic{opacity:.10}
+  .banner-mechanic{opacity:.10;max-height:128px}
   .brand{gap:8px}
   .brand-logo{width:40px;height:40px;border-radius:9px;box-shadow:none}
   .brand-name{font-size:16px}
@@ -1295,27 +1295,24 @@ table.items input:focus{
 
   /* item table */
   .table-scroll{overflow:visible!important}
-  table.items{font-size:10.5px;min-width:0!important;table-layout:fixed}
+  table.items{font-size:12px;min-width:0!important;table-layout:fixed}
   /* Give the description every spare millimetre so an ordinary part name
      stays on one line; only a genuinely long one wraps. */
-  table.items th:nth-child(1){width:20px!important}
-  table.items th:nth-child(2){width:66px!important}
+  table.items th:nth-child(1){width:24px!important}
+  table.items th:nth-child(2){width:76px!important}
   table.items th:nth-child(3){width:auto!important}
-  table.items th:nth-child(4){width:38px!important}
-  table.items th:nth-child(5){width:40px!important}
-  table.items th:nth-child(7){width:62px!important}
-  table.items th:nth-child(8){width:70px!important}
-  table.items th:nth-child(9){width:62px!important}
-  table.items th:nth-child(10){width:76px!important}
+  table.items th:nth-child(4){width:46px!important}
+  table.items th:nth-child(5){width:44px!important}
+  table.items th:nth-child(7){width:90px!important}
+  table.items th:nth-child(8){width:82px!important}
+  table.items th:nth-child(9){width:56px!important}
+  table.items th:nth-child(10){width:90px!important}
   /* figures must never wrap or clip */
   table.items td.num,table.items td.center,
   table.items td.num .cell-print{white-space:nowrap}
   table.items .row-gross,table.items .row-total,table.items .sell-price{white-space:nowrap}
-  table.items th{font-size:8.5px;padding:4px 2px;letter-spacing:0}
-  table.items td{padding:0 2px}
-  table.items input{font-size:10.5px}
-  table.items th{padding:4px 5px;font-size:9.5px}
-  table.items td{padding:0 5px;border:1px solid #d7e0ee}
+  table.items th{padding:5px 5px;font-size:10.5px;letter-spacing:0;white-space:nowrap}
+  table.items td{padding:2px 6px;border:1px solid #c6d0e0}
   table.items input{padding:1px 4px;font-size:12px}
   table.items tr{break-inside:avoid;page-break-inside:avoid}
   table.items input,.field input,.field textarea,.trow input,.trow select{border-color:transparent!important;background:transparent!important;box-shadow:none!important;-webkit-appearance:none!important;appearance:none!important}
@@ -1326,11 +1323,12 @@ table.items input:focus{
 
   /* totals / signatures / notes */
   .totals-wrap{break-inside:avoid;page-break-inside:avoid}
-  .totals{margin-top:2px}
-  .trow{padding:2px 0;font-size:12px}
-  .grand{margin-top:3px;padding-top:4px}
-  .grand .gv{font-size:19px}
-  .bahttext{font-size:10.5px;margin-top:2px}
+  .totals{margin-top:0!important}
+  .trow{padding:2px 10px;font-size:12px;border-bottom:1px solid #d7e0ee;align-items:center}
+  .grand{margin-top:0;padding:6px 10px;border-top:2px solid var(--ink)!important;background:#eef3fb!important}
+  .grand .gl{font-size:14px}
+  .grand .gv{font-size:21px}
+  .bahttext{font-size:10.5px;margin:0;padding:4px 10px 6px}
   .sign-grid{break-inside:avoid;page-break-inside:avoid;margin-top:8px;gap:14px}
   .sign-grid .field{margin-bottom:2px}
   .sign-line{height:24px;margin-bottom:3px}
@@ -1742,7 +1740,7 @@ table.items input:focus{
             <th class="num no-print" style="width:80px">ราคาทุน</th>
             <th class="num" style="width:82px">ราคาขาย/หน่วย</th>
             <th class="num" style="width:88px">ราคารวม</th>
-            <th class="num" style="width:74px">ส่วนลด</th>
+            <th class="num" style="width:74px">ส่วนลด (%)</th>
             <th class="num" style="width:92px">ราคาสุทธิ</th>
             <th class="no-print" style="width:50px"></th>
           </tr>
@@ -1751,7 +1749,7 @@ table.items input:focus{
       </table>
       </div>
       <button class="add-row-btn no-print" onclick="addRow()">+ เพิ่มรายการ</button>
-      <div style="font-size:10.5px;color:var(--sub);margin-top:6px" class="no-print">💡 ราคาทุนใช้คำนวณภายในเท่านั้น เลือกหมวดราคาได้ต่อแถวใต้ช่องราคาทุน — «ปกติ» = ทุน×1.5 หรือ «หมวดใหม่» = ทุน×1.7 หักส่วนลด 15% ราคาขายที่คำนวณได้จะปัดเศษและแสดงในใบเสนอราคา (คอลัมน์ราคาทุน/หมวดราคาจะไม่ปรากฏตอนพิมพ์)</div>
+      <div style="font-size:10.5px;color:var(--sub);margin-top:6px" class="no-print">💡 ราคาทุนใช้คำนวณภายในเท่านั้น เลือกหมวดราคาได้ต่อแถวใต้ช่องราคาทุน — «ปกติ» = ทุน×1.5 หรือ «หมวดใหม่» = ทุน×1.7 แล้วใส่ส่วนลด 15% ให้ในช่องส่วนลดอัตโนมัติ · ช่องส่วนลดพิมพ์ตัวเลขได้เลย นับเป็น % (เช่น 10 = ลด 10%) ถ้าจะลดเป็นบาทให้พิมพ์ต่อท้ายว่า บ (เช่น 500บ) · คอลัมน์ราคาทุน/หมวดราคาจะไม่ปรากฏตอนพิมพ์</div>
 
       <label class="show-total-toggle no-print" title="ติ๊กออกถ้าไม่ต้องการให้ยอดรวมสุทธิปรากฏในใบที่พิมพ์">
         <input type="checkbox" id="showTotalToggle" checked onchange="toggleShowTotal()">
@@ -1964,8 +1962,10 @@ const MARKUP = 1.5;
 const ALT_MARKUP = 1.7;
 const ALT_DISCOUNT = 0.15;
 const PRICE_CATS = {
-  std: { label: 'ปกติ (ทุน×1.5)', calc: cost => cost * MARKUP },
-  alt: { label: 'หมวดใหม่ (ทุน×1.7-15%)', calc: cost => cost * ALT_MARKUP * (1 - ALT_DISCOUNT) },
+  std: { label: 'ปกติ ×1.5', calc: cost => cost * MARKUP },
+  // the 15% is not folded into the price: picking this category writes it
+  // into the line's discount cell, so the sheet shows ×1.7 and the 15% off
+  alt: { label: 'ใหม่ ×1.7 ลด15%', calc: cost => cost * ALT_MARKUP },
 };
 const RESET_ROW_COUNT = 0;
 
@@ -1997,22 +1997,26 @@ function sellPrice(it){
   return PRICE_CATS[cat].calc(parseFloat(it.cost)||0);
 }
 function lineGross(it){ return (parseFloat(it.qty)||0) * sellPrice(it); }
-// A line discount is entered either as a baht amount ("29000") or a
-// percentage of that line ("5%"). Never more than the line itself.
-function lineDiscount(it){
+// A plain number in the line discount cell is a percentage ("10" = 10%).
+// A baht amount is still possible with a baht suffix ("500บ" / "500บาท").
+// Never more than the line itself.
+function parseDisc(it){
   const raw = String(it.disc ?? '').trim();
-  if(!raw) return 0;
+  const baht = /(บาท|บ\.?|฿)$/.test(raw);
+  const n = parseFloat(raw.replace(/(บาท|บ\.?|฿|%)$/,'').replace(/,/g,''));
+  return { n: isNaN(n) || n <= 0 ? 0 : n, baht };
+}
+function lineDiscount(it){
+  const { n, baht } = parseDisc(it);
+  if(!n) return 0;
   const gross = lineGross(it);
-  const pct = raw.endsWith('%');
-  const n = parseFloat(pct ? raw.slice(0,-1) : raw);
-  if(isNaN(n) || n <= 0) return 0;
-  return Math.min(pct ? gross * n / 100 : n, gross);
+  return Math.min(baht ? n : gross * n / 100, gross);
 }
 function lineNet(it){ return lineGross(it) - lineDiscount(it); }
 function discLabel(it){
-  const raw = String(it.disc ?? '').trim();
-  if(!raw || !lineDiscount(it)) return '';
-  return raw.endsWith('%') ? raw : fmt(lineDiscount(it));
+  if(!lineDiscount(it)) return '';
+  const { n, baht } = parseDisc(it);
+  return baht ? fmt(lineDiscount(it)) : n.toLocaleString('th-TH',{maximumFractionDigits:2}) + '%';
 }
 // kept as the "what this line contributes" figure used by the totals
 function rowTotal(it){ return lineNet(it); }
@@ -2196,7 +2200,7 @@ function renderItems(){
       ? `<td class="num no-print center" style="color:var(--sub)">—</td>`
       : `<td class="num no-print cost-cell"><div class="cost-stack">
           <input class="num" type="number" min="0" step="0.01" value="${it.cost}" oninput="updateItem(${i},'cost',this.value)">
-          <select class="cat-select" title="หมวดราคา" onchange="updateItem(${i},'cat',this.value)">
+          <select class="cat-select" title="หมวดราคา" onchange="setCat(${i},this.value)">
             ${Object.keys(PRICE_CATS).map(k=>`<option value="${k}"${(it.cat||'std')===k?' selected':''}>${PRICE_CATS[k].label}</option>`).join('')}
           </select>
         </div></td>`;
@@ -2213,7 +2217,7 @@ function renderItems(){
       ${costCell}
       ${sellCell}
       <td class="num row-gross">${priced ? fmt(lineGross(it)) : ''}</td>
-      <td class="num"><input class="num cell-in" type="text" inputmode="decimal" placeholder="0 หรือ 5%" value="${escapeHtml(String(it.disc ?? ''))}" oninput="updateItem(${i},'disc',this.value)"><span class="cell-print">${escapeHtml(discLabel(it))}</span></td>
+      <td class="num"><input class="num cell-in" type="text" inputmode="decimal" placeholder="เช่น 10" value="${escapeHtml(String(it.disc ?? ''))}" oninput="updateItem(${i},'disc',this.value)"><span class="cell-print">${escapeHtml(discLabel(it))}</span></td>
       <td class="row-total">${priced ? fmt(lineNet(it)) : ''}</td>
       <td class="no-print center row-actions">
         <button class="ins-btn" onclick="insertRowAfter(${i})" title="แทรกแถวใหม่ใต้แถวนี้">+</button>
@@ -2226,8 +2230,22 @@ function renderItems(){
 
 function updateItem(i,field,val){
   items[i][field] = val;
+  if(field === 'disc') items[i].discAuto = false;   // typed by hand
   if(field === 'name') autoFillSku(i);
   renderRowValuesOnly(i);
+  recalc();
+  save();
+}
+
+// The 1.7 category carries its own 15% off, written into the discount cell
+// where it is visible on the sheet; switching back removes it again unless
+// it has since been typed over by hand.
+function setCat(i,cat){
+  const it = items[i];
+  it.cat = cat;
+  if(cat === 'alt'){ it.disc = String(ALT_DISCOUNT*100); it.discAuto = true; }
+  else if(it.discAuto){ it.disc = ''; it.discAuto = false; }
+  renderItems();
   recalc();
   save();
 }
