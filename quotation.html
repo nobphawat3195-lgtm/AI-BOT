@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ระบบใบเสนอราคาอะไหล่รถยนต์</title>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Mitr:wght@300;400;500;600;700&family=Itim&family=Srisakdi:wght@400;700&family=Chonburi&family=Charmonman:wght@400;700&family=Trirong:wght@300;400;500;600;700&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Mitr:wght@300;400;500;600;700&family=Itim&family=Srisakdi:wght@400;700&family=Chonburi&family=Charmonman:wght@400;700&family=Trirong:wght@300;400;500;600;700&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --navy0:#0b1a2e; --navy1:#0f2a4a; --navy2:#12345f;
@@ -1175,6 +1175,158 @@ table.items input:focus{
 @keyframes viewFadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.view.view-enter{animation:none}}
 
+/* ═══════════════════════════════════════════════════════════════
+   AMG CHROME THEME — deep navy with polished-chrome edges, matching
+   the Figma redesign. Screen only and loaded last, so it restyles
+   every layer above without touching the A4 print block below.
+   ═══════════════════════════════════════════════════════════════ */
+@media screen{
+:root{
+  --bg:#050b17; --ink:#eef2f8; --sub:#a9b6ca;
+  --line:#2a3a57; --line2:#1d2b45;
+  --blue:#2e6bff; --blue2:#8fb8ff; --cyan:#8fb8ff;
+  --gold:#eef2f8; --champagne:#d5dce6; --amber:#8fb8ff;
+  --th-bg:rgba(143,184,255,.10); --th-ink:#eef3fa;
+  --input-bg:rgba(4,9,20,.72);
+  --chrome:linear-gradient(135deg,#f7f9fc 0%,#bac4d2 32%,#6e7a8c 50%,#e4e9f0 68%,#98a4b6 100%);
+  --chrome-text:linear-gradient(180deg,#ffffff 0%,#d3dbe6 52%,#8e9aad 54%,#eef2f7 100%);
+  --chrome-edge:linear-gradient(180deg,rgba(255,255,255,.52),rgba(140,152,170,.16) 50%,rgba(255,255,255,.28));
+  --card-fill:linear-gradient(180deg,rgba(20,37,74,.94),rgba(9,18,36,.94));
+  --glass-fill:linear-gradient(180deg,rgba(18,34,62,.82),rgba(10,20,40,.74));
+}
+body{background:linear-gradient(180deg,#0c1a35 0%,#060d1c 46%,#03070f 100%) fixed!important}
+body::before{opacity:.45}
+.aurora{opacity:.42}
+.aurora i:nth-child(1){background:radial-gradient(circle,rgba(46,107,255,.5),transparent 66%)}
+.aurora i:nth-child(2){background:radial-gradient(circle,rgba(190,206,232,.22),transparent 66%)}
+.aurora i:nth-child(3){background:radial-gradient(circle,rgba(30,79,216,.28),transparent 68%)}
+.topline{background:linear-gradient(90deg,transparent,rgba(213,220,230,.75) 25%,#fff 50%,rgba(213,220,230,.75) 75%,transparent);background-size:220% 100%}
+::selection{background:rgba(143,184,255,.35)}
+:focus-visible{outline-color:rgba(213,220,230,.8)}
+
+/* chrome hairlines on every surface */
+.topnav,.toolbar,.paste-box,.sku-bar,.site-foot{background-image:var(--glass-fill),var(--chrome-edge)!important}
+.doc,.hero-card{background-image:var(--card-fill),var(--chrome-edge)!important}
+.totals{background-image:linear-gradient(180deg,rgba(16,30,60,.96),rgba(7,14,30,.96)),var(--chrome-edge)!important}
+.stat-card,.panel-card,.service-card,.note-banner{
+  border:1px solid transparent!important;
+  background:var(--card-fill) padding-box,var(--chrome-edge) border-box!important;
+}
+.note-banner{background:var(--glass-fill) padding-box,var(--chrome-edge) border-box!important;color:#c3cede}
+
+/* top bar */
+.tn-name,.sf-name{background:var(--chrome-text);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tn-sub,.tn-urole,.sf-tag{color:#8793a6}
+.tn-logo,.brand-logo,.sf-l img{box-shadow:0 0 0 1px rgba(255,255,255,.5),0 0 0 4px rgba(213,220,230,.08),0 0 26px rgba(158,190,255,.22)!important}
+.tn-item{font-size:13.5px;color:#a9b6ca}
+.tn-item:hover{color:#f7f9fc}
+.tn-item.on{color:#f7f9fc;background:rgba(18,34,62,.85);box-shadow:inset 0 0 0 1px rgba(213,220,230,.14)}
+.tn-item::after{background:linear-gradient(90deg,#1e4fd8,#3d7bff,#7fb0ff)}
+.tn-bell{color:#d5dce6;border:1px solid transparent;background:var(--glass-fill) padding-box,var(--chrome-edge) border-box}
+.tn-bell .ico{width:17px;height:17px}
+.tn-avatar{background:var(--chrome);color:#0a1426;box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+.tn-avatar .ico{width:17px;height:17px}
+.tn-uname{color:#eef2f8}
+.tn-bell-pop,.tn-user-pop{background:linear-gradient(180deg,rgba(18,34,62,.98),rgba(8,16,32,.98));border-color:rgba(213,220,230,.22)}
+
+/* buttons: polished chrome primary, glass ghost */
+.btn{font-family:var(--font);font-weight:500;letter-spacing:.01em;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn .ico{width:17px;height:17px;flex-shrink:0}
+.btn-print{color:#0a1426!important;text-shadow:0 1px 0 rgba(255,255,255,.45);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75),0 10px 28px -10px rgba(170,195,255,.55)!important}
+.btn-print::after{background:var(--chrome)}
+.btn-print::before{background:conic-gradient(from 0deg,transparent 0turn,rgba(255,255,255,.95) .06turn,transparent .16turn)}
+.btn-print:hover{filter:brightness(1.06);box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 14px 34px -10px rgba(190,210,255,.65)!important}
+.btn-ghost{color:#f7f9fc!important;border:1px solid transparent!important;background:var(--glass-fill) padding-box,var(--chrome-edge) border-box!important}
+.btn-ghost:hover{background:linear-gradient(180deg,rgba(28,50,90,.9),rgba(14,28,54,.85)) padding-box,var(--chrome-edge) border-box!important}
+
+/* hero: chrome car on a navy night, silver type */
+.hero.cine{border:1px solid rgba(213,220,230,.24)!important}
+.cine-sky{background:linear-gradient(160deg,#050b17 0%,#0b1932 48%,#13295a 100%)}
+.cine-glow{background:radial-gradient(46% 34% at 68% 74%,rgba(46,107,255,.26),transparent 70%),radial-gradient(40% 10% at 66% 86%,rgba(220,230,255,.14),transparent 70%)}
+.dim-lines{stroke:rgba(205,214,228,.22)}
+.car-dim .car-body,.car-dim .car-glass{stroke:rgba(228,234,243,.66)}
+.car-dim .car-crease{stroke:rgba(228,234,243,.34)}
+.car-dim .car-mirror,.car-dim .wheel circle{stroke:rgba(228,234,243,.6)}
+.car-dim .wheel line{stroke:rgba(228,234,243,.36)}
+.car-dim .car-light{stroke:rgba(143,184,255,.85)}
+.car-bright use{stroke:#ffffff;filter:drop-shadow(0 0 7px rgba(220,232,255,.9))}
+.crosshair{stroke:rgba(220,228,240,.62)}
+.crosshair circle{fill:rgba(220,228,240,.06)}
+.cine-eyebrow{color:#9aa6b8;letter-spacing:.3em}
+.hero.cine h1{font-family:'Kanit',sans-serif;font-weight:200;letter-spacing:-.012em;line-height:1.14}
+.hero.cine h1 em{font-style:normal;font-weight:200;background:var(--chrome-text);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cine-lede{color:rgba(208,218,232,.86)}
+.cs b{background:var(--chrome-text);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cs span{color:#8793a6}
+.cine-marks{color:#a9b6ca}
+.cine-marks i{color:rgba(213,220,230,.5)}
+
+/* dashboard */
+.stat-card{gap:16px;padding:20px}
+.stat-ico,.sc-ico{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:#dfe5ee;filter:none;
+  border:1px solid transparent;background:linear-gradient(180deg,rgba(18,34,62,.9),rgba(12,24,46,.9)) padding-box,var(--chrome-edge) border-box}
+.stat-ico{width:44px;height:44px;border-radius:50%}
+.stat-ico .ico{width:20px;height:20px}
+.stat-card b{font-size:26px;font-weight:600;background:var(--chrome-text);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat-card span{color:#a9b6ca;font-size:12px}
+.stat-foot-note{color:#6c7a92}
+.panel-head{font-family:var(--font);font-weight:500;color:#f2f5fa;font-size:16px}
+.recent-row{border-bottom-color:rgba(160,185,220,.12)}
+.rr-doc{color:#8fb8ff}
+.rr-name{color:#f2f5fa}
+.rr-sum{color:#f7f9fc}
+.section-label{color:#9aa6b8}
+.service-card{padding:22px 22px 20px;gap:8px}
+.service-card .sc-ico{width:52px;height:52px;border-radius:14px;margin-bottom:8px;box-shadow:0 0 30px rgba(158,190,255,.16)}
+.service-card .sc-ico .ico{width:24px;height:24px}
+.service-card b{font-family:var(--font);font-weight:500;font-size:16px;color:#f2f5fa}
+.service-card span{color:#a9b6ca}
+.service-card:hover{box-shadow:var(--lift),0 0 36px rgba(170,195,255,.2);background:linear-gradient(180deg,rgba(26,46,90,.96),rgba(11,22,44,.96)) padding-box,linear-gradient(180deg,rgba(255,255,255,.8),rgba(160,172,190,.3) 50%,rgba(255,255,255,.5)) border-box!important}
+.view-head h2{font-family:var(--font);font-weight:500}
+.mini-table th{font-family:var(--font);font-size:12.5px;letter-spacing:.01em;text-transform:none;color:#eef3fa}
+.mini-table td{color:#eef2f8}
+.mini-table td.num{color:#f7f9fc}
+.rep-bar-fill{background:linear-gradient(90deg,#1e4fd8,#3d7bff,#8fb8ff)}
+.linklike{color:#8fb8ff}
+
+/* the quotation sheet */
+.banner{background:linear-gradient(110deg,#07101f 0%,#0b1a36 55%,#13306a 120%)}
+.party-label{color:#8fb8ff;letter-spacing:.06em}
+.sec-title::before,.section-title::before{background:linear-gradient(180deg,#f7f9fc,#8e9aad)!important;box-shadow:0 0 10px rgba(213,220,230,.4)}
+.grand .gv{background:var(--chrome-text);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(200,215,240,.22))}
+.grand{border-top-color:rgba(213,220,230,.55)}
+.trow{color:#c3cede}
+
+/* item table: big, high-contrast text so every figure reads at a glance */
+table.items{font-size:15px}
+table.items th{
+  font-family:var(--font)!important;font-weight:500!important;font-size:13.5px!important;
+  letter-spacing:.01em!important;text-transform:none!important;color:#f2f6fb!important;
+  background:linear-gradient(180deg,rgba(143,184,255,.18),rgba(143,184,255,.08))!important;
+  padding:12px 10px!important;
+}
+table.items th,table.items td{border-color:rgba(170,192,225,.24)}
+table.items td{color:#f4f7fb}
+table.items tbody tr:nth-child(even) td{background:rgba(255,255,255,.025)}
+table.items input{color:#ffffff;font-size:15px}
+table.items input::placeholder{color:#7f8ca3}
+table.items td.sku-auto input{color:#a9c8ff}
+table.items .sell-price,table.items .row-gross{color:#eef2f8;font-variant-numeric:tabular-nums}
+.row-total{color:#ffffff!important;font-size:15.5px;font-variant-numeric:tabular-nums}
+table.items .cat-select{font-size:11.5px;color:#eef2f8;background:rgba(4,9,20,.85);border-color:rgba(213,220,230,.3)}
+table.items td.cost-cell{min-width:140px}
+
+/* icons: a more specific base rule makes every .stat-card span a block */
+.stat-card .stat-ico{display:inline-flex;margin-top:0}
+.sfp-ico{display:inline-flex;color:#c9d2de}
+.sfp-ico .ico{width:18px;height:18px}
+/* Thai labels: wide tracking pulls vowels and tone marks off their consonants */
+.section-label,.sf-tag,.tn-urole,.cs span,.party-label{letter-spacing:.02em!important;text-transform:none}
+.section-label{font-family:var(--font);font-size:13px}
+.cs span{font-family:var(--font);font-size:11.5px}
+}
+
 @media print{
   /* whichever view is on screen, the printed page is always the
      quotation document — never the dashboard, never a placeholder */
@@ -1335,6 +1487,10 @@ table.items input:focus{
   .sign-label{font-size:10.5px}
   textarea.notes{min-height:26px;font-size:11.5px}
 }
+@media print{
+  table.items td,table.items td .cell-print,table.items .row-total{color:#0b1526!important}
+  table.items th{color:#0b1526!important;font-weight:600}
+}
 </style>
 </head>
 <body>
@@ -1361,11 +1517,11 @@ table.items input:focus{
     </nav>
     <div class="tn-tools">
       <button class="tn-bell" id="tnBell" title="การแจ้งเตือน" aria-haspopup="true">
-        🔔<span class="tn-bell-dot" id="tnBellDot" hidden></span>
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="tn-bell-dot" id="tnBellDot" hidden></span>
       </button>
       <div class="tn-bell-pop no-print" id="tnBellPop" hidden></div>
       <button class="tn-user" id="tnUserBtn">
-        <span class="tn-avatar">🔧</span>
+        <span class="tn-avatar"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
         <span class="tn-user-text">
           <span class="tn-uname" id="tnBranch">สาขาฟิวเจอร์รังสิต</span>
           <span class="tn-urole">ฝ่ายขาย</span>
@@ -1476,8 +1632,8 @@ table.items input:focus{
     </div>
 
     <div class="cine-copy">
-      <p class="cine-eyebrow">AUTO 1 · สาขาฟิวเจอร์รังสิต</p>
-      <h1>งานหนักแค่ไหน<br><em>ทีมฟิวเจอร์พาร์คไม่เคยถอย</em></h1>
+      <p class="cine-eyebrow">AUTO 1 · FUTURE PARK RANGSIT</p>
+      <h1>งานหนักแค่ไหน<br><em>ทีมฟิวเจอร์พาร์ค<br>ไม่เคยถอย</em></h1>
       <p class="cine-lede">ใบเสนอราคาที่ออกได้ในสองนาที ราคาตรง ไม่ต้องเดา
         พิมพ์ลง A4 หน้าเดียว ส่งลูกค้าได้ทันทีตั้งแต่ยังยืนอยู่หน้าเคาน์เตอร์</p>
       <div class="cine-stats">
@@ -1498,19 +1654,19 @@ table.items input:focus{
   </section>
     <div class="dash-stats no-print">
       <div class="stat-card reveal">
-        <span class="stat-ico">📄</span>
+        <span class="stat-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
         <div><b id="statQuotes">0</b><span>ใบเสนอราคาทั้งหมด</span></div>
       </div>
       <div class="stat-card reveal">
-        <span class="stat-ico">👥</span>
+        <span class="stat-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <div><b id="statCustomers">0</b><span>ลูกค้าทั้งหมด</span></div>
       </div>
       <div class="stat-card reveal">
-        <span class="stat-ico">💰</span>
+        <span class="stat-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></span>
         <div><b id="statValue">0.00</b><span>มูลค่ารวม (บาท)</span></div>
       </div>
       <div class="stat-card reveal">
-        <span class="stat-ico">📊</span>
+        <span class="stat-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span>
         <div><b id="statAvg">0.00</b><span>เฉลี่ยต่อใบ (บาท)</span></div>
       </div>
     </div>
@@ -1526,31 +1682,31 @@ table.items input:focus{
         <div class="panel-head">สร้างใบเสนอราคาใหม่</div>
         <p class="panel-sub">เริ่มต้นสร้างใบเสนอราคาให้กับลูกค้าของคุณ</p>
         <button class="btn btn-print" data-view="quote" style="width:100%;margin-top:6px">+ สร้างใบเสนอราคา</button>
-        <button class="btn btn-ghost" data-view="customers" style="width:100%;margin-top:10px">🔍 จัดการลูกค้า</button>
-        <button class="btn btn-ghost" data-view="history" style="width:100%;margin-top:10px">🕘 ประวัติใบเสนอราคา</button>
+        <button class="btn btn-ghost" data-view="customers" style="width:100%;margin-top:10px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> จัดการลูกค้า</button>
+        <button class="btn btn-ghost" data-view="history" style="width:100%;margin-top:10px"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> ประวัติใบเสนอราคา</button>
       </div>
     </div>
 
     <div class="section-label no-print">โมดูลของระบบ</div>
     <div class="service-grid no-print">
       <button class="service-card reveal" data-view="quote">
-        <span class="sc-ico">🧾</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
         <b>ใบเสนอราคา</b><span>สร้าง แก้ไข และพิมพ์ใบเสนอราคา</span>
       </button>
       <button class="service-card reveal" data-view="customers">
-        <span class="sc-ico">👥</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <b>จัดการลูกค้า</b><span>ข้อมูลลูกค้าและประวัติการซื้อ</span>
       </button>
       <button class="service-card reveal" data-view="history">
-        <span class="sc-ico">🕘</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></span>
         <b>ประวัติใบเสนอราคา</b><span>ย้อนดูใบเสนอราคาที่เคยออก</span>
       </button>
       <button class="service-card reveal" data-view="reports">
-        <span class="sc-ico">📈</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
         <b>รายงานวิเคราะห์</b><span>สรุปยอดขายและแนวโน้ม</span>
       </button>
       <button class="service-card reveal" data-view="settings">
-        <span class="sc-ico">⚙️</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
         <b>ตั้งค่าระบบ</b><span>ข้อมูลร้าน โลโก้ คลังรหัส SKU</span>
       </button>
     </div>
@@ -1576,8 +1732,8 @@ table.items input:focus{
         <option value="Charmonman">ฟอนต์: Charmonman (ลายไทยหวัด)</option>
         <option value="Trirong">ฟอนต์: Trirong (ไทยทางการ)</option>
       </select>
-      <button class="btn btn-ghost" onclick="resetForm()">🗑️ ล้างฟอร์ม</button>
-      <button class="btn btn-print" onclick="syncPrintMirrors();logQuoteToHistory();window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
+      <button class="btn btn-ghost" onclick="resetForm()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> ล้างฟอร์ม</button>
+      <button class="btn btn-print" onclick="syncPrintMirrors();logQuoteToHistory();window.print()"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> พิมพ์ / บันทึกเป็น PDF</button>
     </div>
   </div>
 
@@ -1817,37 +1973,37 @@ table.items input:focus{
     </div>
     <div class="service-grid">
       <div class="service-card static reveal">
-        <span class="sc-ico">🧾</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
         <b>ใบเสนอราคาอัจฉริยะ</b>
         <span>วางข้อความราคาจากซัพพลายเออร์แล้วแปลงเป็นรายการอัตโนมัติ คิดราคาขาย ส่วนลด และ VAT ให้ครบ พิมพ์เป็น A4 หน้าเดียวพร้อมส่งลูกค้าทันที</span>
         <button class="btn btn-ghost" data-view="quote">เปิดใช้งาน →</button>
       </div>
       <div class="service-card static reveal">
-        <span class="sc-ico">👥</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <b>จัดการลูกค้า</b>
         <span>ระบบรวบรวมรายชื่อลูกค้าจากใบเสนอราคาที่เคยออกให้อัตโนมัติ พร้อมยอดสะสมและวันที่ติดต่อล่าสุด</span>
         <button class="btn btn-ghost" data-view="customers">เปิดใช้งาน →</button>
       </div>
       <div class="service-card static reveal">
-        <span class="sc-ico">🕘</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg></span>
         <b>ประวัติใบเสนอราคา</b>
         <span>ย้อนดูทุกใบเสนอราคาที่เคยพิมพ์จากเครื่องนี้ พร้อมยอดเงินและรายละเอียดลูกค้า</span>
         <button class="btn btn-ghost" data-view="history">เปิดใช้งาน →</button>
       </div>
       <div class="service-card static reveal">
-        <span class="sc-ico">📈</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
         <b>รายงานวิเคราะห์</b>
         <span>สรุปยอดขายรวม ค่าเฉลี่ยต่อใบ และแนวโน้มยอดขายรายเดือนจากข้อมูลจริงในเครื่อง</span>
         <button class="btn btn-ghost" data-view="reports">เปิดใช้งาน →</button>
       </div>
       <div class="service-card static reveal">
-        <span class="sc-ico">🗂️</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg></span>
         <b>คลังรหัส SKU</b>
         <span>นำเข้ารายการรหัสอะไหล่ของร้านเอง ให้ระบบเติมรหัส SKU ให้อัตโนมัติเวลาพิมพ์ชื่อสินค้า</span>
         <button class="btn btn-ghost" data-view="quote">เปิดใช้งาน →</button>
       </div>
       <div class="service-card static reveal">
-        <span class="sc-ico">⚙️</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
         <b>ตั้งค่าระบบ</b>
         <span>แก้ไขข้อมูลร้าน โลโก้ เลขผู้เสียภาษี และเลือกฟอนต์ที่ใช้พิมพ์ใบเสนอราคา</span>
         <button class="btn btn-ghost" data-view="settings">เปิดใช้งาน →</button>
@@ -1882,9 +2038,9 @@ table.items input:focus{
     </div>
     <div class="note-banner">📍 รายงานนี้คำนวณจากข้อมูลในเครื่องนี้เท่านั้น หากต้องการภาพรวมทุกสาขารวมกัน ต้องต่อฐานข้อมูลกลางเพิ่มเติม</div>
     <div class="dash-stats">
-      <div class="stat-card"><span class="stat-ico">📄</span><div><b id="repTotalQuotes">0</b><span>ใบเสนอราคาทั้งหมด</span></div></div>
-      <div class="stat-card"><span class="stat-ico">💰</span><div><b id="repTotalValue">0.00 บาท</b><span>มูลค่ารวม</span></div></div>
-      <div class="stat-card"><span class="stat-ico">📊</span><div><b id="repAvgValue">0.00 บาท</b><span>เฉลี่ยต่อใบ</span></div></div>
+      <div class="stat-card"><span class="stat-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><div><b id="repTotalQuotes">0</b><span>ใบเสนอราคาทั้งหมด</span></div></div>
+      <div class="stat-card"><span class="stat-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></span><div><b id="repTotalValue">0.00 บาท</b><span>มูลค่ารวม</span></div></div>
+      <div class="stat-card"><span class="stat-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span><div><b id="repAvgValue">0.00 บาท</b><span>เฉลี่ยต่อใบ</span></div></div>
     </div>
     <div class="panel-card">
       <div class="panel-head">ยอดขายรายเดือน</div>
@@ -1899,16 +2055,16 @@ table.items input:focus{
     </div>
     <div class="service-grid">
       <button class="service-card reveal" onclick="showView('quote');setTimeout(()=>document.querySelector('.party-card')?.scrollIntoView({behavior:'smooth',block:'start'}),380)">
-        <span class="sc-ico">🏢</span><b>ข้อมูลร้าน / ใบกำกับภาษี</b><span>ชื่อนิติบุคคล ที่อยู่ เลขผู้เสียภาษี สาขา</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></svg></span><b>ข้อมูลร้าน / ใบกำกับภาษี</b><span>ชื่อนิติบุคคล ที่อยู่ เลขผู้เสียภาษี สาขา</span>
       </button>
       <button class="service-card reveal" onclick="showView('quote');setTimeout(()=>document.getElementById('logoBox')?.scrollIntoView({behavior:'smooth',block:'center'}),380)">
-        <span class="sc-ico">🖼️</span><b>โลโก้ร้าน</b><span>เปลี่ยนโลโก้ที่แสดงบนหัวใบเสนอราคา</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/></svg></span><b>โลโก้ร้าน</b><span>เปลี่ยนโลโก้ที่แสดงบนหัวใบเสนอราคา</span>
       </button>
       <button class="service-card reveal" onclick="showView('quote');setTimeout(()=>document.querySelector('.sku-bar')?.setAttribute('open',''),380);setTimeout(()=>document.querySelector('.sku-bar')?.scrollIntoView({behavior:'smooth',block:'start'}),420)">
-        <span class="sc-ico">🗂️</span><b>คลังรหัส SKU</b><span>นำเข้า/รีเซ็ตรายการรหัสอะไหล่ของร้าน</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg></span><b>คลังรหัส SKU</b><span>นำเข้า/รีเซ็ตรายการรหัสอะไหล่ของร้าน</span>
       </button>
       <button class="service-card reveal" onclick="showView('quote');setTimeout(()=>document.getElementById('fontSelect')?.scrollIntoView({behavior:'smooth',block:'center'}),380)">
-        <span class="sc-ico">🔤</span><b>ฟอนต์เอกสาร</b><span>เลือกฟอนต์ที่ใช้แสดงและพิมพ์ใบเสนอราคา</span>
+        <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></span><b>ฟอนต์เอกสาร</b><span>เลือกฟอนต์ที่ใช้แสดงและพิมพ์ใบเสนอราคา</span>
       </button>
     </div>
     <div class="note-banner" style="margin-top:22px">🗑️ ต้องการล้างข้อมูลทั้งหมดในเครื่องนี้ (ประวัติ ลูกค้า คลัง SKU)? ไปที่เมนูผู้ใช้มุมขวาบน → ล้างข้อมูลเครื่องนี้</div>
@@ -1937,10 +2093,10 @@ table.items input:focus{
       </div>
     </div>
     <div class="sf-points">
-      <div class="sf-point"><span class="sfp-ico">🛡️</span>รับประกันคุณภาพ</div>
-      <div class="sf-point"><span class="sfp-ico">⚡</span>บริการรวดเร็ว</div>
-      <div class="sf-point"><span class="sfp-ico">💠</span>ราคายุติธรรม</div>
-      <div class="sf-point"><span class="sfp-ico">⚙️</span>มาตรฐานระดับสากล</div>
+      <div class="sf-point"><span class="sfp-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>รับประกันคุณภาพ</div>
+      <div class="sf-point"><span class="sfp-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span>บริการรวดเร็ว</div>
+      <div class="sf-point"><span class="sfp-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg></span>ราคายุติธรรม</div>
+      <div class="sf-point"><span class="sfp-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>มาตรฐานระดับสากล</div>
     </div>
   </footer>
 </div>
@@ -2218,7 +2374,7 @@ function renderItems(){
       ${costCell}
       ${sellCell}
       <td class="num row-gross">${priced ? fmt(lineGross(it)) : ''}</td>
-      <td class="num"><input class="num cell-in" type="text" inputmode="decimal" placeholder="เช่น 10" value="${escapeHtml(String(it.disc ?? ''))}" oninput="updateItem(${i},'disc',this.value)"><span class="cell-print">${escapeHtml(discLabel(it))}</span></td>
+      <td class="num"><input class="num cell-in" type="text" inputmode="decimal" placeholder="0" value="${escapeHtml(String(it.disc ?? ''))}" oninput="updateItem(${i},'disc',this.value)"><span class="cell-print">${escapeHtml(discLabel(it))}</span></td>
       <td class="row-total">${priced ? fmt(lineNet(it)) : ''}</td>
       <td class="no-print center row-actions">
         <button class="ins-btn" onclick="insertRowAfter(${i})" title="แทรกแถวใหม่ใต้แถวนี้">+</button>
