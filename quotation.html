@@ -1327,6 +1327,122 @@ table.items td.cost-cell{min-width:140px}
 .cs span{font-family:var(--font);font-size:11.5px}
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   HERO CLIP — a 12-second loop drawn in SVG: the bay lights come on,
+   the car rolls in, the mechanic works the front wheel while a
+   diagnostic beam sweeps the body, the job reads READY, the car
+   leaves. Without animation every part rests in its parked frame.
+   ═══════════════════════════════════════════════════════════════ */
+@media screen{
+.cine-blueprint.clip{overflow:visible}
+@media (max-width:640px){ .cine-blueprint.clip{opacity:.55} }
+.clip-lights rect{fill:#eaf2ff;filter:drop-shadow(0 0 10px rgba(200,220,255,.9)) drop-shadow(0 6px 22px rgba(143,184,255,.6))}
+.clip-walls line{stroke:rgba(205,214,228,.07);stroke-width:1}
+.clip-horizon{stroke:rgba(213,220,230,.28);stroke-width:1}
+.clip-floor line{stroke:rgba(205,214,228,.07);stroke-width:1}
+
+.car-shell{fill:rgba(7,15,32,.72);stroke:url(#clipChrome);stroke-width:2.2;stroke-linejoin:round}
+.car-glass{fill:rgba(143,184,255,.07);stroke:url(#clipChrome);stroke-width:1.6;stroke-linejoin:round}
+.car-detail{fill:none;stroke:url(#clipChrome);stroke-width:1.4}
+.car-detail.faint{stroke-opacity:.6;stroke-width:1.1}
+.clip-hl{stroke:#cfe0ff;stroke-width:3.4;stroke-linecap:round;filter:drop-shadow(0 0 6px #8fb8ff)}
+.clip-tl{stroke:#ff5a5a;stroke-width:3.4;stroke-linecap:round;opacity:.75}
+.clip-wheel circle{fill:#060c19;stroke:url(#clipChrome);stroke-width:2.2}
+.clip-wheel .rim{fill:none;stroke-width:1.2}
+.clip-wheel .hub{fill:none;stroke-width:1.4}
+.clip-wheel line{stroke:url(#clipChrome);stroke-width:1.3}
+.clip-wheel{transform-box:fill-box;transform-origin:center}
+.clip-reflect{opacity:.13}
+.clip-reflect path,.clip-reflect circle{fill:none;stroke:#c9d2de;stroke-width:2}
+.clip-beam{opacity:.55}
+
+.limb-o{fill:none;stroke:url(#clipChrome);stroke-width:12;stroke-linecap:round;stroke-linejoin:round}
+.limb{fill:none;stroke:#0a1428;stroke-width:9;stroke-linecap:round;stroke-linejoin:round}
+.mech-body,.mech-head{fill:#0a1428;stroke:url(#clipChrome);stroke-width:1.6;stroke-linejoin:round}
+.mech-cap{fill:#2e6bff;stroke:#cfe0ff;stroke-width:1.2}
+.mech-brim{stroke:#cfe0ff;stroke-width:3;stroke-linecap:round}
+.mech-belt{stroke:#8fb8ff;stroke-width:1.4;opacity:.8}
+.wrench{stroke:#eef2f8;stroke-width:4;stroke-linecap:round}
+.wrench-jaw{fill:none;stroke:#eef2f8;stroke-width:2.4}
+.mech-arm{transform-box:view-box;transform-origin:806px 184px}
+.clip-sparks{opacity:0}
+.clip-sparks line{stroke:#ffd27a;stroke-width:2;stroke-linecap:round;filter:drop-shadow(0 0 4px #ffb347)}
+
+.clip-scan{opacity:0}
+.clip-badge rect{fill:rgba(52,211,153,.14);stroke:rgba(52,211,153,.65);stroke-width:1}
+.clip-badge text{font-family:'Kanit',sans-serif;font-size:14px;fill:#5eead4}
+
+.hud-box{fill:rgba(5,11,24,.74);stroke:rgba(213,220,230,.3);stroke-width:1}
+.hud-cap{font-family:'Chakra Petch',sans-serif;font-size:11px;letter-spacing:3px;fill:#9aa6b8}
+.hud-title{font-family:'Kanit',sans-serif;font-size:13.5px;fill:#eef2f8}
+.hud-scan{font-family:'Chakra Petch',sans-serif;font-size:11px;letter-spacing:2px;fill:#8fb8ff;opacity:0}
+.hud-ready{font-family:'Chakra Petch',sans-serif;font-size:11px;letter-spacing:2px;fill:#34d399}
+.hud-track{fill:rgba(255,255,255,.1)}
+.hud-fill{transform-box:fill-box;transform-origin:left center}
+
+@media (prefers-reduced-motion:no-preference){
+  .clip-lights{animation:clipLights 12s linear infinite}
+  .clip-car{animation:clipDrive 12s infinite}
+  .clip-wheel{animation:clipSpin 12s infinite}
+  .clip-beam,.clip-hl{animation:clipHeadlights 12s linear infinite}
+  .clip-tl{animation:clipBrake 12s linear infinite}
+  .clip-mech{animation:clipMech 12s ease-in-out infinite}
+  .mech-arm{animation:clipWrench .6s ease-in-out infinite alternate}
+  .clip-sparks{animation:clipSparks .6s ease-out infinite, clipSparkWindow 12s linear infinite}
+  .clip-scan{animation:clipScan 12s linear infinite}
+  .clip-badge{animation:clipBadge 12s ease-out infinite}
+  .clip-hud{animation:clipHud 12s ease-out infinite}
+  .hud-fill{animation:clipHudFill 12s linear infinite}
+  .hud-scan{animation:clipHudScan 12s linear infinite}
+  .hud-ready{animation:clipHudReady 12s linear infinite}
+}
+@keyframes clipLights{0%{opacity:.12}1.5%{opacity:1}2.5%{opacity:.35}4%{opacity:1}100%{opacity:1}}
+@keyframes clipDrive{
+  0%{transform:translateX(-960px);animation-timing-function:cubic-bezier(.16,.84,.3,1)}
+  16%{transform:translateX(6px);animation-timing-function:ease-in-out}
+  18.5%{transform:translateX(0)}
+  76%{transform:translateX(0);animation-timing-function:cubic-bezier(.6,0,.84,.4)}
+  91%{transform:translateX(1020px)}
+  100%{transform:translateX(1020px)}
+}
+@keyframes clipSpin{
+  0%{transform:rotate(0);animation-timing-function:cubic-bezier(.16,.84,.3,1)}
+  16%{transform:rotate(1100deg)}
+  76%{transform:rotate(1100deg);animation-timing-function:cubic-bezier(.6,0,.84,.4)}
+  91%{transform:rotate(2260deg)}
+  100%{transform:rotate(2260deg)}
+}
+@keyframes clipHeadlights{
+  0%,19%{opacity:1}22%{opacity:.18}
+  62%{opacity:.18}63%{opacity:1}64.5%{opacity:.18}66%{opacity:1}67.5%{opacity:.18}
+  74%{opacity:.18}76%,92%{opacity:1}100%{opacity:1}
+}
+@keyframes clipBrake{0%,13%{opacity:.6}15%,20%{opacity:1}23%,100%{opacity:.6}}
+@keyframes clipMech{
+  0%,21%{opacity:0;transform:translateX(80px)}
+  27%,66%{opacity:1;transform:translateX(0)}
+  72%,100%{opacity:0;transform:translateX(80px)}
+}
+@keyframes clipWrench{from{transform:rotate(-6deg)}to{transform:rotate(9deg)}}
+@keyframes clipSparks{0%{transform:scale(.2);opacity:1}100%{transform:scale(1.25);opacity:0}}
+@keyframes clipSparkWindow{0%,28%{visibility:hidden}29%,63%{visibility:visible}64%,100%{visibility:hidden}}
+@keyframes clipScan{
+  0%,29%{opacity:0;transform:translateX(150px)}
+  31%{opacity:1}
+  58%{opacity:1;transform:translateX(780px)}
+  60%,100%{opacity:0;transform:translateX(780px)}
+}
+@keyframes clipBadge{
+  0%,61%{opacity:0;transform:translateY(8px)}
+  64%,73%{opacity:1;transform:translateY(0)}
+  76%,100%{opacity:0;transform:translateY(0)}
+}
+@keyframes clipHud{0%,21%{opacity:0;transform:translateY(-8px)}25%,74%{opacity:1;transform:translateY(0)}78%,100%{opacity:0;transform:translateY(0)}}
+@keyframes clipHudFill{0%,28%{transform:scaleX(0)}60%,100%{transform:scaleX(1)}}
+@keyframes clipHudScan{0%,24%{opacity:0}25%,59%{opacity:1}60%,100%{opacity:0}}
+@keyframes clipHudReady{0%,59%{opacity:0}61%,100%{opacity:1}}
+}
+
 @media print{
   /* whichever view is on screen, the printed page is always the
      quotation document — never the dashboard, never a placeholder */
@@ -1552,79 +1668,88 @@ table.items td.cost-cell{min-width:140px}
         <rect width="100%" height="100%" fill="url(#bpGrid)"/>
       </svg>
 
-      <svg class="cine-blueprint" viewBox="0 0 900 380" preserveAspectRatio="xMidYMid meet">
+      <svg class="cine-blueprint clip" viewBox="0 0 900 380" preserveAspectRatio="xMidYMid meet">
         <defs>
-          <path id="carBodyPath" d="M150,300 L150,278 Q150,264 164,258 L230,244 Q246,210 292,198
-                   Q300,168 350,158 Q420,146 480,146 Q560,148 592,168 L620,206
-                   Q664,214 700,232 Q736,240 750,262 L750,286 Q750,296 738,300
-                   L706,300 A46,46 0 0 1 614,300 L316,300 A46,46 0 0 1 224,300 Z"/>
-          <linearGradient id="scanGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#fff" stop-opacity="0"/>
-            <stop offset="82%" stop-color="#fff" stop-opacity=".95"/>
-            <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+          <linearGradient id="clipChrome" x1="0" y1="90" x2="0" y2="270" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#c9d2de"/><stop offset="1" stop-color="#7c889a"/>
           </linearGradient>
-          <mask id="scanMask" maskUnits="userSpaceOnUse" x="0" y="0" width="900" height="380">
-            <rect class="scan-band" x="0" y="-140" width="900" height="140" fill="url(#scanGrad)"/>
-          </mask>
+          <linearGradient id="clipBeam" x1="842" y1="0" x2="1010" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#cfe0ff" stop-opacity=".55"/><stop offset="1" stop-color="#cfe0ff" stop-opacity="0"/>
+          </linearGradient>
+          <radialGradient id="clipSheen" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#dfe8ff" stop-opacity=".22"/><stop offset="1" stop-color="#dfe8ff" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="clipScan" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#8fb8ff" stop-opacity="0"/><stop offset=".5" stop-color="#ffffff" stop-opacity=".9"/><stop offset="1" stop-color="#8fb8ff" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="clipHud" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#3d7bff"/><stop offset="1" stop-color="#cfe0ff"/>
+          </linearGradient>
         </defs>
 
-        <!-- dimension lines: blueprint convention, decorative only -->
-        <g class="dim-lines">
-          <line x1="150" y1="330" x2="750" y2="330"/>
-          <line x1="150" y1="316" x2="150" y2="336"/>
-          <line x1="750" y1="316" x2="750" y2="336"/>
-          <path d="M150,330 l10,-4 M150,330 l10,4"/>
-          <path d="M750,330 l-10,-4 M750,330 l-10,4"/>
-          <line x1="112" y1="300" x2="112" y2="146"/>
-          <line x1="100" y1="300" x2="124" y2="300"/>
-          <line x1="100" y1="146" x2="124" y2="146"/>
-          <path d="M112,146 l-4,10 M112,146 l4,10"/>
-          <path d="M112,300 l-4,-10 M112,300 l4,-10"/>
-          <line x1="270" y1="352" x2="660" y2="352"/>
-          <line x1="270" y1="344" x2="270" y2="360"/>
-          <line x1="660" y1="344" x2="660" y2="360"/>
+        <!-- the bay: ceiling lights, wall panels, a polished floor -->
+        <g class="clip-bg">
+          <g class="clip-lights"><rect x="470" y="10" width="150" height="4" rx="2"/><rect x="700" y="10" width="150" height="4" rx="2"/></g>
+          <g class="clip-walls"><line x1="120" y1="62" x2="120" y2="268"/><line x1="270" y1="62" x2="270" y2="268"/><line x1="420" y1="62" x2="420" y2="268"/><line x1="570" y1="62" x2="570" y2="268"/><line x1="720" y1="62" x2="720" y2="268"/><line x1="870" y1="62" x2="870" y2="268"/></g>
+          <line class="clip-horizon" x1="0" y1="268" x2="900" y2="268"/>
+          <g class="clip-floor"><line x1="30" y1="268" x2="-600" y2="380"/><line x1="100" y1="268" x2="-425" y2="380"/><line x1="170" y1="268" x2="-250" y2="380"/><line x1="240" y1="268" x2="-75" y2="380"/><line x1="310" y1="268" x2="100" y2="380"/><line x1="380" y1="268" x2="275" y2="380"/><line x1="450" y1="268" x2="450" y2="380"/><line x1="520" y1="268" x2="625" y2="380"/><line x1="590" y1="268" x2="800" y2="380"/><line x1="660" y1="268" x2="975" y2="380"/><line x1="730" y1="268" x2="1150" y2="380"/><line x1="800" y1="268" x2="1325" y2="380"/><line x1="870" y1="268" x2="1500" y2="380"/></g>
+          <ellipse cx="455" cy="272" rx="340" ry="16" fill="url(#clipSheen)"/>
         </g>
 
-        <!-- the car: a resting wireframe pass, plus a brighter twin that
-             only shows through the scan band as it sweeps -->
-        <g class="car-line car-dim">
-          <use href="#carBodyPath" class="car-body"/>
-          <path class="car-glass" d="M300,197 Q306,176 351,164 Q420,153 480,153 Q554,155 584,173
-                   L607,204 L579,204 Q554,180 480,179 Q426,179 357,189 Q327,193 300,206 Z"/>
-          <line class="car-crease" x1="230" y1="234" x2="620" y2="231"/>
-          <path class="car-mirror" d="M296,196 L282,190 L280,200 Z"/>
-          <rect class="car-light" x="152" y="262" width="10" height="8" rx="2"/>
-          <rect class="car-light" x="740" y="266" width="10" height="8" rx="2"/>
-          <g class="wheel">
-            <circle cx="270" cy="300" r="46"/>
-            <circle cx="270" cy="300" r="21"/>
-            <line x1="270" y1="279" x2="270" y2="321"/>
-            <line x1="249" y1="300" x2="291" y2="300"/>
-            <line x1="255" y1="285" x2="285" y2="315"/>
-            <line x1="285" y1="285" x2="255" y2="315"/>
+        <g class="clip-stage">
+          <!-- reflection on the wet floor rides along with the car -->
+          <g class="clip-car clip-reflect"><g transform="matrix(1 0 0 -1 0 536)">
+            <path d="M60 210 L60 196 Q62 184 80 180 L190 166 Q250 128 330 108 Q400 92 470 92 Q560 94 620 118 L700 152 Q790 160 830 176 Q850 184 850 200 L850 212 Q850 220 840 222 L770 222 A52 52 0 0 1 666 222 L304 222 A52 52 0 0 1 200 222 L72 222 Q60 222 60 210 Z"/><circle cx="252" cy="222" r="44"/><circle cx="718" cy="222" r="44"/>
+          </g></g>
+
+          <g class="clip-car">
+            <polygon class="clip-beam" points="842,178 1010,140 1010,236 842,192" fill="url(#clipBeam)"/>
+            <path class="car-shell" d="M60 210 L60 196 Q62 184 80 180 L190 166 Q250 128 330 108 Q400 92 470 92 Q560 94 620 118 L700 152 Q790 160 830 176 Q850 184 850 200 L850 212 Q850 220 840 222 L770 222 A52 52 0 0 1 666 222 L304 222 A52 52 0 0 1 200 222 L72 222 Q60 222 60 210 Z"/>
+            <path class="car-glass" d="M300 150 Q350 112 420 104 Q470 100 520 104 Q580 110 640 140 L652 150 Z"/>
+            <path class="car-detail" d="M505 103 L508 150"/>
+            <path class="car-detail faint" d="M92 190 Q420 168 838 186"/>
+            <path class="car-detail" d="M560 162 L590 162"/>
+            <path class="clip-hl" d="M800 172 L842 184"/>
+            <path class="clip-tl" d="M66 192 L108 186"/>
+            <g class="clip-wheel"><circle cx="252" cy="222" r="44"/><circle cx="252" cy="222" r="29" class="rim"/><line x1="252.0" y1="214.0" x2="252.0" y2="195.0"/><line x1="259.6" y1="219.5" x2="277.7" y2="213.7"/><line x1="256.7" y1="228.5" x2="267.9" y2="243.8"/><line x1="247.3" y1="228.5" x2="236.1" y2="243.8"/><line x1="244.4" y1="219.5" x2="226.3" y2="213.7"/><circle cx="252" cy="222" r="6" class="hub"/></g>
+            <g class="clip-wheel"><circle cx="718" cy="222" r="44"/><circle cx="718" cy="222" r="29" class="rim"/><line x1="718.0" y1="214.0" x2="718.0" y2="195.0"/><line x1="725.6" y1="219.5" x2="743.7" y2="213.7"/><line x1="722.7" y1="228.5" x2="733.9" y2="243.8"/><line x1="713.3" y1="228.5" x2="702.1" y2="243.8"/><line x1="710.4" y1="219.5" x2="692.3" y2="213.7"/><circle cx="718" cy="222" r="6" class="hub"/></g>
           </g>
-          <g class="wheel">
-            <circle cx="660" cy="300" r="46"/>
-            <circle cx="660" cy="300" r="21"/>
-            <line x1="660" y1="279" x2="660" y2="321"/>
-            <line x1="639" y1="300" x2="681" y2="300"/>
-            <line x1="645" y1="285" x2="675" y2="315"/>
-            <line x1="675" y1="285" x2="645" y2="315"/>
+
+          <!-- the mechanic kneels at the front wheel and works a wrench -->
+          <g class="clip-mech">
+            <path class="limb-o" d="M826 214 L846 262 L876 264"/><path class="limb" d="M826 214 L846 262 L876 264"/>
+            <path class="limb-o" d="M814 216 L786 228 L792 264"/><path class="limb" d="M814 216 L786 228 L792 264"/>
+            <path class="mech-body" d="M800 180 Q812 170 826 178 L834 214 Q820 222 806 216 Z"/>
+            <path class="mech-belt" d="M807 207 L832 210"/>
+            <path class="limb-o" d="M820 186 L806 206 L794 222"/><path class="limb" d="M820 186 L806 206 L794 222"/>
+            <circle class="mech-head" cx="813" cy="158" r="13"/>
+            <path class="mech-cap" d="M800 156 Q801 142 814 141 Q827 142 827 156 Z"/>
+            <path class="mech-brim" d="M801 155 L786 158"/>
+            <g class="mech-arm">
+              <path class="limb-o" d="M806 184 L782 200 L754 210"/><path class="limb" d="M806 184 L782 200 L754 210"/>
+              <path class="wrench" d="M756 210 L728 216"/>
+              <circle class="wrench-jaw" cx="723" cy="217" r="5"/>
+            </g>
+            <g transform="translate(722,214)"><g class="clip-sparks"><line x1="0" y1="0" x2="-15.6" y2="-9.0"/><line x1="0" y1="0" x2="-9.0" y2="-15.6"/><line x1="0" y1="0" x2="-1.6" y2="-17.9"/><line x1="0" y1="0" x2="9.0" y2="-15.6"/><line x1="0" y1="0" x2="15.6" y2="-9.0"/><line x1="0" y1="0" x2="-16.9" y2="-6.2"/></g></g>
           </g>
-        </g>
-        <g class="car-line car-bright" mask="url(#scanMask)">
-          <use href="#carBodyPath"/>
+
+          <!-- a diagnostic beam sweeps the body while the work is done -->
+          <g class="clip-scan"><rect x="-20" y="84" width="40" height="186" fill="url(#clipScan)" opacity=".35"/><rect x="-1" y="84" width="2" height="186" fill="#ffffff"/></g>
+
+          <g class="clip-badge">
+            <rect x="388" y="46" width="164" height="32" rx="16"/>
+            <text x="470" y="67" text-anchor="middle">✓ พร้อมส่งมอบ</text>
+          </g>
         </g>
 
-        <!-- inspection points: soft pulsing crosshairs -->
-        <g class="crosshair" style="--d:0s" transform="translate(270,300)">
-          <circle r="9"/><line x1="-15" y1="0" x2="15" y2="0"/><line x1="0" y1="-15" x2="0" y2="15"/>
-        </g>
-        <g class="crosshair" style="--d:.9s" transform="translate(230,220)">
-          <circle r="9"/><line x1="-15" y1="0" x2="15" y2="0"/><line x1="0" y1="-15" x2="0" y2="15"/>
-        </g>
-        <g class="crosshair" style="--d:1.8s" transform="translate(660,300)">
-          <circle r="9"/><line x1="-15" y1="0" x2="15" y2="0"/><line x1="0" y1="-15" x2="0" y2="15"/>
+        <g class="clip-hud">
+          <rect class="hud-box" x="560" y="36" width="300" height="80" rx="10"/>
+          <text class="hud-cap" x="578" y="60">DIAGNOSTIC</text>
+          <text class="hud-scan" x="842" y="60" text-anchor="end">SCANNING</text>
+          <text class="hud-ready" x="842" y="60" text-anchor="end">READY</text>
+          <text class="hud-title" x="578" y="84">ตรวจเช็คช่วงล่าง · ตั้งศูนย์ล้อ</text>
+          <rect x="578" y="96" width="264" height="4" rx="2" class="hud-track"/>
+          <rect x="578" y="96" width="264" height="4" rx="2" class="hud-fill" fill="url(#clipHud)"/>
         </g>
       </svg>
 
@@ -3084,7 +3209,7 @@ function mountParallax(){
   const hero = document.querySelector('.hero.cine');
   if(!hero) return;
   const layers = [
-    ['.cine-grid', 6], ['.dim-lines', 10], ['.car-line', 16], ['.crosshair', 20]
+    ['.cine-grid', 6], ['.clip-bg', 8], ['.clip-stage', 16], ['.clip-hud', 22]
   ].map(([sel, d]) => [[...hero.querySelectorAll(sel)], d]);
   let queued = false, nx = 0, ny = 0;
   hero.addEventListener('pointermove', e => {
