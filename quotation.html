@@ -1335,6 +1335,9 @@ table.items td.cost-cell{min-width:140px}
    ═══════════════════════════════════════════════════════════════ */
 @media screen{
 .cine-blueprint.clip{overflow:visible}
+.clip-fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.fx-on .clip-sparks{display:none}
+@media (max-width:640px){ .clip-fx{opacity:.55} }
 @media (max-width:640px){ .cine-blueprint.clip{opacity:.55} }
 .clip-lights rect{fill:#eaf2ff;filter:drop-shadow(0 0 10px rgba(200,220,255,.9)) drop-shadow(0 6px 22px rgba(143,184,255,.6))}
 .clip-walls line{stroke:rgba(205,214,228,.07);stroke-width:1}
@@ -1753,6 +1756,7 @@ table.items td.cost-cell{min-width:140px}
         </g>
       </svg>
 
+      <canvas class="clip-fx" aria-hidden="true"></canvas>
       <div class="cine-fade"></div>
     </div>
 
@@ -3231,8 +3235,133 @@ function mountParallax(){
   });
 }
 
+/* Torque Light — a canvas layer over the hero clip. It reads the CSS
+   clip's own clock, so it stays in step with the drawn car and mechanic:
+   ballistic sparks off each wrench stroke (gravity, drag, a floor they
+   bounce and skid on, colour cooling along a blackbody ramp), a wake
+   peeled off the car's outline while it moves, and dust that only shows
+   where it crosses a light cone. Runs only while the hero is on screen. */
+function mountClipFx(){
+  if(REDUCED) return;
+  const hero = document.querySelector('.hero.cine');
+  const cvs = hero && hero.querySelector('.clip-fx');
+  const stage = hero && hero.querySelector('.clip-stage');
+  const car = hero && hero.querySelector('.clip-car:not(.clip-reflect)');
+  if(!cvs || !stage || !car || !cvs.getContext) return;
+  const ctx = cvs.getContext('2d');
+  hero.classList.add('fx-on');
+
+  const FLOOR = 266, TIP = [722, 214], LOOP = 12000, STROKE = 1200;
+  const OUTLINE = [[62,200],[80,181],[140,172],[190,166],[250,130],[330,108],[400,95],[470,92],[560,95],[620,118],[700,152],[790,161],[830,176],[848,198],[300,150],[520,104]];
+  const CONES = [[470,620],[700,850]];
+  const small = window.matchMedia('(max-width:640px)').matches;
+  const motes = Array.from({length: small ? 40 : 90}, (_, i) => ({
+    x: 430 + Math.random() * 460, y: 16 + Math.random() * 250, z: .4 + Math.random() * .6, ph: Math.random() * 6.28
+  }));
+  let sparks = [], wake = [], lastStroke = -1, lastCarX = null, lastMs = 0, running = false, raf = 0;
+
+  // a tiny seeded generator, so each stroke of the loop throws the same sparks every cycle
+  const rng = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const BB = [[0,[90,16,6]],[.25,[255,80,26]],[.5,[255,160,60]],[.75,[255,222,140]],[1,[255,249,236]]];
+  const blackbody = h => { h = Math.max(0, Math.min(1, h)); for(let i = 1; i < BB.length; i++) if(h <= BB[i][0]){ const [a0,c0] = BB[i-1], [a1,c1] = BB[i], k = (h - a0) / (a1 - a0); return c0.map((v,j) => Math.round(v + (c1[j] - v) * k)); } return BB[4][1]; };
+
+  const clipTime = () => { const a = car.getAnimations()[0]; return a && typeof a.currentTime === 'number' ? a.currentTime : null; };
+  const carShift = () => { const m = getComputedStyle(car).transform; if(!m || m === 'none') return 0; const v = m.match(/-?[\d.]+/g); return v ? parseFloat(v[4]) : 0; };
+
+  function emitStroke(id){
+    const r = rng(7919 + id), strength = .55 + r() * .45, n = Math.round((18 + r() * 18) * strength * (small ? .6 : 1));
+    for(let i = 0; i < n; i++) emit(r, strength);
+  }
+  function emit(r, strength){
+    const a = (-160 + r() * 150) * Math.PI / 180, sp = (160 + r() * 380) * strength;
+    sparks.push({ x: TIP[0] + (r() - .5) * 6, y: TIP[1] + (r() - .5) * 6, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, heat: .85 + r() * .15, cool: .55 + r() * .5, b: 0 });
+  }
+
+  function frame(now){
+    raf = requestAnimationFrame(frame);
+    const ms = clipTime();
+    if(ms === null) return;
+    const dt = Math.min(.05, Math.max(.004, (now - (lastMs || now)) / 1000)) || .016;
+    lastMs = now;
+    const p = (ms % LOOP) / LOOP;
+
+    // keep the canvas in the hero's pixels, and draw in the clip's own units
+    const dpr = Math.min(2, window.devicePixelRatio || 1), box = cvs.getBoundingClientRect();
+    const w = Math.round(box.width * dpr), h = Math.round(box.height * dpr);
+    if(cvs.width !== w || cvs.height !== h){ cvs.width = w; cvs.height = h; }
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    const m = stage.getScreenCTM();
+    if(!m) return;
+    ctx.setTransform(m.a * dpr, m.b * dpr, m.c * dpr, m.d * dpr, (m.e - box.left) * dpr, (m.f - box.top) * dpr);
+
+    // dust, lit only inside the cones under the bay lights
+    const t = now / 1000;
+    for(const d of motes){
+      const ang = Math.sin(d.x * .011 + t * .23) + Math.cos(d.y * .013 - t * .17);
+      d.x += Math.cos(ang * 2.2) * 7 * d.z * dt; d.y += Math.sin(ang * 2.2) * 5 * d.z * dt - 1.2 * dt;
+      if(d.y < 16) d.y = FLOOR - 2; if(d.y > FLOOR) d.y = 18; if(d.x < 420) d.x = 890; if(d.x > 895) d.x = 425;
+      let lit = 0;
+      for(const [x0, x1] of CONES){ const k = (d.y - 14) / (FLOOR - 14), mid = (x0 + x1) / 2, half = (x1 - x0) / 2 * (1 - k) + 170 * k; if(Math.abs(d.x - mid) < half) lit = Math.max(lit, 1 - Math.abs(d.x - mid) / half); }
+      const al = (.04 + .5 * lit) * (.55 + .45 * Math.sin(t * 1.7 + d.ph)) * d.z;
+      if(al < .03) continue;
+      ctx.fillStyle = `rgba(226,236,255,${al.toFixed(3)})`;
+      ctx.beginPath(); ctx.arc(d.x, d.y, .7 + d.z * .9, 0, 6.283); ctx.fill();
+    }
+
+    ctx.globalCompositeOperation = 'lighter';
+    // wake off the silhouette while the car moves
+    const cx = carShift(), vel = lastCarX === null ? 0 : (cx - lastCarX) / dt;
+    lastCarX = cx;
+    if(Math.abs(vel) > 40 && Math.abs(vel) < 20000){
+      const n = Math.min(8, Math.floor(Math.abs(vel) / 180) + 2);
+      for(let i = 0; i < n; i++){ const o = OUTLINE[(Math.random() * OUTLINE.length) | 0]; wake.push({ x: o[0] + cx + (Math.random() - .5) * 8, y: o[1] + (Math.random() - .5) * 4, v: vel, life: 1, bend: (Math.random() - .5) * 10 }); }
+    }
+    for(let i = wake.length - 1; i >= 0; i--){
+      const s = wake[i]; s.life -= dt * 1.6; s.x += s.v * dt * .18;
+      if(s.life <= 0){ wake.splice(i, 1); continue; }
+      const len = Math.min(240, Math.abs(s.v) * .09) * (.4 + s.life * .6);
+      ctx.strokeStyle = `rgba(214,226,246,${(.3 * s.life).toFixed(3)})`; ctx.lineWidth = 1.1;
+      ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.quadraticCurveTo(s.x - len * .5, s.y + s.bend, s.x - len, s.y + s.bend * .4); ctx.stroke();
+    }
+
+    // sparks, only while the mechanic is at the wheel
+    if(p > .29 && p < .63){
+      const stroke = Math.floor(ms / STROKE);
+      if(stroke !== lastStroke){ emitStroke(stroke % 10); lastStroke = stroke; }
+      if(Math.random() < .3) emit(Math.random, .45);
+    }
+    for(let i = sparks.length - 1; i >= 0; i--){
+      const s = sparks[i], v = Math.hypot(s.vx, s.vy);
+      s.vx -= .0016 * v * s.vx * dt; s.vy -= .0016 * v * s.vy * dt; s.vy += 900 * dt;
+      s.x += s.vx * dt; s.y += s.vy * dt;
+      if(s.y > FLOOR){ s.y = FLOOR; s.vy *= -.32; s.vx *= .62; s.heat -= .12; s.b++; }
+      s.heat -= s.cool * dt;
+      if(s.heat <= 0 || s.b > 3){ sparks.splice(i, 1); continue; }
+      const c = blackbody(s.heat);
+      ctx.strokeStyle = `rgba(${c[0]},${c[1]},${c[2]},${Math.min(1, s.heat * 1.4).toFixed(3)})`;
+      ctx.lineWidth = 1 + s.heat * 1.6; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(s.x - s.vx * .028, s.y - s.vy * .028); ctx.lineTo(s.x, s.y); ctx.stroke();
+      if(s.heat > .5){ ctx.fillStyle = `rgba(${c[0]},${c[1]},${c[2]},${(.18 * s.heat).toFixed(3)})`; ctx.beginPath(); ctx.arc(s.x, s.y, 4.5 * s.heat, 0, 6.283); ctx.fill(); }
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  const start = () => { if(running) return; running = true; lastMs = 0; lastCarX = null; raf = requestAnimationFrame(frame); };
+  const stop = () => { running = false; cancelAnimationFrame(raf); };
+  let visible = true;
+  const sync = () => (visible && document.visibilityState === 'visible' && !hero.closest('[hidden]')) ? start() : stop();
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(es => { visible = es[0].isIntersecting; sync(); }).observe(hero);
+  }
+  document.addEventListener('visibilitychange', sync);
+  document.addEventListener('click', () => setTimeout(sync, 60));   // the nav hides and shows the home view
+  sync();
+}
+
 function mountMotion(){
   mountParallax();
+  mountClipFx();
   mountTopline();
   mountAurora();
   mountTilt();
