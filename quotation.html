@@ -182,7 +182,7 @@ html,body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table.items{width:100%;border-collapse:collapse;font-size:14px}
 @media (max-width:640px){ table.items{min-width:880px} table.items th:nth-child(3){min-width:180px} }
-table.items td.cost-cell{min-width:88px}
+table.items td.cost-cell{min-width:120px}
 table.items th{
   background:#f6f9ff;color:var(--navy1);font-weight:600;font-size:12px;letter-spacing:.5px;
   text-transform:uppercase;padding:9px 8px;text-align:left;border-bottom:1px solid var(--line);
@@ -1749,7 +1749,7 @@ table.items input:focus{
       </table>
       </div>
       <button class="add-row-btn no-print" onclick="addRow()">+ เพิ่มรายการ</button>
-      <div style="font-size:10.5px;color:var(--sub);margin-top:6px" class="no-print">💡 ราคาทุนใช้คำนวณภายในเท่านั้น เลือกหมวดราคาได้ต่อแถวใต้ช่องราคาทุน — «ปกติ» = ทุน×1.5 หรือ «หมวดใหม่» = ทุน×1.7 แล้วใส่ส่วนลด 15% ให้ในช่องส่วนลดอัตโนมัติ · ช่องส่วนลดพิมพ์ตัวเลขได้เลย นับเป็น % (เช่น 10 = ลด 10%) ถ้าจะลดเป็นบาทให้พิมพ์ต่อท้ายว่า บ (เช่น 500บ) · คอลัมน์ราคาทุน/หมวดราคาจะไม่ปรากฏตอนพิมพ์</div>
+      <div style="font-size:10.5px;color:var(--sub);margin-top:6px" class="no-print">💡 ราคาทุนใช้คำนวณภายในเท่านั้น เลือกหมวดราคาได้ต่อแถวใต้ช่องราคาทุน — «ปกติ» = ทุน×1.5 หรือ «+7% ×1.7 −15%» = (ทุน + VAT 7%) × 1.7 แล้วใส่ส่วนลด 15% ให้ในช่องส่วนลดอัตโนมัติ (7% นี้บวกเข้าในราคาทุน ส่วนช่องติ๊ก VAT 7% ด้านล่างเป็นภาษีขาย ถ้าติ๊กจะบวกเพิ่มอีกชั้นจากยอดรวม) · ช่องส่วนลดพิมพ์ตัวเลขได้เลย นับเป็น % (เช่น 10 = ลด 10%) ถ้าจะลดเป็นบาทให้พิมพ์ต่อท้ายว่า บ (เช่น 500บ) · คอลัมน์ราคาทุน/หมวดราคาจะไม่ปรากฏตอนพิมพ์</div>
 
       <label class="show-total-toggle no-print" title="ติ๊กออกถ้าไม่ต้องการให้ยอดรวมสุทธิปรากฏในใบที่พิมพ์">
         <input type="checkbox" id="showTotalToggle" checked onchange="toggleShowTotal()">
@@ -1959,13 +1959,14 @@ let photoDataUrl = null;
 let logoDataUrl = null;
 
 const MARKUP = 1.5;
+const ALT_COST_VAT = 0.07;   // the supplier's cost is quoted before VAT
 const ALT_MARKUP = 1.7;
 const ALT_DISCOUNT = 0.15;
 const PRICE_CATS = {
   std: { label: 'ปกติ ×1.5', calc: cost => cost * MARKUP },
-  // the 15% is not folded into the price: picking this category writes it
-  // into the line's discount cell, so the sheet shows ×1.7 and the 15% off
-  alt: { label: 'ใหม่ ×1.7 ลด15%', calc: cost => cost * ALT_MARKUP },
+  // cost + 7% VAT, ×1.7; the 15% is not folded into the price: picking this
+  // category writes it into the line's discount cell, so the sheet shows it
+  alt: { label: '+7% ×1.7 −15%', calc: cost => cost * (1 + ALT_COST_VAT) * ALT_MARKUP },
 };
 const RESET_ROW_COUNT = 0;
 
