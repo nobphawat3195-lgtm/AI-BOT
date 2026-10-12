@@ -1446,6 +1446,163 @@ table.items td.cost-cell{min-width:140px}
 @keyframes clipHudReady{0%,59%{opacity:0}61%,100%{opacity:1}}
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   LIVING BACKGROUND — an animated AUTO 1 workshop behind the page.
+   Four photographic scenes crossfade, each with a slow Ken Burns
+   drift, scroll + pointer parallax, glints on the real light sources
+   in the photo, and a spark/dust layer. Blueprint circuit lines and
+   floating tool icons sit on a nearer plane. Everything is pointer-
+   transparent, sits under the content, and is hidden when printing.
+   ═══════════════════════════════════════════════════════════════ */
+@media screen{
+body::before{z-index:1}                 /* blueprint grid stays above the photos */
+.lb-on .aurora{display:none}            /* the photos supply the colour now */
+
+.live-bg{
+  position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh;
+  z-index:0;overflow:hidden;pointer-events:none;
+  background:
+    radial-gradient(900px 520px at 78% 8%,rgba(46,107,255,.30),transparent 62%),
+    radial-gradient(700px 480px at 8% 92%,rgba(30,79,216,.22),transparent 64%),
+    linear-gradient(180deg,#0a1630 0%,#060d1c 55%,#03070f 100%);
+  --dim:.5;--dimu:1;--fade:2.4s;
+}
+.live-bg.off{display:none}
+body[data-view="quote"] .live-bg{--dim:1}
+body[data-view="services"] .live-bg,body[data-view="customers"] .live-bg,
+body[data-view="history"] .live-bg,body[data-view="reports"] .live-bg,
+body[data-view="settings"] .live-bg,body[data-view="contact"] .live-bg{--dim:.72}
+
+.lb-scenes{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease;will-change:transform}
+.live-bg.ready .lb-scenes{opacity:1}
+
+.lb-scene{
+  position:absolute;inset:0;opacity:0;visibility:hidden;
+  transition:opacity var(--fade) ease-in-out,visibility 0s linear var(--fade);
+}
+.lb-scene.on{opacity:1;visibility:visible;transition:opacity var(--fade) ease-in-out,visibility 0s}
+.lb-scene.leaving{visibility:visible}
+
+/* the frame is sized in JS to exactly "cover" the viewport, so every
+   hotspot positioned in % lands on the same pixel of the photo at any
+   window size or zoom */
+.lb-frame{position:absolute;overflow:hidden;transform-origin:50% 50%;will-change:transform}
+.lb-img{display:block;width:100%;height:100%;object-fit:fill;user-select:none}
+.lb-frame.kb{animation:lbKen var(--dur,18s) ease-in-out forwards}
+.lb-scene:not(.on):not(.leaving) .lb-frame,
+.lb-scene:not(.on):not(.leaving) .lb-glow,
+.lb-scene:not(.on):not(.leaving) .lb-sweep,
+.lb-scene:not(.on):not(.leaving) .lb-scan::before{animation-play-state:paused}
+@keyframes lbKen{
+  from{transform:translate3d(var(--kx0,0),var(--ky0,0),0) scale(var(--ks0,1.12))}
+  to  {transform:translate3d(var(--kx1,0),var(--ky1,0),0) scale(var(--ks1,1.21))}
+}
+
+/* light glints on the actual lamps, screens and tool tips in each photo */
+.lb-glow{
+  position:absolute;border-radius:50%;pointer-events:none;mix-blend-mode:screen;
+  translate:-50% -50%;rotate:var(--rot,0deg);
+  background:radial-gradient(closest-side,var(--c,rgba(130,185,255,.9)),transparent 72%);
+  opacity:calc(var(--o,.4) * var(--fxi,1));
+  animation:lbPulse var(--p,4s) ease-in-out var(--d,0s) infinite alternate;
+}
+@supports not (translate:0){.lb-glow{transform:translate(-50%,-50%) rotate(var(--rot,0deg))}}
+@keyframes lbPulse{
+  from{opacity:calc(var(--o,.4) * .35 * var(--fxi,1));scale:.82}
+  to  {opacity:calc(var(--o,.4) * var(--fxi,1));scale:1.12}
+}
+/* a slow sheen travelling across polished paint and glass */
+.lb-sweep{
+  position:absolute;inset:-12%;pointer-events:none;mix-blend-mode:screen;
+  background:linear-gradient(104deg,transparent 41%,rgba(170,205,255,calc(.16 * var(--fxi,1))) 50%,transparent 59%);
+  transform:translateX(-72%);animation:lbSweep 9s ease-in-out infinite;
+}
+@keyframes lbSweep{0%{transform:translateX(-72%)}60%,100%{transform:translateX(72%)}}
+/* diagnostic scan line over the engine bay */
+.lb-scan{position:absolute;overflow:hidden;pointer-events:none}
+.lb-scan::before{
+  content:'';position:absolute;inset:0;mix-blend-mode:screen;
+  background:
+    linear-gradient(180deg,transparent 47%,rgba(150,200,255,.9) 49.6%,rgba(255,255,255,.95) 50%,rgba(150,200,255,.9) 50.4%,transparent 53%),
+    linear-gradient(180deg,transparent 30%,rgba(90,150,255,.18) 50%,transparent 70%);
+  opacity:calc(.55 * var(--fxi,1));
+  transform:translateY(-100%);animation:lbScan 4.2s ease-in-out infinite;
+}
+@keyframes lbScan{0%{transform:translateY(-100%)}70%,100%{transform:translateY(100%)}}
+.lb-anchor{position:absolute;width:2px;height:2px;transform:translate(-50%,-50%)}
+
+/* readability: a navy grade over the photos, denser on the quotation editor */
+.lb-shade{
+  position:absolute;inset:0;
+  opacity:min(1,calc(var(--dim) * var(--dimu)));
+  transition:opacity .6s ease;
+  background:
+    radial-gradient(120% 90% at 50% 18%,rgba(4,10,24,.10),rgba(3,7,16,.55) 74%),
+    linear-gradient(180deg,rgba(4,9,20,.50) 0%,rgba(4,9,20,.62) 46%,rgba(3,7,15,.88) 100%);
+}
+
+/* blueprint / circuit plane */
+.lb-graphics{position:absolute;inset:0;width:100%;height:100%;will-change:transform}
+.lb-graphics .tr{fill:none;stroke:#4d9fff;stroke-width:1.1;stroke-opacity:.26}
+.lb-graphics .pk{fill:none;stroke:#bcd8ff;stroke-width:2;stroke-linecap:round;stroke-opacity:.9;
+  stroke-dasharray:34 966;stroke-dashoffset:0;animation:lbPacket 8s linear infinite;
+  filter:drop-shadow(0 0 4px rgba(120,180,255,.9))}
+.lb-graphics .pk.y{stroke:#ffd27a;filter:drop-shadow(0 0 4px rgba(255,190,80,.9))}
+.lb-graphics .nd{fill:#0a1630;stroke:#8fb8ff;stroke-width:1.2;stroke-opacity:.5}
+.lb-graphics .nd.y{stroke:#ffc861;stroke-opacity:.7}
+.lb-graphics .bp{fill:none;stroke:#8fb8ff;stroke-width:1.2;stroke-opacity:.2;stroke-linejoin:round}
+.lb-graphics .dm{fill:none;stroke:#8fb8ff;stroke-width:1;stroke-opacity:.16;stroke-dasharray:3 5}
+.lb-graphics .bpg{animation:lbDrift 14s ease-in-out infinite alternate}
+@keyframes lbPacket{to{stroke-dashoffset:-1000}}
+@keyframes lbDrift{from{transform:translate3d(-10px,3px,0)}to{transform:translate3d(10px,-3px,0)}}
+
+/* floating tools: slow float, each on its own scroll-parallax depth */
+.lb-icons{position:absolute;inset:0;--sy:0}
+.lb-ico{
+  position:absolute;left:var(--x);top:var(--y);width:var(--s);height:var(--s);
+  color:rgba(150,190,255,var(--a,.2));
+  transform:translate3d(0,calc(var(--sy) * var(--k,1) * 1px),0);
+}
+.lb-ico i{display:block;width:100%;height:100%;animation:lbFloat var(--fl,10s) ease-in-out var(--fd,0s) infinite alternate}
+.lb-ico svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;
+  filter:drop-shadow(0 0 6px rgba(110,170,255,.35))}
+.lb-ico.y{color:rgba(255,200,100,var(--a,.2))}
+@keyframes lbFloat{
+  from{transform:translate3d(0,-8px,0) rotate(calc(var(--rot,0deg) - 5deg))}
+  to  {transform:translate3d(0,8px,0)  rotate(calc(var(--rot,0deg) + 6deg))}
+}
+
+.lb-fx{position:absolute;inset:0;width:100%;height:100%}
+.lb-on .stat-foot-note,.lb-on .section-label,.lb-on .view-head p{color:#c3cfe0;text-shadow:0 1px 3px rgba(2,6,16,.9),0 0 14px rgba(2,6,16,.9)}
+.lb-on .stat-card,.lb-on .panel-card,.lb-on .service-card{
+  background:linear-gradient(180deg,rgba(20,37,74,.80),rgba(9,18,36,.84)) padding-box,var(--chrome-edge) border-box!important}
+
+@media (max-width:700px){
+  .lb-ico:nth-child(n+6){display:none}
+  .lb-ico{--a:.14}
+  .lb-graphics .tr{stroke-opacity:.2}
+}
+/* stillness: reduce-motion users, "still" mode and motion = 0 */
+@media (prefers-reduced-motion:reduce){.live-bg *,.live-bg *::before,.live-bg *::after{animation:none!important}.lb-fx{display:none}}
+.lb-still *,.lb-still *::before,.lb-still *::after{animation:none!important}
+.lb-still .lb-fx{display:none}
+
+/* settings card */
+.lb-settings{margin-top:22px}
+.lb-row{display:grid;grid-template-columns:230px 1fr 72px;gap:14px;align-items:center;padding:12px 0;border-top:1px solid rgba(160,185,220,.12);font-size:13.5px;color:#d9e3f2}
+.lb-row input[type=range]{width:100%;accent-color:#8fb8ff}
+.lb-row output{text-align:right;font-variant-numeric:tabular-nums;color:#f4f7fb}
+.lb-row.lb-switch{grid-template-columns:auto 1fr;cursor:pointer;border-top:none;padding-top:4px}
+.lb-row.lb-switch input{width:18px;height:18px;accent-color:#8fb8ff}
+.lb-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px;padding-top:14px;border-top:1px solid rgba(160,185,220,.12)}
+.lb-now{font-size:12.5px;color:#9fb0c8;margin-left:auto}
+@media (max-width:640px){
+  .lb-row{grid-template-columns:1fr 60px;row-gap:4px}
+  .lb-row label{grid-column:1/-1}
+  .lb-now{margin-left:0;width:100%}
+}
+}
+
 @media print{
   /* whichever view is on screen, the printed page is always the
      quotation document — never the dashboard, never a placeholder */
@@ -1607,12 +1764,75 @@ table.items td.cost-cell{min-width:140px}
   textarea.notes{min-height:26px;font-size:11.5px}
 }
 @media print{
+  .live-bg{display:none!important}
   table.items td,table.items td .cell-print,table.items .row-total{color:#0b1526!important}
   table.items th{color:#0b1526!important;font-weight:600}
 }
 </style>
 </head>
 <body>
+
+<!-- LIVING BACKGROUND: scenes are built and lazy-loaded by mountLiveBg();
+     with no JS or no images this is still a navy bay with blueprint lines -->
+<div class="live-bg no-print" id="liveBg" aria-hidden="true">
+  <div class="lb-scenes" id="lbScenes"></div>
+  <div class="lb-shade"></div>
+
+  <svg class="lb-graphics" id="lbGfx" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <!-- analysis circuits: faint trace, a bright packet travelling along it -->
+    <path class="tr" d="M0 640 H220 L270 690 H520 L560 650 H820"/>
+    <path class="pk" pathLength="1000" d="M0 640 H220 L270 690 H520 L560 650 H820" style="animation-delay:-1s"/>
+    <circle class="nd" cx="820" cy="650" r="4"/><circle class="nd y" cx="520" cy="690" r="3"/>
+
+    <path class="tr" d="M1600 230 H1380 L1330 280 H1100 L1060 240 H880"/>
+    <path class="pk y" pathLength="1000" d="M1600 230 H1380 L1330 280 H1100 L1060 240 H880" style="animation-delay:-4.5s;animation-duration:9.5s"/>
+    <circle class="nd" cx="880" cy="240" r="4"/><circle class="nd y" cx="1330" cy="280" r="3"/>
+
+    <path class="tr" d="M120 0 V120 L170 170 V330 L130 370 V480"/>
+    <path class="pk" pathLength="1000" d="M120 0 V120 L170 170 V330 L130 370 V480" style="animation-delay:-6s;animation-duration:7s"/>
+    <circle class="nd" cx="130" cy="480" r="4"/>
+
+    <path class="tr" d="M1480 900 V760 L1430 710 V560 L1470 520 V420"/>
+    <path class="pk" pathLength="1000" d="M1480 900 V760 L1430 710 V560 L1470 520 V420" style="animation-delay:-2.5s;animation-duration:10s"/>
+    <circle class="nd y" cx="1470" cy="420" r="4"/>
+
+    <!-- a car in blueprint, with its dimension lines -->
+    <g class="bpg" transform="translate(900 700) scale(.62)">
+      <path class="bp" d="M60 210 L60 196 Q62 184 80 180 L190 166 Q250 128 330 108 Q400 92 470 92 Q560 94 620 118 L700 152 Q790 160 830 176 Q850 184 850 200 L850 212 Q850 220 840 222 L770 222 A52 52 0 0 1 666 222 L304 222 A52 52 0 0 1 200 222 L72 222 Q60 222 60 210 Z"/>
+      <path class="bp" d="M300 150 Q350 112 420 104 Q470 100 520 104 Q580 110 640 140 L652 150 Z"/>
+      <circle class="bp" cx="252" cy="222" r="44"/><circle class="bp" cx="718" cy="222" r="44"/>
+      <path class="dm" d="M60 262 H850 M60 252 V272 M850 252 V272"/>
+      <path class="dm" d="M30 92 V222 M20 92 H40 M20 222 H40"/>
+    </g>
+  </svg>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="lbi-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+      <symbol id="lbi-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+      <symbol id="lbi-plug" viewBox="0 0 24 24"><path d="M10 2h4v5h-4z"/><path d="M8 7h8l1 3-1 3H8l-1-3z"/><path d="M12 13v6"/><path d="M12 19l-2.5 3"/></symbol>
+      <symbol id="lbi-wheel" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v6M12 15v6M3 12h6M15 12h6M5.6 5.6l3.2 3.2M15.2 15.2l3.2 3.2M18.4 5.6l-3.2 3.2M8.8 15.2l-3.2 3.2"/></symbol>
+      <symbol id="lbi-nut" viewBox="0 0 24 24"><path d="M12 2l8.66 5v10L12 22 3.34 17V7z"/><circle cx="12" cy="12" r="4"/></symbol>
+      <symbol id="lbi-battery" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M7 8V5h3v3M14 8V5h3v3"/><path d="M8 14h4M10 12v4M15 14h2"/></symbol>
+      <symbol id="lbi-oil" viewBox="0 0 24 24"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5"/></symbol>
+      <symbol id="lbi-car" viewBox="0 0 24 24"><path d="M3 16l1.4-5.2A2 2 0 0 1 6.3 9.3h11.4a2 2 0 0 1 1.9 1.5L21 16v2.5h-2.2a2.2 2.2 0 0 1-4.4 0H9.6a2.2 2.2 0 0 1-4.4 0H3z"/><path d="M5 13h14"/><circle cx="7.4" cy="18.5" r="1.4"/><circle cx="16.6" cy="18.5" r="1.4"/></symbol>
+      <symbol id="lbi-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol>
+    </defs>
+  </svg>
+  <div class="lb-icons" id="lbIcons">
+    <span class="lb-ico" style="--x:3%;--y:14%;--s:46px;--k:.9;--fl:10s;--fd:-2s;--rot:-14deg"><i><svg><use href="#lbi-wrench"/></svg></i></span>
+    <span class="lb-ico y" style="--x:91%;--y:20%;--s:40px;--k:1.15;--fl:12s;--fd:-5s;--rot:12deg"><i><svg><use href="#lbi-bolt"/></svg></i></span>
+    <span class="lb-ico" style="--x:6.5%;--y:46%;--s:54px;--k:.6;--fl:14s;--fd:-7s;--rot:8deg"><i><svg><use href="#lbi-gear"/></svg></i></span>
+    <span class="lb-ico" style="--x:93%;--y:52%;--s:50px;--k:.75;--fl:11s;--fd:-3s;--rot:-10deg"><i><svg><use href="#lbi-wheel"/></svg></i></span>
+    <span class="lb-ico" style="--x:2.5%;--y:78%;--s:38px;--k:1.2;--fl:9s;--fd:-6s;--rot:16deg"><i><svg><use href="#lbi-plug"/></svg></i></span>
+    <span class="lb-ico" style="--x:88%;--y:82%;--s:44px;--k:.5;--fl:13s;--fd:-1s;--rot:-6deg"><i><svg><use href="#lbi-battery"/></svg></i></span>
+    <span class="lb-ico y" style="--x:10%;--y:92%;--s:34px;--k:1;--fl:10s;--fd:-8s;--rot:10deg"><i><svg><use href="#lbi-nut"/></svg></i></span>
+    <span class="lb-ico" style="--x:96%;--y:36%;--s:34px;--k:.45;--fl:12s;--fd:-4s;--rot:6deg"><i><svg><use href="#lbi-oil"/></svg></i></span>
+    <span class="lb-ico" style="--x:12%;--y:30%;--s:58px;--k:.35;--fl:16s;--fd:-9s;--rot:0deg;--a:.12"><i><svg><use href="#lbi-car"/></svg></i></span>
+  </div>
+
+  <canvas class="lb-fx" id="lbFx"></canvas>
+</div>
 
 <div class="wrap">
 
@@ -2195,6 +2415,16 @@ table.items td.cost-cell{min-width:140px}
       <button class="service-card reveal" onclick="showView('quote');setTimeout(()=>document.getElementById('fontSelect')?.scrollIntoView({behavior:'smooth',block:'center'}),380)">
         <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></span><b>ฟอนต์เอกสาร</b><span>เลือกฟอนต์ที่ใช้แสดงและพิมพ์ใบเสนอราคา</span>
       </button>
+    </div>
+    <div class="panel-card lb-settings">
+      <div class="panel-head">พื้นหลังเคลื่อนไหว (อู่ AUTO 1)</div>
+      <p class="panel-sub">ภาพช่างกำลังซ่อมรถเคลื่อนไหวอยู่หลังเนื้อหา ปรับความเร็วและช่วงเวลาเปลี่ยนฉากได้ที่นี่ ค่าจะจำไว้ในเครื่องนี้และไม่มีผลกับใบเสนอราคาที่พิมพ์ หน้าใบเสนอราคาจะลดเอฟเฟกต์ลงเองเพื่อไม่รบกวนการกรอก</p>
+      <label class="lb-row lb-switch"><input type="checkbox" id="lbOn"><span>เปิดพื้นหลังเคลื่อนไหว</span></label>
+      <div class="lb-row"><label for="lbDwell">เวลาต่อหนึ่งฉาก</label><input type="range" id="lbDwell" min="4" max="30" step="1"><output id="lbDwellOut"></output></div>
+      <div class="lb-row"><label for="lbFade">ความนุ่มนวลตอนเปลี่ยนฉาก</label><input type="range" id="lbFade" min="0.6" max="6" step="0.2"><output id="lbFadeOut"></output></div>
+      <div class="lb-row"><label for="lbMotion">ความแรงของการเคลื่อนไหว</label><input type="range" id="lbMotion" min="0" max="2" step="0.1"><output id="lbMotionOut"></output></div>
+      <div class="lb-row"><label for="lbBright">ความสว่างของภาพพื้นหลัง</label><input type="range" id="lbBright" min="0.4" max="1.5" step="0.1"><output id="lbBrightOut"></output></div>
+      <div class="lb-actions"><button class="btn btn-ghost" id="lbNext" type="button">ฉากถัดไป</button><button class="btn btn-ghost" id="lbReset" type="button">คืนค่าเริ่มต้น</button><span class="lb-now" id="lbNow">ฉากปัจจุบัน: —</span></div>
     </div>
     <div class="note-banner" style="margin-top:22px">🗑️ ต้องการล้างข้อมูลทั้งหมดในเครื่องนี้ (ประวัติ ลูกค้า คลัง SKU)? ไปที่เมนูผู้ใช้มุมขวาบน → ล้างข้อมูลเครื่องนี้</div>
   </section>
@@ -3359,7 +3589,342 @@ function mountClipFx(){
   sync();
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   LIVING BACKGROUND — configuration
+   Photos live in  assets/bg/  next to this file, each as
+     auto1-<id>.webp     (desktop, full crop)
+     auto1-<id>-sm.webp  (phones, 640px tall)
+   Hotspot numbers (x, y, w) are fractions of the photo itself.
+   Change the timings here, or live from  ตั้งค่าระบบ → พื้นหลังเคลื่อนไหว
+   (saved in this browser), or from the console:
+     AUTO1_BG.set({ sceneSeconds: 12, fadeSeconds: 3 })
+   ═══════════════════════════════════════════════════════════════ */
+const LB_DEFAULTS = {
+  on: true,            // master switch
+  sceneSeconds: 9,     // how long each scene stays (the team scene is 30% shorter)
+  fadeSeconds: 2.4,    // crossfade length
+  motion: 1,           // 0 = still photos, 1 = normal, 2 = strong parallax / drift
+  bright: 1            // how much of the photo shows through the navy grade
+};
+const LB_KEY = 'auto1LiveBg';
+const LB_BLUE = 'rgba(130,185,255,.9)', LB_ICE = 'rgba(205,225,255,.9)', LB_WARM = 'rgba(255,195,95,.95)';
+const LB_SCENES = [
+  { id:'repair', label:'ตรวจเช็กเครื่องยนต์', ar:1.3475, fx:.55, fy:.5,
+    ken:{ x0:'-1.6%', y0:'1%',  x1:'1.4%',  y1:'-1%',   s0:1.12, s1:1.21 },
+    scan:{ x:.46, y:.44, w:.54, h:.26 },
+    glows:[
+      { x:.674, y:.332, w:.17, c:LB_BLUE, o:.55, p:3.2 },                 // diagnostic tablet
+      { x:.83,  y:.69,  w:.24, c:LB_ICE,  o:.42, p:4.4, d:.8 },           // headlight
+      { x:.70,  y:.55,  w:.22, c:'rgba(90,150,255,.8)', o:.2, p:5.2 },    // engine bay
+      { x:.33,  y:.80,  w:.36, c:'rgba(70,140,255,.9)', o:.3, p:3.8, d:.4 },   // holographic car
+      { x:.355, y:.735, w:.07, c:LB_ICE, o:.4, p:2.4 },
+      { x:.495, y:.755, w:.07, c:LB_ICE, o:.4, p:2.4, d:.7 },
+      { x:.536, y:.868, w:.07, c:LB_WARM, o:.35, p:2.6, d:1.3 },
+      { x:.19,  y:.065, w:.22, c:LB_BLUE, o:.35, p:6 }                      // AUTO1 sign in the bay
+    ] },
+  { id:'wheel-dark', label:'ถอดล้อ', ar:1.607, fx:.58, fy:.52,
+    ken:{ x0:'1.6%', y0:'-1%', x1:'-1.6%', y1:'1%',    s0:1.12, s1:1.22 },
+    spark:{ x:.578, y:.55 },
+    glows:[
+      { x:.226, y:.229, w:.17, ar:5, c:'rgba(90,160,255,.95)', o:.6, p:2.8 },   // neon strip
+      { x:.575, y:.55,  w:.10, c:LB_WARM, o:.5, p:1.5 },                       // wrench contact
+      { x:.59,  y:.53,  w:.34, c:'rgba(100,160,255,.6)', o:.2, p:6 },           // rim
+      { x:.93,  y:.12,  w:.22, c:LB_ICE, o:.22, p:5, d:1 }                     // paint highlight
+    ] },
+  { id:'wheel-bay', label:'ถอดล้อในอู่', ar:1.0264, fx:.5, fy:.42,
+    ken:{ x0:'-1.4%', y0:'-1.2%', x1:'1.4%', y1:'1.2%', s0:1.12, s1:1.2 },
+    spark:{ x:.566, y:.513 },
+    glows:[
+      { x:.265, y:.012, w:.22, ar:3.4, c:LB_ICE, o:.5, p:3.5 },                 // ceiling lights
+      { x:.485, y:.058, w:.2,  ar:3.4, c:LB_ICE, o:.5, p:4.2, d:1.2 },
+      { x:.566, y:.513, w:.11, c:LB_WARM, o:.5, p:1.5 },                       // wrench contact
+      { x:.66,  y:.5,   w:.3,  c:'rgba(100,160,255,.6)', o:.14, p:6 },         // rim
+      { x:.93,  y:.03,  w:.22, c:LB_BLUE, o:.3, p:3.8 },                       // blue speed stripes
+      { x:.95,  y:.97,  w:.24, c:LB_BLUE, o:.3, p:4.6, d:1 },
+      { x:.86,  y:.146, w:.24, c:LB_ICE, o:.18, p:5.5, d:.5 }                  // paint reflection
+    ] },
+  { id:'team', label:'ทีมช่าง AUTO 1', ar:1.7784, fx:.55, fy:.5, special:true,
+    ken:{ x0:'1.2%', y0:'.8%', x1:'-1.2%', y1:'-.8%', s0:1.12, s1:1.2 },
+    glows:[
+      { x:.47,  y:.32, w:.17, ar:.28, rot:28, c:'rgba(170,210,255,.9)', o:.24, p:7 },   // light shafts
+      { x:.58,  y:.22, w:.12, ar:.28, rot:28, c:'rgba(170,210,255,.9)', o:.18, p:9, d:2 },
+      { x:.755, y:.14, w:.20, c:LB_ICE, o:.22, p:6 },                                     // windows
+      { x:.06,  y:.48, w:.16, c:'rgba(255,190,110,.8)', o:.12, p:8, d:1 }                // workbench
+    ] }
+];
+LB_SCENES.forEach(s => { s.src = { lg:`assets/bg/auto1-${s.id}.webp`, sm:`assets/bg/auto1-${s.id}-sm.webp` }; });
+
+function mountLiveBg(){
+  const root = document.getElementById('liveBg');
+  const holder = document.getElementById('lbScenes');
+  const gfx = document.getElementById('lbGfx');
+  const icons = document.getElementById('lbIcons');
+  const cvs = document.getElementById('lbFx');
+  if(!root || !holder) return;
+
+  const saveData = !!(navigator.connection && navigator.connection.saveData);
+  const still = REDUCED || saveData;                       // one calm frame, nothing moves
+  const small = window.matchMedia('(max-width:700px)').matches;
+  const prefs = Object.assign({}, LB_DEFAULTS);
+  try{ Object.assign(prefs, JSON.parse(localStorage.getItem(LB_KEY)) || {}); }catch(e){}
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const sane = () => {
+    prefs.on = prefs.on !== false;
+    prefs.sceneSeconds = clamp(+prefs.sceneSeconds || LB_DEFAULTS.sceneSeconds, 4, 30);
+    prefs.fadeSeconds = clamp(+prefs.fadeSeconds || LB_DEFAULTS.fadeSeconds, .6, 6);
+    prefs.motion = clamp(isFinite(+prefs.motion) ? +prefs.motion : 1, 0, 2);
+    prefs.bright = clamp(+prefs.bright || 1, .4, 1.5);
+  };
+  sane();
+
+  /* ── scenes: built once, photos are fetched only when needed ── */
+  const scenes = LB_SCENES.map(cfg => {
+    const el = document.createElement('div'); el.className = 'lb-scene'; el.dataset.id = cfg.id;
+    const frame = document.createElement('div'); frame.className = 'lb-frame';
+    const k = cfg.ken;
+    frame.style.cssText = `--kx0:${k.x0};--ky0:${k.y0};--kx1:${k.x1};--ky1:${k.y1};--ks0:${k.s0};--ks1:${k.s1}`;
+    const img = document.createElement('img'); img.className = 'lb-img'; img.alt = ''; img.decoding = 'async'; img.draggable = false;
+    frame.appendChild(img);
+    (cfg.glows || []).forEach(g => {
+      const i = document.createElement('i'); i.className = 'lb-glow';
+      i.style.cssText = `left:${g.x*100}%;top:${g.y*100}%;width:${g.w*100}%;aspect-ratio:${g.ar || 1};--rot:${g.rot || 0}deg;--c:${g.c};--o:${g.o};--p:${g.p}s;--d:${g.d || 0}s`;
+      frame.appendChild(i);
+    });
+    if(cfg.id !== 'team'){ const sw = document.createElement('div'); sw.className = 'lb-sweep'; frame.appendChild(sw); }
+    if(cfg.scan){ const sc = document.createElement('div'); sc.className = 'lb-scan'; const c = cfg.scan; sc.style.cssText = `left:${c.x*100}%;top:${c.y*100}%;width:${c.w*100}%;height:${c.h*100}%`; frame.appendChild(sc); }
+    let anchor = null;
+    if(cfg.spark){ anchor = document.createElement('b'); anchor.className = 'lb-anchor'; anchor.style.cssText = `left:${cfg.spark.x*100}%;top:${cfg.spark.y*100}%`; frame.appendChild(anchor); }
+    el.appendChild(frame); holder.appendChild(el);
+    return { cfg, el, frame, img, anchor, state:'idle', promise:null };
+  });
+
+  function load(s){
+    if(s.state === 'ready') return Promise.resolve(true);
+    if(s.state === 'broken') return Promise.resolve(false);
+    if(s.promise) return s.promise;
+    s.state = 'loading';
+    s.promise = new Promise(res => {
+      const probe = new Image(); probe.decoding = 'async';
+      probe.onload = () => {
+        s.img.src = probe.currentSrc || probe.src;
+        (probe.decode ? probe.decode().catch(() => {}) : Promise.resolve()).then(() => { s.state = 'ready'; res(true); });
+      };
+      probe.onerror = () => { s.state = 'broken'; res(false); };     // a missing photo just drops out of the rotation
+      probe.src = (saveData || small) ? s.cfg.src.sm : s.cfg.src.lg;
+    });
+    return s.promise;
+  }
+
+  /* ── geometry: each frame exactly "covers" the viewport, centred on the photo's focal point ── */
+  let vw = 0, vh = 0, dpr = 1;
+  function layout(){
+    vw = root.clientWidth; vh = root.clientHeight;
+    scenes.forEach(s => {
+      const ar = s.cfg.ar, W = Math.max(vw, vh * ar), H = Math.max(vh, vw / ar);
+      const l = Math.min(0, Math.max(vw - W, vw / 2 - s.cfg.fx * W));
+      const t = Math.min(0, Math.max(vh - H, vh / 2 - s.cfg.fy * H));
+      const st = s.frame.style;
+      st.width = W + 'px'; st.height = H + 'px'; st.left = l + 'px'; st.top = t + 'px';
+    });
+    if(cvs){
+      dpr = Math.min(1.5, window.devicePixelRatio || 1);
+      cvs.width = Math.round(vw * dpr); cvs.height = Math.round(vh * dpr);
+    }
+  }
+  if('ResizeObserver' in window) new ResizeObserver(layout).observe(root); else window.addEventListener('resize', layout);
+  layout();
+
+  /* ── scene sequence: repair → wheel → wheel-bay, and the team scene every second lap ── */
+  const base = [0, 1, 2], special = 3;
+  let cur = -1, pos = -1, lap = 0, sceneT = 0, busy = false;
+  const label = document.getElementById('lbNow');
+  const dwellOf = s => prefs.sceneSeconds * (s.cfg.special ? .7 : 1);
+  function pickNext(){
+    pos++;
+    if(pos >= base.length + (lap % 2 === 1 ? 1 : 0)){ pos = 0; lap++; }
+    return (lap % 2 === 1 ? base.concat(special) : base)[pos];
+  }
+  function show(i){
+    const s = scenes[i];
+    if(!s || s.state !== 'ready') return false;
+    const prev = scenes[cur];
+    if(prev && prev !== s){
+      prev.el.classList.remove('on'); prev.el.classList.add('leaving');
+      setTimeout(() => prev.el.classList.remove('leaving'), prefs.fadeSeconds * 1000 + 150);
+    }
+    s.frame.classList.remove('kb'); void s.frame.offsetWidth;
+    s.frame.style.setProperty('--dur', (dwellOf(s) + 2 * prefs.fadeSeconds + 6) + 's');
+    if(!still) s.frame.classList.add('kb'); else s.frame.style.transform = 'scale(1.1)';
+    s.el.classList.add('on'); root.classList.add('ready');
+    cur = i; sceneT = 0;
+    if(label) label.textContent = 'ฉากปัจจุบัน: ' + s.cfg.label;
+    return true;
+  }
+  async function advance(){
+    if(busy) return; busy = true;
+    for(let n = 0; n < scenes.length; n++){
+      const i = pickNext();
+      if(i === cur) continue;
+      if(await load(scenes[i])){ show(i); break; }
+    }
+    busy = false;
+  }
+
+  /* ── parallax: scroll progress + pointer, applied to three planes ── */
+  let prog = 0, tx = 0, ty = 0, ptrX = 0, ptrY = 0, lastScrollY = window.scrollY, kick = 0, scrollAcc = 0;
+  const sf = () => Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    prog = clamp(y / sf(), 0, 1);
+    kick = Math.min(3, kick + Math.abs(y - lastScrollY) / 700);     // scrolling "kicks" the wrench
+    scrollAcc += Math.abs(y - lastScrollY);
+    lastScrollY = y;
+  }, { passive:true });
+  if(HOVERS) window.addEventListener('pointermove', e => { tx = e.clientX / window.innerWidth - .5; ty = e.clientY / window.innerHeight - .5; }, { passive:true });
+
+  /* ── sparks and dust (canvas) ── */
+  const ctx = cvs && cvs.getContext ? cvs.getContext('2d') : null;
+  const sparks = [], motes = Array.from({ length: small ? 22 : 54 }, () => ({ x:Math.random(), y:Math.random(), z:.35 + Math.random() * .65, ph:Math.random() * 6.28 }));
+  const BB = [[0,[90,16,6]],[.25,[255,80,26]],[.5,[255,160,60]],[.75,[255,222,140]],[1,[255,249,236]]];
+  const heatRGB = h => { h = clamp(h, 0, 1); for(let i = 1; i < BB.length; i++) if(h <= BB[i][0]){ const [a0,c0] = BB[i-1], [a1,c1] = BB[i], k = (h-a0)/(a1-a0); return c0.map((v, j) => Math.round(v + (c1[j]-v)*k)); } return BB[4][1]; };
+  let nextBurst = 1.2, quality = 1, ema = 1 / 60, clock = 0;
+
+  function burst(s, n, u){
+    const r = s.anchor.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    for(let i = 0; i < n * quality; i++){
+      const a = (-175 + Math.random() * 170) * Math.PI / 180, sp = (110 + Math.random() * 300) * u;
+      sparks.push({ x, y, vx:Math.cos(a) * sp, vy:Math.sin(a) * sp, heat:.8 + Math.random() * .2, cool:.6 + Math.random() * .6, b:0, floor:y + 150 * u });
+    }
+  }
+  function drawFx(dt){
+    if(!ctx) return;
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cvs.width, cvs.height);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const m = prefs.motion, calm = document.body.dataset.view === 'quote';
+    // dust, drifting up through the bay
+    if(quality > .5 && m > 0){
+      const a0 = calm ? .45 : 1;
+      for(const d of motes){
+        d.x += (Math.sin(clock * .21 + d.ph) * 6 * d.z) * dt / vw; d.y -= (4 + 7 * d.z) * dt / vh;
+        if(d.y < -.02){ d.y = 1.02; d.x = Math.random(); }
+        const al = (.1 + .28 * (.5 + .5 * Math.sin(clock * 1.3 + d.ph))) * d.z * a0;
+        ctx.fillStyle = `rgba(214,230,255,${al.toFixed(3)})`;
+        ctx.beginPath(); ctx.arc(d.x * vw + ptrX * 14 * d.z, d.y * vh, .6 + d.z * 1.3, 0, 6.283); ctx.fill();
+      }
+    }
+    // sparks: only from the wheel scenes, never over the quotation editor
+    const s = scenes[cur];
+    if(s && s.anchor && s.el.classList.contains('on') && sceneT > 1 && m > 0 && !calm){
+      const u = clamp(s.frame.getBoundingClientRect().height / 800, .5, 1.8);
+      nextBurst -= dt;
+      if(nextBurst <= 0){ burst(s, 9 + (Math.random() * 7 | 0), u); nextBurst = .8 + Math.random() * 1.1; }
+      if(kick > 1){ burst(s, 8, u); kick -= 1; }
+    } else kick = 0;
+    ctx.globalCompositeOperation = 'lighter';
+    for(let i = sparks.length - 1; i >= 0; i--){
+      const p = sparks[i], v = Math.hypot(p.vx, p.vy);
+      p.vx -= .0016 * v * p.vx * dt; p.vy -= .0016 * v * p.vy * dt; p.vy += 900 * dt;
+      p.x += p.vx * dt; p.y += p.vy * dt;
+      if(p.y > p.floor){ p.y = p.floor; p.vy *= -.32; p.vx *= .62; p.heat -= .12; p.b++; }
+      p.heat -= p.cool * dt;
+      if(p.heat <= 0 || p.b > 3){ sparks.splice(i, 1); continue; }
+      const c = heatRGB(p.heat);
+      ctx.strokeStyle = `rgba(${c[0]},${c[1]},${c[2]},${Math.min(1, p.heat * 1.4).toFixed(3)})`;
+      ctx.lineWidth = .8 + p.heat * 1.4; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(p.x - p.vx * .026, p.y - p.vy * .026); ctx.lineTo(p.x, p.y); ctx.stroke();
+      if(p.heat > .55){ ctx.fillStyle = `rgba(${c[0]},${c[1]},${c[2]},${(.16 * p.heat).toFixed(3)})`; ctx.beginPath(); ctx.arc(p.x, p.y, 4 * p.heat, 0, 6.283); ctx.fill(); }
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  let raf = 0, last = 0, ax = 0, ay = 0, wroteHolder = '', wroteGfx = '';
+  function tick(now){
+    raf = requestAnimationFrame(tick);
+    const dt = Math.min(.1, Math.max(.001, (now - last) / 1000)); last = now; clock += dt;
+    ema = ema * .96 + dt * .04;
+    if(ema > .034 && quality > .4) quality = .4;                 // slow device: fewer particles
+    if(ema < .022 && quality < 1) quality = Math.min(1, quality + .002);
+    const m = prefs.motion, calm = document.body.dataset.view === 'quote';
+
+    if(cur >= 0 && !busy){
+      sceneT += dt;
+      // scrolling a long way brings the next scene in early
+      if(sceneT >= dwellOf(scenes[cur]) || (scrollAcc > vh * 1.6 && sceneT > 3.5)){ scrollAcc = 0; advance(); }
+    }
+    ptrX += (tx - ptrX) * Math.min(1, dt * 2.6); ptrY += (ty - ptrY) * Math.min(1, dt * 2.6);
+    const k = calm ? .4 : 1;
+    ax = (0.5 - prog) * 28 * m * k;                                // scroll: far plane (±14px)
+    const fx = -ptrX * 12 * m * k, fy = ax - ptrY * 8 * m * k;
+    const h = `translate3d(${fx.toFixed(1)}px,${fy.toFixed(1)}px,0)`;
+    if(h !== wroteHolder){ holder.style.transform = h; wroteHolder = h; }
+    const g = `translate3d(${(ptrX * 26 * m * k).toFixed(1)}px,${((0.5 - prog) * 70 * m * k + ptrY * 16 * m * k).toFixed(1)}px,0)`;
+    if(g !== wroteGfx && gfx){ gfx.style.transform = g; wroteGfx = g; }
+    if(icons) icons.style.setProperty('--sy', ((0.5 - prog) * 240 * m).toFixed(1));
+    drawFx(dt);
+  }
+  const start = () => { if(!raf && !still && prefs.on){ last = performance.now(); raf = requestAnimationFrame(tick); } };
+  const stop = () => { cancelAnimationFrame(raf); raf = 0; };
+
+  /* ── apply preferences ── */
+  function apply(){
+    sane();
+    root.classList.toggle('off', !prefs.on);
+    document.body.classList.toggle('lb-on', prefs.on);
+    root.classList.toggle('lb-still', still || prefs.motion === 0);
+    root.style.setProperty('--fade', prefs.fadeSeconds + 's');
+    root.style.setProperty('--dimu', (1 / prefs.bright).toFixed(3));
+    root.style.setProperty('--fxi', Math.min(1.4, .5 + prefs.motion * .5).toFixed(2));
+    if(prefs.on){ start(); if(cur < 0) boot(); } else stop();
+  }
+  function save(){ try{ localStorage.setItem(LB_KEY, JSON.stringify(prefs)); }catch(e){} }
+  function set(patch){ Object.assign(prefs, patch); apply(); save(); syncUi(); }
+
+  /* ── settings card ── */
+  const ui = {
+    on: document.getElementById('lbOn'), sceneSeconds: document.getElementById('lbDwell'),
+    fadeSeconds: document.getElementById('lbFade'), motion: document.getElementById('lbMotion'), bright: document.getElementById('lbBright')
+  };
+  function syncUi(){
+    if(ui.on) ui.on.checked = prefs.on;
+    for(const key of ['sceneSeconds', 'fadeSeconds', 'motion', 'bright']){
+      const el = ui[key]; if(!el) continue;
+      el.value = prefs[key];
+      const o = document.getElementById(el.id + 'Out'); if(o) o.textContent = key === 'motion' ? (prefs.motion === 0 ? 'นิ่ง' : '×' + (+prefs.motion).toFixed(1)) : key === 'bright' ? '×' + (+prefs.bright).toFixed(1) : (+prefs[key]).toFixed(key === 'fadeSeconds' ? 1 : 0) + ' วิ';
+    }
+  }
+  if(ui.on) ui.on.addEventListener('change', () => set({ on: ui.on.checked }));
+  for(const key of ['sceneSeconds', 'fadeSeconds', 'motion', 'bright']){
+    if(ui[key]) ui[key].addEventListener('input', () => set({ [key]: +ui[key].value }));
+  }
+  const nextBtn = document.getElementById('lbNext'), resetBtn = document.getElementById('lbReset');
+  if(nextBtn) nextBtn.addEventListener('click', () => { sceneT = 1e9; if(!raf) advance(); });
+  if(resetBtn) resetBtn.addEventListener('click', () => set(Object.assign({}, LB_DEFAULTS)));
+  syncUi();
+
+  /* ── start: wait for the page, then fetch the first photo; the rest follow one at a time ── */
+  let booted = false;
+  function boot(){
+    if(booted) return; booted = true;
+    const go = () => load(scenes[0]).then(ok => {
+      if(!ok){ advance(); return; }
+      show(0); pos = 0;
+      if(!still) setTimeout(() => { load(scenes[1]).then(() => load(scenes[2])); }, 2500);
+    });
+    const kickoff = () => ('requestIdleCallback' in window ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 400));
+    if(document.readyState === 'complete') kickoff(); else window.addEventListener('load', kickoff, { once:true });
+  }
+  apply();
+
+  window.AUTO1_BG = {
+    prefs, set, defaults: LB_DEFAULTS, scenes: LB_SCENES.map(s => s.id),
+    next(){ sceneT = 1e9; if(!raf) return advance(); },
+    preload(){ return Promise.all(scenes.map(load)); },
+    show(i){ return load(scenes[i]).then(ok => ok && show(i)); }
+  };
+}
+
 function mountMotion(){
+  mountLiveBg();
   mountParallax();
   mountClipFx();
   mountTopline();
@@ -3537,6 +4102,7 @@ const VIEWS = ['home','services','quote','customers','history','reports','settin
 
 function showView(name){
   if(!VIEWS.includes(name)) name = 'home';
+  document.body.dataset.view = name;
   document.querySelectorAll('.view').forEach(v=>{
     const isTarget = v.id === 'view-' + name;
     v.hidden = !isTarget;
