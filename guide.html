@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>วิธีใช้งานใบเสนอราคา AUTO 1</title>
+<meta name="description" content="วิดีโอสั้น 8 ขั้นตอน สอนใช้ระบบใบเสนอราคา AUTO 1 ตั้งแต่วางราคา คิดส่วนลด VAT จนพิมพ์ A4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050b18;--bg2:#091428;--card:#0c1a33;--line:rgba(150,185,255,.16);
+  --ink:#eef4ff;--sub:#a6b6d0;--blue:#3d7bff;--blue2:#1e4fd8;--ice:#cfe3ff;--gold:#ffc84a;--ok:#35d49a;
+  --font:'Kanit','Sarabun',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font);color:var(--ink);line-height:1.6;min-height:100vh;
+  background:
+    radial-gradient(900px 520px at 80% -6%,rgba(46,107,255,.28),transparent 62%),
+    radial-gradient(700px 480px at 6% 40%,rgba(30,79,216,.18),transparent 64%),
+    linear-gradient(180deg,#07122a 0%,#050b18 60%,#030710 100%);
+  background-color:var(--bg);
+}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+
+/* top bar */
+.top{display:flex;align-items:center;gap:14px;padding:16px 0;flex-wrap:wrap}
+.logo{width:42px;height:42px;border-radius:11px;background:linear-gradient(145deg,#ffd45e,#f2a900);color:#0a1630;display:grid;place-items:center;font-weight:700;font-size:13px;letter-spacing:-.5px;box-shadow:0 6px 18px rgba(255,190,50,.25)}
+.brand b{display:block;font-size:17px;letter-spacing:.5px}
+.brand span{display:block;font-size:10.5px;letter-spacing:2.4px;color:#7f9dcb;text-transform:uppercase}
+.sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font);font-size:14px;font-weight:500;text-decoration:none;color:#06101f;
+  padding:10px 18px;border-radius:11px;border:0;cursor:pointer;
+  background:linear-gradient(180deg,#f7fbff,#c9d8ee);box-shadow:0 8px 22px rgba(60,120,255,.22),inset 0 0 0 1px rgba(255,255,255,.5)}
+.btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:rgba(14,28,54,.8);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn:focus-visible,.bar:focus-visible,.cbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+h1{font-size:clamp(26px,4.6vw,44px);line-height:1.15;font-weight:600;margin:8px 0 8px}
+h1 em{font-style:normal;background:linear-gradient(90deg,#8fb8ff,#ffd27a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--sub);max-width:640px;font-size:15.5px}
+
+/* ── the reel ── */
+.reel{margin:22px 0 10px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(14,28,54,.92),rgba(7,15,32,.92));
+  box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden}
+.bars{display:flex;gap:5px;padding:14px 16px 0}
+.bar{flex:1;height:22px;border:0;background:none;cursor:pointer;padding:9px 0}
+.bar i{display:block;height:4px;border-radius:4px;background:rgba(160,190,240,.22);position:relative;overflow:hidden}
+.bar i::after{content:'';position:absolute;inset:0;width:0;background:linear-gradient(90deg,#4f8bff,#ffd27a);border-radius:4px}
+.bar.done i::after{width:100%}
+.bar.on i::after{animation:fill var(--dur,8s) linear forwards}
+@keyframes fill{to{width:100%}}
+.stage{position:relative;min-height:430px}
+.scene{display:none;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:26px;align-items:center;padding:18px 26px 22px}
+.scene.on{display:grid}
+.cap .no{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
+.cap h2{font-size:clamp(21px,3vw,29px);font-weight:600;line-height:1.25;margin-bottom:10px}
+.cap p{color:#c8d4ea;font-size:15.5px}
+.cap p b{color:#fff;font-weight:600}
+.tip{margin-top:14px;padding:10px 13px;border-radius:12px;background:rgba(255,200,74,.08);border:1px solid rgba(255,200,74,.28);color:#ffe3a1;font-size:13.5px}
+.cap .pop{animation:none}
+.scene.on .cap>*{animation:capin .7s cubic-bezier(.22,1,.36,1) both}
+.scene.on .cap>*:nth-child(2){animation-delay:.08s}.scene.on .cap>*:nth-child(3){animation-delay:.16s}.scene.on .cap>*:nth-child(4){animation-delay:.24s}
+@keyframes capin{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+
+.ctrl{display:flex;align-items:center;gap:8px;padding:0 16px 16px}
+.cbtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(14,28,54,.9);color:var(--ink);cursor:pointer;display:grid;place-items:center}
+.cbtn:hover{background:rgba(40,75,150,.5)}
+.cbtn svg{width:18px;height:18px;fill:currentColor}
+.count{margin-left:auto;font-size:13px;color:var(--sub)}
+.reel.paused .ic-pause,.reel:not(.paused) .ic-play{display:none}
+
+/* ── the mock screen ── */
+.screen{container-type:inline-size;position:relative;aspect-ratio:4/3;border-radius:16px;overflow:hidden;
+  background:linear-gradient(160deg,#0d1f3f,#08142b 60%,#060e20);border:1px solid rgba(160,190,255,.2);box-shadow:inset 0 0 60px rgba(40,100,255,.12),0 16px 40px rgba(0,0,0,.4)}
+.m{position:absolute;inset:0;padding:4cqw;font-size:3.1cqw;line-height:1.35;display:flex;flex-direction:column;gap:2.6cqw;color:#e8f0ff}
+.m small{font-size:2.3cqw;color:#9db4dc;letter-spacing:.3cqw}
+.k{border-radius:2cqw;background:rgba(18,36,70,.85);border:1px solid rgba(150,185,255,.2);padding:2.4cqw 2.8cqw}
+.k h5{font-size:2.9cqw;font-weight:600;color:#bcd3ff;margin-bottom:1.6cqw}
+.fld{display:flex;flex-direction:column;gap:.5cqw;margin-bottom:1.8cqw}
+.fld label{font-size:2.2cqw;color:#8ea8d6}
+.fld .in{height:5.6cqw;border-radius:1.2cqw;background:rgba(5,12,28,.9);border:1px solid rgba(150,185,255,.22);padding:0 1.8cqw;display:flex;align-items:center;font-size:2.8cqw;overflow:hidden;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:1cqw;padding:1.1cqw 2.2cqw;border-radius:99px;font-size:2.5cqw;background:rgba(61,123,255,.16);border:1px solid rgba(120,170,255,.4);color:#cfe3ff;white-space:nowrap}
+.bt{display:inline-flex;align-items:center;justify-content:center;padding:1.8cqw 3.4cqw;border-radius:1.6cqw;font-weight:600;font-size:3cqw;color:#06101f;background:linear-gradient(180deg,#f7fbff,#c0d2ec);white-space:nowrap}
+.bt.ghost{background:rgba(20,40,78,.9);color:#dbe8ff;border:1px solid rgba(150,185,255,.3)}
+.bt.gold{background:linear-gradient(180deg,#ffe08a,#ffb92e)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:2.4cqw}
+.mono{font-variant-numeric:tabular-nums}
+.cur{position:absolute;width:5.2cqw;height:5.2cqw;z-index:9;left:var(--x1);top:var(--y1);pointer-events:none;filter:drop-shadow(0 .6cqw 1cqw rgba(0,0,0,.5))}
+.cur svg{width:100%;height:100%}
+.cur::after{content:'';position:absolute;left:-1cqw;top:-1cqw;width:3cqw;height:3cqw;border-radius:50%;border:.5cqw solid #ffd27a;opacity:0}
+
+/* motion: every scene only animates while it is the current one */
+.scene.on .pop{animation:pop .65s cubic-bezier(.22,1,.36,1) var(--d,0s) both}
+@keyframes pop{from{opacity:0;transform:translateY(5cqw) scale(.97)}to{opacity:1;transform:none}}
+.scene.on .fade{animation:fadein .6s ease var(--d,0s) both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.type{display:inline-block;white-space:nowrap}
+.scene.on .type{animation:type var(--t,1.3s) steps(var(--n,14),end) var(--d,0s) both}
+@keyframes type{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.scene.on .press{animation:press .5s ease var(--d,0s) both}
+@keyframes press{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,210,122,0)}40%{transform:scale(.93);box-shadow:0 0 0 1.4cqw rgba(255,210,122,.38)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,210,122,0)}}
+.scene.on .glow{animation:glow 1.8s ease-in-out var(--d,0s) infinite alternate}
+@keyframes glow{from{box-shadow:0 0 0 0 rgba(255,210,122,0)}to{box-shadow:0 0 3cqw .4cqw rgba(255,210,122,.45)}}
+.scene.on .cur{animation:curmove 1.7s cubic-bezier(.45,0,.2,1) var(--d,0s) both}
+@keyframes curmove{
+  0%{left:var(--x0);top:var(--y0);opacity:0}
+  14%{opacity:1}
+  100%{left:var(--x1);top:var(--y1);opacity:1}}
+.scene.on .cur::after{animation:ring .6s ease calc(var(--d,0s) + 1.7s) both}
+@keyframes ring{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(2.4)}}
+.swapA{animation:none}
+.scene.on .swapA{animation:swapA 0s linear var(--s,3.4s) both}
+@keyframes swapA{to{opacity:0;visibility:hidden}}
+.swapB{opacity:1}
+.scene.on .swapB{animation:swapB 0s linear var(--s,3.4s) both}
+@keyframes swapB{from{opacity:0;visibility:hidden}to{opacity:1;visibility:visible}}
+.stack{position:relative;display:inline-grid}
+.stack>*{grid-area:1/1}
+
+/* scene specifics */
+.nav{display:flex;align-items:center;gap:2.2cqw;padding:2cqw 2.6cqw;border-radius:2.2cqw;background:rgba(16,32,62,.9);border:1px solid rgba(150,185,255,.2);font-size:2.6cqw;color:#b4c6e6}
+.nav .lg{font-weight:700;color:#fff;margin-right:auto;font-size:3cqw}
+.nav .hl{color:#fff;background:rgba(30,111,255,.25);padding:.8cqw 2cqw;border-radius:1.2cqw}
+.hero{flex:1;border-radius:2.4cqw;padding:4cqw;background:linear-gradient(160deg,rgba(10,22,46,.95),rgba(8,16,34,.95));border:1px solid rgba(150,185,255,.18);display:flex;flex-direction:column;gap:2cqw;justify-content:center}
+.hero h4{font-size:5.6cqw;line-height:1.2;font-weight:600}
+.hero .bts{display:flex;gap:2cqw;margin-top:1.6cqw}
+.tbl{display:grid;grid-template-columns:1.1fr 2.2fr .9fr 1fr;font-size:2.55cqw}
+.tbl>div{padding:1.5cqw 1.6cqw;border-bottom:1px solid rgba(150,185,255,.14);white-space:nowrap;overflow:hidden}
+.tbl .th{color:#8ea8d6;font-size:2.2cqw}
+.tbl .r{text-align:right}.tbl .sell{color:#9ff0cf;font-weight:600}
+.paste{height:11cqw;border-radius:1.4cqw;background:rgba(5,12,28,.9);border:1px dashed rgba(150,185,255,.4);padding:1.4cqw 2cqw;font-size:2.7cqw;display:flex;flex-direction:column;gap:.6cqw;overflow:hidden}
+.paste .type{align-self:flex-start}
+.selbox{display:inline-flex;align-items:center;gap:1.4cqw;padding:1.2cqw 2cqw;border-radius:1.2cqw;background:rgba(5,12,28,.95);border:1px solid rgba(150,185,255,.35);font-size:2.7cqw}
+.big{font-size:5.4cqw;font-weight:600}
+.dl{display:grid;grid-template-columns:1.1fr 1fr 1.4fr;gap:2cqw;align-items:center;padding:1.8cqw 2.4cqw;border-radius:1.8cqw;background:rgba(18,36,70,.85);border:1px solid rgba(150,185,255,.2);font-size:2.8cqw}
+.dl .v{display:inline-block;min-width:11cqw;text-align:center;padding:.8cqw 1.4cqw;border-radius:1cqw;background:rgba(5,12,28,.95);border:1px solid rgba(255,210,122,.55);color:#ffe3a1;font-weight:600}
+.dl .o{color:#9ff0cf;font-weight:600;text-align:right}
+.tot{display:flex;flex-direction:column;gap:1.5cqw;padding:3cqw;border-radius:2.2cqw;background:rgba(14,28,56,.92);border:1px solid rgba(150,185,255,.22)}
+.tr{display:flex;justify-content:space-between;font-size:2.85cqw;color:#c9d7ef}
+.tr b{font-weight:500;color:#fff}.tr .mn{color:#ff9fa8}
+.chk{display:inline-block;width:3.2cqw;height:3.2cqw;border-radius:.8cqw;border:1px solid #7fa6e8;margin-right:1.2cqw;vertical-align:-.5cqw;position:relative}
+.chk.on{background:var(--blue);border-color:var(--blue)}
+.chk.on::after{content:'';position:absolute;left:.9cqw;top:.2cqw;width:.8cqw;height:1.7cqw;border:solid #fff;border-width:0 .45cqw .45cqw 0;transform:rotate(45deg)}
+.grand{display:flex;justify-content:space-between;align-items:center;margin-top:.8cqw;padding:2.4cqw 2.6cqw;border-radius:1.8cqw;background:linear-gradient(135deg,#1e4fd8,#3d7bff);box-shadow:0 1.4cqw 3cqw rgba(40,100,255,.4)}
+.grand b{font-size:5.6cqw;font-weight:700}
+.baht{font-size:2.3cqw;color:#9db4dc;text-align:right}
+.sheet{width:46%;aspect-ratio:1/1.414;background:#fbfdff;color:#0a1630;border-radius:.8cqw;padding:2.2cqw;display:flex;flex-direction:column;gap:1.2cqw;box-shadow:0 2cqw 5cqw rgba(0,0,0,.5);font-size:1.9cqw}
+.sheet .h{display:flex;justify-content:space-between;align-items:flex-start}
+.sheet .h b{font-size:2.6cqw}
+.ln{height:1cqw;border-radius:.5cqw;background:#cfd9ea}.ln.s{width:60%}.ln.t{width:35%}
+.sheet .gr{margin-top:auto;display:flex;justify-content:space-between;font-weight:700;font-size:2.4cqw;padding-top:1.2cqw;border-top:.3cqw solid #0a1630}
+.sheet .sg{display:flex;justify-content:space-between;gap:3cqw;margin-top:2cqw}
+.sheet .sg i{flex:1;border-top:.3cqw solid #0a1630;padding-top:.6cqw;font-style:normal;text-align:center;font-size:1.6cqw}
+.side{flex:1;display:flex;flex-direction:column;gap:2.4cqw;justify-content:center}
+.call{display:flex;gap:1.8cqw;align-items:center;padding:1.8cqw 2.2cqw;border-radius:1.8cqw;background:rgba(18,36,70,.85);border:1px solid rgba(150,185,255,.2);font-size:2.7cqw}
+.call i{font-style:normal;width:5cqw;height:5cqw;border-radius:50%;display:grid;place-items:center;background:rgba(53,212,154,.18);color:var(--ok);flex:none}
+.pg{display:flex;gap:3cqw;flex:1}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:2.4cqw;flex:1}
+.grid4 .k b{display:block;font-size:3cqw;margin-bottom:.6cqw}
+.grid4 .k span{font-size:2.35cqw;color:#a9bcdd;line-height:1.4;display:block}
+.note{font-size:2.4cqw;color:#ffe3a1;padding:1.6cqw 2.4cqw;border-radius:1.6cqw;background:rgba(255,200,74,.08);border:1px solid rgba(255,200,74,.28)}
+
+/* ── written guide ── */
+h3.sec{font-size:clamp(21px,3vw,27px);font-weight:600;margin:46px 0 14px}
+.steps{display:grid;gap:12px;counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px 18px;border-radius:16px;border:1px solid var(--line);background:rgba(10,22,44,.78)}
+.steps li::before{content:counter(s);width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:600;color:#06101f;background:linear-gradient(145deg,#ffd45e,#f2a900)}
+.steps b{display:block;font-size:17px;margin-bottom:2px}
+.steps p,.steps ul{color:#c0cde4;font-size:15px}
+.steps ul{padding-left:18px;margin-top:4px}
+.steps code,.faq code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:rgba(61,123,255,.16);border:1px solid rgba(120,170,255,.3);padding:1px 6px;border-radius:6px;color:#dbe8ff}
+.faq{display:grid;gap:10px}
+.faq details{border-radius:14px;border:1px solid var(--line);background:rgba(10,22,44,.78);padding:2px 16px}
+.faq summary{cursor:pointer;padding:13px 0;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:10px}
+.faq summary::after{content:'+';color:var(--gold);font-size:20px;line-height:1}
+.faq details[open] summary::after{content:'−'}
+.faq p{color:#c0cde4;font-size:15px;padding:0 0 14px}
+.eg{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
+.eg th,.eg td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
+.eg th{color:#9db4dc;font-weight:500}.eg td:last-child,.eg th:last-child{text-align:right}
+.eg-wrap{overflow-x:auto}
+footer{margin:44px 0 36px;padding-top:20px;border-top:1px solid var(--line);display:flex;gap:12px;flex-wrap:wrap;align-items:center;color:var(--sub);font-size:13.5px}
+
+@media (max-width:760px){
+  .scene{grid-template-columns:1fr;gap:14px;padding:12px 14px 16px}
+  .stage{min-height:0}
+  .cap p{font-size:15px}
+  .bars{padding:12px 12px 0}
+  .ctrl{padding:0 12px 14px}
+  .steps li{grid-template-columns:36px 1fr;padding:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  .reel *,.reel *::before,.reel *::after{animation:none!important;transition:none!important}
+  .bar.on i::after{width:100%}
+  .swapA{display:none}
+}
+@media print{
+  body{background:#fff;color:#000}.reel,.top .btn,footer .btn{display:none}
+  .steps li,.faq details{border-color:#bbb;background:#fff}.steps p,.steps ul,.faq p,.lead{color:#222}.steps li::before{background:#ddd}
+  .faq details{break-inside:avoid}.faq details>*{display:block}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo">AUTO<br>1</div>
+    <div class="brand"><b>AUTO 1</b><span>Quotation guide</span></div>
+    <div class="sp"></div>
+    <a class="btn" href="quotation.html">เปิดระบบใบเสนอราคา →</a>
+  </header>
+
+  <h1>ใช้ระบบใบเสนอราคา<br><em>ใน 8 ขั้นตอน</em></h1>
+  <p class="lead">ดูวิดีโอสั้นด้านล่าง (เล่นต่อเนื่องอัตโนมัติ กดแถบด้านบนเพื่อข้ามขั้น) หรือเลื่อนลงไปอ่านเป็นข้อ ๆ พร้อมคำถามที่พบบ่อย ตัวเลขในตัวอย่างทั้งหมดคำนวณจากระบบจริง</p>
+
+  <section class="reel paused" id="reel" aria-label="วิดีโอสั้นสอนใช้งาน 8 ขั้นตอน" data-dur="8">
+    <div class="bars" id="bars" role="group" aria-label="เลือกขั้นตอน"></div>
+    <div class="stage" id="stage">
+
+      <!-- 1 -->
+      <section class="scene" aria-label="ขั้นที่ 1">
+        <div class="cap">
+          <span class="no">ขั้นที่ 1 / 8</span>
+          <h2>เปิดเว็บ แล้วกด “+ สร้างใบเสนอราคา”</h2>
+          <p>จากหน้าแรกกดปุ่ม <b>+ สร้างใบเสนอราคา</b> หรือเลือกเมนู <b>ใบเสนอราคา</b> ด้านบน ระบบจะเปิดแบบฟอร์มเปล่า พร้อมเลขที่เอกสารและวันที่ให้ทันที</p>
+          <div class="tip">💡 เปิดจากมือถือ แท็บเล็ต หรือคอมก็ได้ ไม่ต้องติดตั้งโปรแกรม</div>
+        </div>
+        <div class="screen"><div class="m" style="--x0:70%;--y0:18%;--x1:24%;--y1:72%">
+          <div class="nav pop"><span class="lg">AUTO 1</span><span>หน้าแรก</span><span>บริการ</span><span class="hl">ใบเสนอราคา</span><span>ลูกค้า</span></div>
+          <div class="hero pop" style="--d:.2s">
+            <small>AUTO 1 · FUTURE PARK RANGSIT</small>
+            <h4>งานหนักแค่ไหน<br>ทีมไม่เคยถอย</h4>
+            <div class="bts"><span class="bt gold press" style="--d:2.3s">+ สร้างใบเสนอราคา</span><span class="bt ghost">ดูบริการของเรา</span></div>
+          </div>
+          <i class="cur" style="--d:.6s"><svg viewBox="0 0 24 24"><path d="M5 3l14 8-6.2 1.7L9.6 19z" fill="#fff" stroke="#0a1630" stroke-width="1.4" stroke-linejoin="round"/></svg></i>
+        </div></div>
+      </section>
+
+      <!-- 2 -->
+      <section class="scene" aria-label="ขั้นที่ 2">
+        <div class="cap">
+          <span class="no">ขั้นที่ 2 / 8</span>
+          <h2>กรอกข้อมูลร้านและลูกค้า</h2>
+          <p>ช่อง <b>ผู้เสนอราคา</b> เป็นข้อมูลร้าน (ตั้งค่าครั้งเดียว ระบบจำไว้) ส่วน <b>เสนอราคาถึง</b> ใส่ชื่อลูกค้า เบอร์โทร และรุ่นรถ/ทะเบียน กด <b>เปลี่ยนโลโก้ร้าน</b> เพื่อใส่โลโก้ของร้าน และ <b>อัพโหลดรูปรถ</b> ได้ถ้าต้องการ</p>
+          <div class="tip">💡 ชื่อลูกค้าที่พิมพ์ จะถูกเก็บในหน้า “จัดการลูกค้า” ให้เองหลังพิมพ์ใบเสนอราคา</div>
+        </div>
+        <div class="screen"><div class="m" style="justify-content:center">
+          <div class="row2">
+            <div class="k pop"><h5>ผู้เสนอราคา (ร้านค้า)</h5>
+              <div class="fld"><label>ชื่อนิติบุคคล</label><div class="in">บริษัท ตัวอย่าง จำกัด</div></div>
+              <div class="fld"><label>เบอร์โทร</label><div class="in">02-550-8104</div></div>
+              <span class="chip glow" style="--d:.5s">🖼 เปลี่ยนโลโก้ร้าน</span>
+            </div>
+            <div class="k pop" style="--d:.15s"><h5>เสนอราคาถึง (ลูกค้า)</h5>
+              <div class="fld"><label>ชื่อลูกค้า</label><div class="in"><span class="type" style="--d:.8s;--n:13;--t:1.2s">คุณสมชาย ใจดี</span></div></div>
+              <div class="fld"><label>รุ่นรถ / ทะเบียน</label><div class="in"><span class="type" style="--d:2.2s;--n:12;--t:1.2s">Vios กข 1234</span></div></div>
+              <span class="chip">📷 อัพโหลดรูปรถ</span>
+            </div>
+          </div>
+        </div></div>
+      </section>
+
+      <!-- 3 -->
+      <section class="scene" aria-label="ขั้นที่ 3">
+        <div class="cap">
+          <span class="no">ขั้นที่ 3 / 8</span>
+          <h2>วางข้อความราคา → แปลงเป็นรายการ</h2>
+          <p>คัดลอกราคาที่ซัพพลายเออร์ส่งมา (บรรทัดละ 1 รายการ เช่น <b>โช๊คอัพหน้า TOKICO ราคา 1480</b>) วางในกล่อง แล้วกด <b>➕ แปลงเป็นรายการ</b> ระบบแยกชื่อ ราคา และเติมรหัส SKU ให้ ตัวเลขที่วางจะนับเป็น <b>ราคาทุน</b> แล้วคิดราคาขายให้ (ทุน × 1.5)</p>
+          <div class="tip">💡 แก้ชื่อ จำนวน หรือราคาในตารางได้ตลอด กด + เพิ่มรายการ ถ้าอยากเพิ่มทีละแถว</div>
+        </div>
+        <div class="screen"><div class="m" style="justify-content:center;--x0:75%;--y0:12%;--x1:77.8%;--y1:42%">
+          <div class="paste pop"><span class="type" style="--d:.5s;--n:28;--t:1.7s">โช๊คอัพหน้า TOKICO ราคา 1480</span><span class="type" style="--d:2.2s;--n:22;--t:1.4s">ผ้าเบรคหน้า ราคา 650</span></div>
+          <div style="display:flex;justify-content:flex-end"><span class="bt ghost press" style="--d:3.8s">➕ แปลงเป็นรายการ</span></div>
+          <div class="k" style="padding:1cqw 1.4cqw">
+            <div class="tbl">
+              <div class="th">SKU</div><div class="th">รายการสินค้า</div><div class="th r">ทุน</div><div class="th r">ราคาขาย</div>
+              <div class="fade" style="--d:4.3s">60317713</div><div class="fade" style="--d:4.3s">โช๊คอัพหน้า TOKICO</div><div class="r fade" style="--d:4.3s">1,480</div><div class="r sell fade" style="--d:4.5s">2,220.00</div>
+              <div class="fade" style="--d:4.8s">60317693</div><div class="fade" style="--d:4.8s">ผ้าเบรคหน้า</div><div class="r fade" style="--d:4.8s">650</div><div class="r sell fade" style="--d:5s">975.00</div>
+            </div>
+          </div>
+          <i class="cur" style="--d:2s"><svg viewBox="0 0 24 24"><path d="M5 3l14 8-6.2 1.7L9.6 19z" fill="#fff" stroke="#0a1630" stroke-width="1.4" stroke-linejoin="round"/></svg></i>
+        </div></div>
+      </section>
+
+      <!-- 4 -->
+      <section class="scene" aria-label="ขั้นที่ 4">
+        <div class="cap">
+          <span class="no">ขั้นที่ 4 / 8</span>
+          <h2>เลือกหมวดราคาต่อแถว</h2>
+          <p>ใต้ช่องราคาทุนมีตัวเลือก <b>หมวดราคา</b> ค่าตั้งต้น <b>ปกติ ×1.5</b> (ทุน × 1.5) หรือเลือก <b>+7% ×1.7 −15%</b> = (ทุน + 7%) × 1.7 แล้วระบบใส่ส่วนลด <b>15%</b> ให้ในช่องส่วนลดเอง เช่น ทุน 1,000 → ขาย 1,819.00 ลด 15% เหลือ 1,546.15</p>
+          <div class="tip">💡 ราคาทุนและหมวดราคาใช้คำนวณภายในเท่านั้น ไม่ถูกพิมพ์ลงใบเสนอราคา</div>
+        </div>
+        <div class="screen"><div class="m" style="justify-content:center;--x0:80%;--y0:20%;--x1:36.6%;--y1:37.2%">
+          <div class="k pop" style="display:flex;flex-direction:column;gap:2.4cqw">
+            <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:3.2cqw">น้ำมันเครื่อง</b><span class="mono" style="color:#9db4dc">ทุน 1,000</span></div>
+            <div style="display:flex;align-items:center;gap:2cqw"><small style="margin:0">หมวดราคา</small>
+              <span class="selbox"><span class="stack"><span class="swapA" style="--s:3.6s">ปกติ ×1.5</span><span class="swapB" style="--s:3.6s">+7% ×1.7 −15%</span></span><span>▾</span></span>
+            </div>
+            <div class="tbl" style="grid-template-columns:1fr 1fr 1fr">
+              <div class="th r">ราคาขาย/หน่วย</div><div class="th r">ส่วนลด</div><div class="th r">ราคาสุทธิ</div>
+              <div class="r mono"><span class="stack"><span class="swapA" style="--s:3.6s">1,500.00</span><span class="swapB" style="--s:3.6s">1,819.00</span></span></div>
+              <div class="r mono" style="color:#ffe3a1"><span class="stack"><span class="swapA" style="--s:3.6s">–</span><span class="swapB" style="--s:3.6s">15%</span></span></div>
+              <div class="r sell mono"><span class="stack"><span class="swapA" style="--s:3.6s">1,500.00</span><span class="swapB" style="--s:3.6s">1,546.15</span></span></div>
+            </div>
+          </div>
+          <div class="note fade" style="--d:4.2s">ติ๊ก “คิดภาษีมูลค่าเพิ่ม (VAT 7%)” ด้านล่างเป็นภาษีขาย แยกจาก 7% ในหมวดนี้</div>
+          <i class="cur" style="--d:1s"><svg viewBox="0 0 24 24"><path d="M5 3l14 8-6.2 1.7L9.6 19z" fill="#fff" stroke="#0a1630" stroke-width="1.4" stroke-linejoin="round"/></svg></i>
+        </div></div>
+      </section>
+
+      <!-- 5 -->
+      <section class="scene" aria-label="ขั้นที่ 5">
+        <div class="cap">
+          <span class="no">ขั้นที่ 5 / 8</span>
+          <h2>ใส่ส่วนลดได้ 3 แบบ</h2>
+          <p>ช่อง <b>ส่วนลด (%)</b> ของแต่ละแถวพิมพ์ตัวเลขได้เลย <code>10</code> = ลด 10% , <code>5%</code> = ลด 5% และ <code>500บ</code> = ลด 500 บาท (พิมพ์ “บ” ต่อท้าย) ส่วนลดทั้งบิลให้ติ๊ก <b>ส่วนลดเพิ่มเติม</b> ด้านล่าง เลือกหน่วยเป็น <b>บาท</b> หรือ <b>%</b></p>
+          <div class="tip">💡 ตัวอย่างนี้สินค้า 1 รายการราคารวม 2,000.00</div>
+        </div>
+        <div class="screen"><div class="m" style="justify-content:center">
+          <div class="dl pop" style="--d:.1s"><span>ส่วนลด</span><span class="v">10</span><span class="o">ลด 10% → 1,800.00</span></div>
+          <div class="dl pop" style="--d:1.5s"><span>ส่วนลด</span><span class="v">5%</span><span class="o">ลด 5% → 1,900.00</span></div>
+          <div class="dl pop" style="--d:2.9s"><span>ส่วนลด</span><span class="v">500บ</span><span class="o">ลด 500บ → 1,500.00</span></div>
+          <div class="dl pop" style="--d:4.5s;border-color:rgba(61,123,255,.6)"><span><span class="chk on"></span>ส่วนลดเพิ่มเติม</span><span class="v">5 %</span><span class="o">ลดทั้งบิล</span></div>
+        </div></div>
+      </section>
+
+      <!-- 6 -->
+      <section class="scene" aria-label="ขั้นที่ 6">
+        <div class="cap">
+          <span class="no">ขั้นที่ 6 / 8</span>
+          <h2>ติ๊ก VAT 7% แล้วดูยอดรวมสุทธิ</h2>
+          <p>มุมขวาล่างของตารางคือสรุปยอด ระบบคิดให้ตามลำดับ <b>รวมราคาสินค้า → หักส่วนลด → บวก VAT 7% (ถ้าติ๊ก)</b> และแสดง <b>ยอดรวมสุทธิ</b> เป็นตัวเลขกับตัวอักษร ตัวอย่างนี้ลดทั้งบิล 5%</p>
+          <div class="tip">💡 ไม่อยากให้ยอดรวมขึ้นในใบที่พิมพ์ ให้ติ๊กออกที่ “รวมราคาสุทธิ” เหนือสรุปยอด</div>
+        </div>
+        <div class="screen"><div class="m" style="justify-content:center">
+          <div class="tot">
+            <div class="tr pop" style="--d:.1s"><span>รวมราคาสินค้า</span><b class="mono">3,195.00</b></div>
+            <div class="tr pop" style="--d:.7s"><span><span class="chk on"></span>ส่วนลดเพิ่มเติม 5%</span><b class="mono mn">−159.75</b></div>
+            <div class="tr pop" style="--d:1.3s"><span>ยอดหลังหักส่วนลด</span><b class="mono">3,035.25</b></div>
+            <div class="tr pop" style="--d:1.9s"><span><span class="chk on"></span>คิดภาษีมูลค่าเพิ่ม (VAT 7%)</span><b class="mono">212.47</b></div>
+            <div class="grand pop" style="--d:2.7s"><span>ยอดรวมสุทธิ</span><b class="mono">3,247.72</b></div>
+            <div class="baht fade" style="--d:3.4s">(สามพันสองร้อยสี่สิบเจ็ดบาทเจ็ดสิบสองสตางค์)</div>
+          </div>
+        </div></div>
+      </section>
+
+      <!-- 7 -->
+      <section class="scene" aria-label="ขั้นที่ 7">
+        <div class="cap">
+          <span class="no">ขั้นที่ 7 / 8</span>
+          <h2>พิมพ์ หรือบันทึกเป็น PDF</h2>
+          <p>กด <b>พิมพ์ / บันทึกเป็น PDF</b> ด้านบน ใบเสนอราคาจะพอดี <b>A4 หน้าเดียว</b> ในหน้าต่างพิมพ์เลือกเครื่องพิมพ์ หรือเลือกปลายทาง <b>บันทึกเป็น PDF</b> เพื่อส่งทาง LINE/อีเมล ก่อนพิมพ์อย่าลืมกรอกชื่อ <b>ผู้ประเมินราคา</b> และ <b>ผู้อนุมัติ</b></p>
+          <div class="tip">💡 การกดพิมพ์จะบันทึกใบนี้ลง “ประวัติใบเสนอราคา” ให้อัตโนมัติ</div>
+        </div>
+        <div class="screen"><div class="m" style="--x0:92%;--y0:6%;--x1:68.4%;--y1:26.4%;padding:3.2cqw">
+          <div class="pg">
+            <div class="sheet pop">
+              <div class="h"><b>AUTO 1</b><span>ใบเสนอราคา</span></div>
+              <div class="ln s"></div><div class="ln"></div><div class="ln"></div><div class="ln t"></div><div class="ln"></div><div class="ln s"></div>
+              <div class="gr"><span>ยอดรวมสุทธิ</span><span>3,247.72</span></div>
+              <div class="sg"><i>ผู้ประเมินราคา</i><i>ผู้อนุมัติ</i></div>
+            </div>
+            <div class="side">
+              <span class="bt gold press" style="--d:2.6s;align-self:flex-start">🖨 พิมพ์ / บันทึกเป็น PDF</span>
+              <div class="call pop" style="--d:3.2s"><i>✓</i>A4 หน้าเดียว</div>
+              <div class="call pop" style="--d:3.8s"><i>✓</i>ไม่แสดงราคาทุน</div>
+              <div class="call pop" style="--d:4.4s"><i>✓</i>เซ็นชื่อได้ทันที</div>
+            </div>
+          </div>
+          <i class="cur" style="--d:.9s"><svg viewBox="0 0 24 24"><path d="M5 3l14 8-6.2 1.7L9.6 19z" fill="#fff" stroke="#0a1630" stroke-width="1.4" stroke-linejoin="round"/></svg></i>
+        </div></div>
+      </section>
+
+      <!-- 8 -->
+      <section class="scene" aria-label="ขั้นที่ 8">
+        <div class="cap">
+          <span class="no">ขั้นที่ 8 / 8</span>
+          <h2>ย้อนดู จัดการลูกค้า และตั้งค่า</h2>
+          <p>ใบที่พิมพ์แล้วจะอยู่ใน <b>ประวัติใบเสนอราคา</b> ลูกค้าถูกรวบรวมใน <b>จัดการลูกค้า</b> พร้อมยอดสะสม <b>รายงาน</b> สรุปยอดขายรายเดือน และ <b>ตั้งค่าระบบ</b> ใช้แก้ข้อมูลร้าน ฟอนต์ที่พิมพ์ และเปิด/ปิดพื้นหลังเคลื่อนไหว</p>
+          <div class="tip">⚠️ ข้อมูลเก็บในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่ซิงค์ข้ามเครื่อง ถ้าล้างข้อมูลเบราว์เซอร์ ข้อมูลจะหาย</div>
+        </div>
+        <div class="screen"><div class="m">
+          <div class="grid4">
+            <div class="k pop"><b>ประวัติใบเสนอราคา</b><span>ทุกใบที่เคยพิมพ์ พร้อมยอดเงินและรายละเอียดลูกค้า</span></div>
+            <div class="k pop" style="--d:.5s"><b>จัดการลูกค้า</b><span>รายชื่อ ยอดสะสม และวันที่ติดต่อล่าสุด</span></div>
+            <div class="k pop" style="--d:1s"><b>รายงาน</b><span>ยอดขายรวม ค่าเฉลี่ยต่อใบ และแนวโน้มรายเดือน</span></div>
+            <div class="k pop" style="--d:1.5s"><b>ตั้งค่าระบบ</b><span>ข้อมูลร้าน โลโก้ ฟอนต์ คลังรหัส SKU พื้นหลัง</span></div>
+          </div>
+          <div class="note fade" style="--d:2.4s">เก็บในเครื่องนี้เท่านั้น ไม่ซิงค์ข้ามเครื่อง</div>
+        </div></div>
+      </section>
+
+    </div>
+    <div class="ctrl">
+      <button class="cbtn" id="prev" aria-label="ขั้นก่อนหน้า"><svg viewBox="0 0 24 24"><path d="M15.4 5.6 8 12l7.4 6.4V5.6z"/></svg></button>
+      <button class="cbtn" id="play" aria-label="เล่น / หยุดชั่วคราว">
+        <svg class="ic-pause" viewBox="0 0 24 24"><path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z"/></svg>
+        <svg class="ic-play" viewBox="0 0 24 24"><path d="M8 5.2v13.6L19 12z"/></svg>
+      </button>
+      <button class="cbtn" id="next" aria-label="ขั้นถัดไป"><svg viewBox="0 0 24 24"><path d="M8.6 5.6 16 12l-7.4 6.4V5.6z"/></svg></button>
+      <span class="count" id="count" aria-live="polite">1 / 8</span>
+    </div>
+  </section>
+
+  <h3 class="sec">อ่านเป็นข้อ ๆ</h3>
+  <ol class="steps">
+    <li><div><b>เปิดแบบฟอร์มใบเสนอราคา</b><p>กด <code>+ สร้างใบเสนอราคา</code> ที่หน้าแรก หรือเมนู <code>ใบเสนอราคา</code> ระบบออกเลขที่เอกสารและวันที่ให้ (แก้ได้) พร้อมช่อง “ยืนราคา … วัน”</p></div></li>
+    <li><div><b>กรอกข้อมูลร้านและลูกค้า</b><ul><li>ร้านค้า: ชื่อนิติบุคคล ที่อยู่ เลขผู้เสียภาษี สาขา เบอร์โทร (ตั้งครั้งเดียว ระบบจำไว้)</li><li>ลูกค้า: ชื่อ เบอร์โทร รุ่นรถ/ทะเบียน และรูปรถ (ถ้ามี)</li><li>เปลี่ยนโลโก้ได้ที่ปุ่ม <code>🖼 เปลี่ยนโลโก้ร้าน</code></li></ul></div></li>
+    <li><div><b>ใส่รายการสินค้า</b><p>วางข้อความราคาในกล่อง “วางข้อความราคาที่ได้มา” บรรทัดละ 1 รายการ แล้วกด <code>➕ แปลงเป็นรายการ</code> หรือกด <code>+ เพิ่มรายการ</code> แล้วพิมพ์เอง ใช้ช่อง “จำนวนต่อชิ้น (ทุกแถว)” เพื่อตั้งจำนวนพร้อมกันทั้งตาราง ถ้าชื่อสินค้าตรงกับคลังรหัส SKU ระบบเติมรหัสให้</p></div></li>
+    <li><div><b>เลือกหมวดราคาและปรับราคา</b><p>ราคาขายคิดจากราคาทุน ปกติ ทุน × 1.5 หรือหมวด <code>+7% ×1.7 −15%</code> ซึ่งใส่ส่วนลด 15% ให้อัตโนมัติ แก้ราคาขายตรง ๆ ในช่องได้เช่นกัน</p>
+      <div class="eg-wrap"><table class="eg"><thead><tr><th>ราคาทุน</th><th>หมวด</th><th>ราคาขาย/หน่วย</th><th>สุทธิ</th></tr></thead><tbody>
+        <tr><td>1,000</td><td>ปกติ ×1.5</td><td>1,500.00</td><td>1,500.00</td></tr>
+        <tr><td>1,000</td><td>+7% ×1.7 −15%</td><td>1,819.00 (ลด 15%)</td><td>1,546.15</td></tr></tbody></table></div></div></li>
+    <li><div><b>ใส่ส่วนลด</b><ul><li>รายแถว: พิมพ์ <code>10</code> (= 10%), <code>5%</code> หรือ <code>500บ</code> (บาท)</li><li>ทั้งบิล: ติ๊ก “ส่วนลดเพิ่มเติม” ใส่ตัวเลข แล้วเลือก <code>บาท</code> หรือ <code>%</code></li></ul></div></li>
+    <li><div><b>เลือก VAT และการแสดงยอด</b><p>ติ๊ก “คิดภาษีมูลค่าเพิ่ม (VAT 7%)” ถ้าต้องบวกภาษีขาย ติ๊กออก “รวมราคาสุทธิ” ถ้าไม่ต้องการให้ยอดรวมขึ้นในใบที่พิมพ์</p></div></li>
+    <li><div><b>ตรวจ แล้วพิมพ์ / บันทึก PDF</b><p>กรอกชื่อผู้ประเมินราคาและผู้อนุมัติ ใส่หมายเหตุ (เช่น ยืนราคา 7 วัน) แล้วกด <code>พิมพ์ / บันทึกเป็น PDF</code> เลือกกระดาษ A4 ถ้าจะส่งไฟล์ ให้เลือกปลายทาง “บันทึกเป็น PDF” ปุ่ม <code>ล้างฟอร์ม</code> ใช้เริ่มใบใหม่</p></div></li>
+    <li><div><b>ดูย้อนหลังและตั้งค่า</b><p>เมนู <code>ประวัติใบเสนอราคา</code>, <code>จัดการลูกค้า</code>, <code>รายงาน</code> สรุปจากใบที่พิมพ์แล้ว ส่วน <code>ตั้งค่าระบบ</code> (เมนูผู้ใช้มุมขวาบน) ใช้แก้ข้อมูลร้าน ฟอนต์ คลังรหัส SKU และพื้นหลังเคลื่อนไหว</p></div></li>
+  </ol>
+
+  <h3 class="sec">คำถามที่พบบ่อย</h3>
+  <div class="faq">
+    <details><summary>ข้อมูลเก็บที่ไหน เปลี่ยนเครื่องแล้วหายไหม</summary><p>เก็บในเบราว์เซอร์ของเครื่องที่ใช้ ไม่ซิงค์ข้ามเครื่อง ถ้าเปลี่ยนเครื่องหรือล้างข้อมูลเบราว์เซอร์ (หรือกด “ล้างข้อมูลเครื่องนี้” ในเมนูผู้ใช้) ประวัติและรายชื่อลูกค้าจะหายไป จึงควรเก็บไฟล์ PDF ของใบที่ส่งลูกค้าไว้ด้วย</p></details>
+    <details><summary>ลูกค้าเห็นราคาทุนไหม</summary><p>ไม่เห็น คอลัมน์ราคาทุนและหมวดราคาไม่ปรากฏเวลาพิมพ์ หรือบันทึกเป็น PDF</p></details>
+    <details><summary>ไม่อยากให้ใบแสดงยอดรวมสุทธิ ทำอย่างไร</summary><p>ติ๊กออกที่ช่อง “รวมราคาสุทธิ” เหนือสรุปยอด ยอดรวมจะไม่ปรากฏในใบที่พิมพ์</p></details>
+    <details><summary>ส่วนลดแบบบาทพิมพ์อย่างไร</summary><p>ในช่องส่วนลดของแถว พิมพ์ตัวเลขตามด้วย <code>บ</code> เช่น <code>500บ</code> ถ้าพิมพ์ตัวเลขเฉยๆ หรือมี % ระบบนับเป็นเปอร์เซ็นต์</p></details>
+    <details><summary>พื้นหลังเคลื่อนไหวทำให้เครื่องช้าหรือรบกวนสายตา</summary><p>ไปที่ ตั้งค่าระบบ → พื้นหลังเคลื่อนไหว ลดความแรงเป็น 0 (นิ่ง) หรือปิดทั้งหมด หน้าใบเสนอราคาลดเอฟเฟกต์ลงเองอยู่แล้ว และพื้นหลังไม่ถูกพิมพ์ ถ้าเครื่องตั้งค่าลดการเคลื่อนไหวไว้ ระบบจะแสดงภาพนิ่งให้เอง</p></details>
+    <details><summary>พิมพ์แล้วเกิน 1 หน้า A4</summary><p>ลดจำนวนรายการหรือย่อหมายเหตุให้สั้นลง ใบเสนอราคาออกแบบให้พอดี A4 หน้าเดียวสำหรับรายการจำนวนปกติ</p></details>
+  </div>
+
+  <footer>
+    <a class="btn" href="quotation.html">เปิดระบบใบเสนอราคา →</a>
+    <button class="btn ghost" onclick="window.print()">พิมพ์คู่มือนี้</button>
+    <span>AUTO 1 · Future Park Rangsit</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  const reel = document.getElementById('reel'), stage = document.getElementById('stage'), bars = document.getElementById('bars');
+  const scenes = [...stage.querySelectorAll('.scene')], count = document.getElementById('count');
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const dur = +reel.dataset.dur || 8;
+  let cur = 0, want = !reduce, seen = true;           // want = the viewer has not paused it; seen = the reel is on screen
+
+  scenes.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.className = 'bar'; b.type = 'button'; b.style.setProperty('--dur', dur + 's');
+    b.setAttribute('aria-label', 'ขั้นที่ ' + (i + 1)); b.appendChild(document.createElement('i'));
+    b.addEventListener('click', () => go(i));
+    bars.appendChild(b);
+  });
+  const bs = [...bars.children];
+
+  function go(i){
+    cur = (i + scenes.length) % scenes.length;
+    scenes.forEach(s => s.classList.remove('on')); bs.forEach(b => b.classList.remove('on', 'done'));
+    void stage.offsetWidth;                            // restart the CSS timelines even when re-selecting the same step
+    scenes[cur].classList.add('on');
+    bs.forEach((b, k) => { if(k < cur) b.classList.add('done'); });
+    bs[cur].classList.add('on');
+    bs[cur].setAttribute('aria-current', 'step'); bs.forEach((b, k) => k !== cur && b.removeAttribute('aria-current'));
+    count.textContent = (cur + 1) + ' / ' + scenes.length;
+  }
+  function sync(){ reel.classList.toggle('paused', !(want && seen && document.visibilityState === 'visible')); }
+
+  // the progress bar's own animation drives the sequence: when it ends, move on
+  bars.addEventListener('animationend', e => { if(e.animationName === 'fill' && !reduce) go(cur + 1); }, true);
+
+  document.getElementById('prev').addEventListener('click', () => go(cur - 1));
+  document.getElementById('next').addEventListener('click', () => go(cur + 1));
+  document.getElementById('play').addEventListener('click', () => { want = !want; sync(); });
+  document.addEventListener('keydown', e => {
+    if(e.target.closest && e.target.closest('input,textarea,select,details')) return;
+    if(e.key === 'ArrowRight') go(cur + 1); else if(e.key === 'ArrowLeft') go(cur - 1);
+    else if(e.key === ' ' && document.activeElement === document.body){ e.preventDefault(); want = !want; sync(); }
+  });
+  document.addEventListener('visibilitychange', sync);
+  if('IntersectionObserver' in window) new IntersectionObserver(es => { seen = es[0].isIntersecting; sync(); }, { threshold: .25 }).observe(reel);
+  if(reduce) document.getElementById('play').style.display = 'none';
+
+  go(0); sync();
+})();
+</script>
+</body>
+</html>
