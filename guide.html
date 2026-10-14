@@ -72,6 +72,7 @@ h1 em{font-style:normal;background:linear-gradient(90deg,#8fb8ff,#ffd27a);-webki
 .cbtn svg{width:18px;height:18px;fill:currentColor}
 .count{margin-left:auto;font-size:13px;color:var(--sub)}
 .reel.paused .ic-pause,.reel:not(.paused) .ic-play{display:none}
+.reel.paused *,.reel.paused *::before,.reel.paused *::after{animation-play-state:paused!important}   /* pause really freezes the timeline */
 
 /* ── the mock screen ── */
 .screen{container-type:inline-size;position:relative;aspect-ratio:4/3;border-radius:16px;overflow:hidden;
