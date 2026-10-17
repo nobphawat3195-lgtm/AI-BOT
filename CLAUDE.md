@@ -9,6 +9,7 @@ Live site: https://nobphawat3195-lgtm.github.io/AI-BOT/quotation.html · UI lang
 ```
 quotation.html   ← the product (~250 KB): quotation editor + dashboard, history, customers, reports, settings
 guide.html       ← standalone animated how-to (8-step reel + written steps + FAQ)
+lite.html        ← AUTO 1 LITE: separate black-and-white quotation page for old phones. Plain ES5, no CSS variables/grid, no images, fonts or animation, own draft key `autoPartsLiteDraft`; pricing, discount and VAT rules copied from quotation.html — change both when a rule changes
 crm.html         ← separate mobile/iPad CRM for credit customers (own page, own code; not analysed in depth)
 index.html       ← separate "AI Trading Bot" page (unrelated to quotations)
 assets/bg/       ← WebP photo(s) for the living background + README.md (how to swap a photo)

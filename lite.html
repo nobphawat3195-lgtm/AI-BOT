@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AUTO 1 LITE - ใบเสนอราคา</title>
+<meta name="description" content="ใบเสนอราคา AUTO 1 เวอร์ชัน LITE: ขาวดำ เบา ใช้ได้กับโทรศัพท์รุ่นเก่า ไม่ต้องใช้อินเทอร์เน็ตเสริม">
+<!-- LITE: one file, no images, no web fonts, no animation, no external requests. Plain ES5. -->
+<style>
+*{-webkit-box-sizing:border-box;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:#000;font:16px/1.5 Tahoma,Thonburi,"Noto Sans Thai","Droid Sans Thai","Leelawadee UI",sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:10px}
+.top{border-bottom:3px solid #000;padding-bottom:8px;margin-bottom:12px}
+.top h1{font-size:22px;margin:0;line-height:1.2}
+.top p{margin:4px 0 0;font-size:14px}
+.top a{color:#000;font-weight:bold}
+.box{border:2px solid #000;padding:10px;margin:0 0 12px}
+.box h2{font-size:17px;margin:0 0 6px;padding-bottom:4px;border-bottom:1px solid #000}
+label{display:block;font-weight:bold;font-size:15px;margin:8px 0 2px}
+input[type=text],textarea,select{display:block;width:100%;font:inherit;color:#000;background:#fff;border:2px solid #000;border-radius:0;padding:8px;min-height:44px;margin:0}
+textarea{min-height:70px;resize:vertical}
+input[type=text]:focus,textarea:focus,select:focus{outline:3px solid #000;outline-offset:1px}
+table.pair{width:100%;table-layout:fixed;border-collapse:collapse}
+table.pair td{vertical-align:top;padding:0 8px 0 0}
+table.pair td+td{padding:0 0 0 8px}
+.btn{display:block;width:100%;min-height:46px;font:bold 17px Tahoma,Thonburi,"Noto Sans Thai",sans-serif;background:#000;color:#fff;border:2px solid #000;border-radius:0;padding:8px;margin:8px 0 0;text-align:center;cursor:pointer}
+.btn.w{background:#fff;color:#000}
+.btn.s{display:inline-block;width:auto;min-height:38px;font-size:15px;margin:0;padding:4px 12px}
+.chk{display:block;margin:10px 0 4px;font-weight:bold}
+.chk input{width:22px;height:22px;vertical-align:middle;margin:0 8px 0 0}
+.it{border:2px solid #000;margin:0 0 10px;padding:8px}
+.it .hd{overflow:hidden;margin-bottom:2px}
+.it .hd b{float:left;line-height:38px}
+.it .hd .btn{float:right}
+.calc{margin-top:8px;padding:6px 8px;border:1px dashed #000;font-size:15px}
+.calc b{font-size:17px}
+.tot{border:2px solid #000}
+.tot div{overflow:hidden;padding:6px 8px;border-bottom:1px solid #000}
+.tot div span{float:right;font-weight:bold}
+.tot .g{background:#000;color:#fff;font-size:20px;border:0}
+.note{font-size:14px}
+.say{font-size:14px;margin-top:6px}
+#msg{min-height:22px;font-weight:bold;margin:6px 0}
+#sheet{display:none}
+@media print{
+  @page{size:A4;margin:9mm}
+  html,body{background:#fff}
+  .wrap{display:none!important}
+  #sheet{display:block;color:#000;font-size:12px;line-height:1.35;position:relative}
+  #sheet.fill{min-height:268mm}
+  #sheet .ph{overflow:hidden;border-bottom:2px solid #000;padding-bottom:6px}
+  #sheet .pl{float:left;width:60%}
+  #sheet .pr{float:right;width:38%;text-align:right}
+  #sheet .pb{font-size:22px}
+  #sheet .ps{font-size:8.5px;line-height:1.35;margin-top:3px}
+  #sheet .pt{font-size:19px;font-weight:bold}
+  #sheet .pc{margin:8px 0;padding:6px 8px;border:1px solid #000;font-size:14px}
+  #sheet table.pi{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}
+  #sheet table.pi th,#sheet table.pi td{border:1px solid #000;padding:2px 4px;vertical-align:middle;overflow:hidden}
+  #sheet table.pi th{font-size:10.5px;font-weight:bold;background:#fff;border-bottom:2px solid #000}
+  #sheet table.pi td.c{text-align:center}
+  #sheet table.pi td.n{text-align:right;white-space:nowrap}
+  #sheet table.pi td.k{white-space:nowrap}
+  #sheet table.pi tr{page-break-inside:avoid}
+  #sheet.xl table.pi{font-size:14.5px} #sheet.xl table.pi td{padding:10px 5px} #sheet.xl table.pi th{font-size:11.5px;padding:8px 3px}
+  #sheet.lg table.pi{font-size:14px} #sheet.lg table.pi td{padding:6px 5px} #sheet.lg table.pi th{font-size:11.5px;padding:7px 3px}
+  #sheet.md table.pi{font-size:13px} #sheet.md table.pi td{padding:3.5px 4px}
+  #sheet .tw{width:46%;margin:8px 0 0 54%;border:1px solid #000;page-break-inside:avoid}
+  #sheet .tw div{overflow:hidden;padding:3px 8px;border-bottom:1px solid #000}
+  #sheet .tw div span{float:right}
+  #sheet .tw .g{font-size:18px;font-weight:bold;border-bottom:0;border-top:2px solid #000;padding:6px 8px}
+  #sheet .tw .say{font-size:10.5px;border:0;padding:2px 8px 5px}
+  #sheet .pin{margin-top:14px}
+  #sheet.fill .pin{position:absolute;left:0;right:0;bottom:0}
+  #sheet .sg{overflow:hidden;page-break-inside:avoid}
+  #sheet .sg div{float:left;width:48%;text-align:center}
+  #sheet .sg div+div{float:right}
+  #sheet .sg i{display:block;border-top:1px dashed #000;margin-top:34px;padding-top:3px;font-style:normal;font-size:11px}
+  #sheet .pn{margin-top:10px;font-size:12px;white-space:pre-wrap}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>AUTO 1 LITE <small>ใบเสนอราคา</small></h1>
+    <p>เวอร์ชันขาวดำ เบา ใช้ได้กับโทรศัพท์รุ่นเก่า &nbsp;|&nbsp; <a href="quotation.html">เวอร์ชันเต็ม</a> &nbsp;|&nbsp; <a href="guide.html">วิธีใช้</a></p>
+  </div>
+
+  <div class="box">
+    <h2>1. ข้อมูลร้าน (ตั้งครั้งเดียว จำไว้ในเครื่อง)</h2>
+    <label for="sBrand">ชื่อร้าน (หัวใบ)</label><input type="text" id="sBrand">
+    <label for="sTag">คำโปรย</label><input type="text" id="sTag">
+    <label for="sLegal">ชื่อนิติบุคคล (ตามใบกำกับภาษี)</label><input type="text" id="sLegal">
+    <label for="sAddr">ที่อยู่ตามใบกำกับภาษี</label><textarea id="sAddr"></textarea>
+    <label for="sTax">เลขประจำตัวผู้เสียภาษี</label><input type="text" id="sTax" inputmode="numeric">
+    <table class="pair"><tr>
+      <td><label for="sBranch">สาขาที่</label><input type="text" id="sBranch" inputmode="numeric"></td>
+      <td><label for="sPhone">เบอร์โทร</label><input type="text" id="sPhone" inputmode="tel"></td>
+    </tr></table>
+  </div>
+
+  <div class="box">
+    <h2>2. ลูกค้าและเอกสาร</h2>
+    <label for="cName">ชื่อลูกค้า</label><input type="text" id="cName" placeholder="ชื่อ-นามสกุล / ชื่อร้าน">
+    <table class="pair"><tr>
+      <td><label for="cPhone">เบอร์โทรลูกค้า</label><input type="text" id="cPhone" inputmode="tel"></td>
+      <td><label for="cCar">รุ่นรถ / ทะเบียน</label><input type="text" id="cCar" placeholder="เช่น Vios กข 1234"></td>
+    </tr></table>
+    <table class="pair"><tr>
+      <td><label for="dNo">เลขที่เอกสาร</label><input type="text" id="dNo"></td>
+      <td><label for="dDate">วันที่ (วว/ดด/ปปปป)</label><input type="text" id="dDate"></td>
+    </tr></table>
+    <label for="dValid">ยืนราคา (วัน)</label><input type="text" id="dValid" inputmode="numeric">
+  </div>
+
+  <div class="box">
+    <h2>3. รายการสินค้า</h2>
+    <label for="paste">วางข้อความราคา บรรทัดละ 1 รายการ (เช่น โช๊คอัพหน้า TOKICO ราคา 1480)</label>
+    <textarea id="paste" placeholder="วางข้อความที่นี่"></textarea>
+    <button type="button" class="btn w" onclick="parsePaste()">แปลงเป็นรายการ</button>
+    <div id="msg" role="status"></div>
+    <div id="rows"></div>
+    <button type="button" class="btn w" onclick="addRow()">+ เพิ่มรายการ</button>
+    <p class="note">ราคาทุนใช้คำนวณในเครื่องเท่านั้น ไม่พิมพ์ลงใบเสนอราคา หมวด &quot;ปกติ&quot; = ทุน × 1.5 &nbsp; &quot;+7% ×1.7 −15%&quot; = (ทุน × 1.07) × 1.7 แล้วลด 15%</p>
+  </div>
+
+  <div class="box">
+    <h2>4. ส่วนลด ภาษี และยอดรวม</h2>
+    <label class="chk"><input type="checkbox" id="discOn" onclick="recalc()">ส่วนลดเพิ่มเติม (ทั้งบิล)</label>
+    <table class="pair"><tr>
+      <td><input type="text" id="discVal" inputmode="decimal" oninput="recalc()" placeholder="0"></td>
+      <td><select id="discType" onchange="recalc()"><option value="baht">บาท</option><option value="pct">%</option></select></td>
+    </tr></table>
+    <label class="chk"><input type="checkbox" id="vatOn" onclick="recalc()">คิดภาษีมูลค่าเพิ่ม (VAT 7%)</label>
+    <label class="chk"><input type="checkbox" id="showTot" onclick="recalc()">แสดงยอดรวมสุทธิในใบที่พิมพ์</label>
+    <div class="tot" style="margin-top:10px">
+      <div>รวมราคาสินค้า <span id="tSub">0.00</span></div>
+      <div>ส่วนลดรายการ <span id="tLine">0.00</span></div>
+      <div>ส่วนลดเพิ่มเติม <span id="tExtra">0.00</span></div>
+      <div>ยอดหลังหักส่วนลด <span id="tAfter">0.00</span></div>
+      <div>ภาษีมูลค่าเพิ่ม 7% <span id="tVat">0.00</span></div>
+      <div class="g">ยอดรวมสุทธิ <span id="tGrand">0.00</span></div>
+    </div>
+    <div class="say" id="tSay"></div>
+  </div>
+
+  <div class="box">
+    <h2>5. ลงชื่อและหมายเหตุ</h2>
+    <label for="apr">ชื่อผู้ประเมินราคา</label><input type="text" id="apr">
+    <label for="apv">ชื่อผู้อนุมัติ</label><input type="text" id="apv">
+    <label for="notes">หมายเหตุ / เงื่อนไข</label><textarea id="notes" placeholder="เช่น ราคานี้มีผล 7 วันนับจากวันที่ออกใบเสนอราคา"></textarea>
+  </div>
+
+  <button type="button" class="btn" onclick="doPrint()">พิมพ์ / บันทึกเป็น PDF (A4)</button>
+  <button type="button" class="btn w" onclick="resetForm()">ล้างฟอร์ม (เริ่มใบใหม่)</button>
+  <p class="note">ข้อมูลเก็บในเครื่องนี้เท่านั้น ถ้าล้างข้อมูลเบราว์เซอร์ ข้อมูลจะหาย</p>
+</div>
+
+<div id="sheet"></div>
+
+<script>
+var SKU_CATALOG = [
+  // ## โช้คอัพ ##
+  ['60317713','โช้คอัพหน้า'], ['60317715','เบ้าโช้คอัพหน้า'], ['60317719','ลูกปืนเบ้าโช้คอัพหน้า'],
+  ['60317717','ยางกันกระแทกโช้คอัพหน้า'], ['60317720','ยางกันฝุ่นโช้ค'], ['60317721','ยางรองสปริงโช้ค'],
+  ['60317714','โช้คอัพหลัง'], ['60317718','ยางกันกระแทกโช้คอัพหลัง'], ['60317716','เบ้าโช้คอัพหลัง'],
+  ['60301072','ลูกหมากกันโคลงหน้า'], ['60301069','ยางรัดเหล็กกันโคลงหน้า'], ['60303978','อะไหล่โช้คอัพอื่นๆ'],
+  // ## ระบบแอร์ ##
+  ['60301101','ไส้กรองแอร์'], ['60346646','ไดรเออร์แอร์'], ['60317723','ตู้แอร์'],
+  ['60301098','วาวล์แอร์'], ['60301099','โบลเวอร์แอร์'], ['60346647','ท่อแอร์'],
+  ['60301106','เทอร์โมสตัทแอร์'], ['60317724','แผงคอนเดนเซอร์แอร์'], ['60346648','ฝาครอบกรองแอร์'],
+  ['60301103','รีซีสแตนท์'], ['60301097','คอมเพรสเซอร์แอร์'], ['60301108','โอริงแอร์'],
+  ['60301110','น้ำมันคอมเพรสเซอร์แอร์'], ['60300995','มอเตอร์พัดลม'], ['60317708','สายพานแอร์'],
+  ['60317709','สายพานไดชาร์ท'], ['60301001','สายพานหน้าเครื่อง'], ['60317725','หน้าครัชคอมแอร์'],
+  ['60301272','FLUSHING AIR'],
+  // ## ระบบเครื่องยนต์ ##
+  ['60371350','หัวฉีด'], ['60371371','ยางรองหัวฉีด'], ['60301005','คอยล์จุดระเบิด'], ['60317707','หัวเทียน'],
+  // ## ระบบเบรค ##
+  ['60317693','ผ้าเบรคหน้า'], ['60317698','ผ้าเบรคหลัง'], ['60317700','ก้ามเบรคหลัง'],
+  ['60301027','ชุดซ่อมเบรคหน้า'], ['60317705','ลูกสูบเบรค'], ['60301030','กระบอกเบรคหลัง'],
+  ['60301015','แม่ปั้มเบรคบน'], ['60301008','หม้อลมเบรค'], ['60317701','จานดิสเบรคหน้า'],
+  ['60317702','จานดิสเบรคหลัง'], ['60317704','จานดรัมเบรคหลัง'],
+  ['60301140','เจียร์จานเบรก-แบบแท่น'], ['60301209','เจียร์จานเบรก-แบบประชิด'], ['60301210','เจียร์จานเบรก-แบบเซาะล่อง'],
+  // ## ระบบช่วงล่าง ##
+  ['60301086','ลูกหมากแร็คตัวใน'], ['60301084','ลูกหมากแร็คตัวนอก'], ['60301042','ยางหุ้มแร็ค'],
+  ['60301062','ปีกนกบน'], ['60301064','ปีกนกล่าง'], ['60301047','ลูกปืนล้อหน้า'],
+  ['60301054','ลูกปืนล้อหลัง'], ['60301043','เพลาขับ'], ['60301045','ซีลเพลาขับ'],
+  // ## อื่นๆ ##
+  ['60300978','ไส้กรองอากาศ'], ['60317706','ไส้กรองน้ำมันเครื่อง'], ['60300981','ไส้กรองน้ำมันเชื้อเพลิง'],
+  ['60317710','ไดชาร์ท'], ['60300979','ปะเก็นฝาครอบวาวล์'], ['60301088','ยางแท่นเครื่องตัวหน้า'],
+  ['60301089','ยางแท่นเครื่องตัวข้าง'], ['60301092','ยางแท่นเกียร์'], ['60301290','ค่าอะไหล่'],
+];
+
+var DRAFT_KEY = 'autoPartsLiteDraft', MAIN_KEY = 'autoPartsQuotationDraft';
+var UNIT_BY_KEYWORD = {'อันละ':'อัน','ตัวละ':'ตัว','ชิ้นละ':'ชิ้น','ชุดละ':'ชุด','คู่ละ':'อัน','เมตรละ':'เมตร','ลิตรละ':'ลิตร'};
+var items = [], saveTimer = null, printTimer = null, skuIndex = [];
+var FIELDS = ['sBrand','sTag','sLegal','sAddr','sTax','sBranch','sPhone','cName','cPhone','cCar','dNo','dDate','dValid','discVal','apr','apv','notes'];
+
+function $(id){ return document.getElementById(id); }
+function num(v){ var n = parseFloat(String(v === undefined || v === null ? '' : v).replace(/,/g, '')); return isNaN(n) ? 0 : n; }
+function esc(s){ return String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function fmt(n){
+  n = Math.round((n || 0) * 100) / 100;
+  var neg = n < 0; n = Math.abs(n);
+  var p = n.toFixed(2).split('.');
+  p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return (neg ? '-' : '') + p[0] + '.' + p[1];
+}
+function pad2(n){ return (n < 10 ? '0' : '') + n; }
+function todayStr(){ var d = new Date(); return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear(); }
+function docNo(){ var d = new Date(); return 'QT-' + d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate()) + '-001'; }
+
+/* ---- SKU lookup (same list as the full version) ---- */
+function normThai(t){
+  return String(t || '').toLowerCase().replace(/[่-๋]/g, '').replace(/[\s\-_.]/g, '')
+    .replace(/เบรก/g, 'เบรค').replace(/แร็ก/g, 'แร็ค').replace(/ไดชาร์จ/g, 'ไดชาร์ท').replace(/ดิสก์/g, 'ดิส').replace(/คลัทช์|คลัตช์|คลัช/g, 'ครัช');
+}
+function buildSkuIndex(){
+  skuIndex = [];
+  for(var i = 0; i < SKU_CATALOG.length; i++){
+    var k = normThai(SKU_CATALOG[i][1]);
+    if(k) skuIndex.push({ sku: SKU_CATALOG[i][0], key: k });
+  }
+  skuIndex.sort(function(a, b){ return b.key.length - a.key.length; });   // longest name wins
+}
+function lookupSku(name){
+  var k = normThai(name);
+  if(!k) return '';
+  for(var i = 0; i < skuIndex.length; i++) if(k.indexOf(skuIndex[i].key) !== -1) return skuIndex[i].sku;
+  return '';
+}
+
+/* ---- pricing: identical rules to the full version ---- */
+function blankItem(){ return { sku:'', name:'', qty:'1', unit:'อัน', cost:'', cat:'std', disc:'', discType:'pct', discAuto:false, skuAuto:true }; }
+function hasPrice(it){ var s = String(it.cost).replace(/\s/g, ''); return s !== '' && !isNaN(parseFloat(s)); }
+function sellPrice(it){
+  var c = num(it.cost);
+  if(it.cat === 'direct') return c;
+  if(it.cat === 'alt') return c * 1.07 * 1.7;
+  return c * 1.5;
+}
+function lineGross(it){ return num(it.qty) * sellPrice(it); }
+function parseDisc(it){
+  var raw = String(it.disc === undefined || it.disc === null ? '' : it.disc).replace(/^\s+|\s+$/g, '');
+  var sufBaht = /(บาท|บ\.?|฿)$/.test(raw), sufPct = /%$/.test(raw);
+  var n = parseFloat(raw.replace(/(บาท|บ\.?|฿|%)$/, '').replace(/,/g, ''));
+  return { n: (isNaN(n) || n <= 0) ? 0 : n, baht: sufBaht || (!sufPct && it.discType === 'baht') };
+}
+function lineDiscount(it){
+  var d = parseDisc(it); if(!d.n) return 0;
+  var g = lineGross(it);
+  return Math.min(d.baht ? d.n : g * d.n / 100, g);
+}
+function lineNet(it){ return lineGross(it) - lineDiscount(it); }
+function discLabel(it){
+  if(!lineDiscount(it)) return '';
+  var d = parseDisc(it);
+  return d.baht ? fmt(lineDiscount(it)) + ' บ' : (Math.round(d.n * 100) / 100) + '%';
+}
+
+function bahtText(num){
+  num = Math.round((num || 0) * 100) / 100;
+  if(num === 0) return 'ศูนย์บาทถ้วน';
+  var txtNum = ['ศูนย์','หนึ่ง','สอง','สาม','สี่','ห้า','หก','เจ็ด','แปด','เก้า'];
+  var txtDigit = ['','สิบ','ร้อย','พัน','หมื่น','แสน','ล้าน'];
+  function convert(numStr){
+    var s = '', len = numStr.length;
+    for(var i = 0; i < len; i++){
+      var d = parseInt(numStr.charAt(i), 10), place = len - i - 1;
+      if(d === 0) continue;
+      if(place === 0 && d === 1 && len > 1){ s += 'เอ็ด'; }
+      else if(place === 1 && d === 2){ s += 'ยี่' + txtDigit[1]; }
+      else if(place === 1 && d === 1){ s += txtDigit[1]; }
+      else { s += txtNum[d] + txtDigit[place % 7]; }
+    }
+    return s;
+  }
+  var baht = Math.floor(num), satang = Math.round((num - baht) * 100);
+  var bahtStr = baht > 0 ? convert(String(baht)) + 'บาท' : '';
+  var sat = String(satang); if(sat.length < 2) sat = '0' + sat;
+  var satangStr = satang > 0 ? convert(sat) + 'สตางค์' : 'ถ้วน';
+  if(baht > 1e6){
+    var millions = Math.floor(baht / 1e6), rest = baht % 1e6, out = '';
+    while(millions > 0){ out = convert(String(millions % 1e6)) + 'ล้าน' + out; millions = Math.floor(millions / 1e6); }
+    bahtStr = out + (rest > 0 ? convert(String(rest)) : '') + 'บาท';
+  }
+  return bahtStr + satangStr;
+}
+
+/* ---- paste text -> rows ---- */
+function parseLine(line){
+  var text = line, qty = 1;
+  var qm = text.match(/(?:ใช้|จำนวน)\s*(\d+)\s*(?:(?:ตัว|ชิ้น|อัน|ชุด|คู่)(?!ละ))?/);
+  if(qm){ qty = parseInt(qm[1], 10); text = text.replace(qm[0], ''); }
+  var cost = null, unit = 'อัน', perPair = false;
+  var pm = text.match(/(อันละ|ตัวละ|ชิ้นละ|ชุดละ|คู่ละ|เมตรละ|ลิตรละ|ราคา)\s*([\d,]+(?:\.\d+)?)/);
+  if(pm){
+    cost = parseFloat(pm[2].replace(/,/g, ''));
+    unit = UNIT_BY_KEYWORD[pm[1]] || 'อัน';
+    perPair = pm[1] === 'คู่ละ';
+    text = text.replace(pm[0], '');
+  } else {
+    var re = /([\d,]{2,}(?:\.\d+)?)/g, last = null, m;
+    while((m = re.exec(text)) !== null) last = m;
+    if(last){
+      cost = parseFloat(last[1].replace(/,/g, ''));
+      text = text.slice(0, last.index) + text.slice(last.index + last[0].length);
+    }
+    perPair = /คู่/.test(text);
+  }
+  if(perPair && cost !== null){ cost = cost / 2; qty = (qty || 1) * 2; }
+  text = text.replace(/[()]/g, '').replace(/(ค่ะ|คะ|ครับ|นะคะ|นะครับ)\s*$/, '').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
+  if(!text && cost === null) return null;
+  var nm = text || line.replace(/^\s+|\s+$/g, '');
+  var it = blankItem();
+  it.sku = lookupSku(nm); it.name = nm; it.qty = String(qty || 1); it.unit = unit; it.cost = cost !== null ? String(cost) : '';
+  return it;
+}
+function parsePaste(){
+  var box = $('paste'), lines = box.value.split('\n'), added = 0;
+  for(var i = 0; i < lines.length; i++){
+    var l = lines[i].replace(/^\s+|\s+$/g, '');
+    if(!l) continue;
+    var it = parseLine(l);
+    if(it){ items.push(it); added++; }
+  }
+  box.value = '';
+  $('msg').innerHTML = added ? 'เพิ่ม ' + added + ' รายการแล้ว' : 'ไม่พบรายการที่แยกได้ ลองตรวจข้อความอีกครั้ง';
+  renderRows(); recalc();
+}
+
+/* ---- rows ---- */
+function catOpts(cur){
+  var L = [['std','ปกติ ×1.5'], ['alt','+7% ×1.7 −15%'], ['direct','ราคาขายตรง']], s = '';
+  for(var i = 0; i < L.length; i++) s += '<option value="' + L[i][0] + '"' + (cur === L[i][0] ? ' selected' : '') + '>' + L[i][1] + '</option>';
+  return s;
+}
+function calcText(it){
+  if(!hasPrice(it)) return 'ยังไม่ได้ใส่ราคา';
+  var s = 'ขาย/หน่วย ' + fmt(sellPrice(it)) + ' &nbsp; รวม ' + fmt(lineGross(it));
+  if(lineDiscount(it)) s += ' &nbsp; ลด ' + esc(discLabel(it));
+  return s + ' &nbsp; <b>สุทธิ ' + fmt(lineNet(it)) + '</b>';
+}
+function rowHtml(it, i){
+  var isB = parseDisc(it).baht;
+  return '<div class="it"><div class="hd"><b>รายการที่ ' + (i + 1) + '</b><button type="button" class="btn w s" onclick="delRow(' + i + ')">ลบ</button></div>' +
+    '<label>ชื่อสินค้า/อะไหล่</label><input type="text" value="' + esc(it.name) + '" oninput="U(' + i + ',\'name\',this.value)">' +
+    '<table class="pair"><tr><td><label>รหัส SKU</label><input type="text" id="k' + i + '" inputmode="numeric" value="' + esc(it.sku) + '" oninput="U(' + i + ',\'sku\',this.value)"></td>' +
+    '<td><label>จำนวน</label><input type="text" inputmode="numeric" value="' + esc(it.qty) + '" oninput="U(' + i + ',\'qty\',this.value)"></td></tr></table>' +
+    '<table class="pair"><tr><td><label>หน่วย</label><input type="text" value="' + esc(it.unit) + '" oninput="U(' + i + ',\'unit\',this.value)"></td>' +
+    '<td><label>หมวดราคา</label><select onchange="setCat(' + i + ',this.value)">' + catOpts(it.cat) + '</select></td></tr></table>' +
+    '<label>' + (it.cat === 'direct' ? 'ราคาขาย/หน่วย' : 'ราคาทุน') + '</label><input type="text" inputmode="decimal" value="' + esc(it.cost) + '" oninput="U(' + i + ',\'cost\',this.value)">' +
+    '<label>ส่วนลด</label><table class="pair"><tr><td><input type="text" id="d' + i + '" inputmode="decimal" placeholder="0" value="' + esc(it.disc) + '" oninput="U(' + i + ',\'disc\',this.value)"></td>' +
+    '<td><select id="t' + i + '" onchange="setDT(' + i + ',this.value)"><option value="pct"' + (isB ? '' : ' selected') + '>%</option><option value="baht"' + (isB ? ' selected' : '') + '>บาท</option></select></td></tr></table>' +
+    '<div class="calc" id="c' + i + '">' + calcText(it) + '</div></div>';
+}
+function renderRows(){
+  var s = '';
+  for(var i = 0; i < items.length; i++) s += rowHtml(items[i], i);
+  $('rows').innerHTML = s || '<p class="note">ยังไม่มีรายการ วางข้อความราคาด้านบน หรือกด + เพิ่มรายการ</p>';
+}
+function addRow(){ items.push(blankItem()); renderRows(); recalc(); }
+function delRow(i){ items.splice(i, 1); renderRows(); recalc(); }
+function U(i, f, v){
+  var it = items[i]; it[f] = v;
+  if(f === 'disc'){
+    it.discAuto = false;
+    var raw = String(v).replace(/^\s+|\s+$/g, '');
+    if(/(บาท|บ\.?|฿)$/.test(raw)) it.discType = 'baht'; else if(/%$/.test(raw)) it.discType = 'pct';
+    var sel = $('t' + i); if(sel) sel.value = it.discType === 'baht' ? 'baht' : 'pct';
+  }
+  if(f === 'name' && it.skuAuto !== false){
+    var found = lookupSku(v);
+    if(found !== it.sku){ it.sku = found; var k = $('k' + i); if(k) k.value = found; }
+  }
+  if(f === 'sku'){ it.sku = String(v).replace(/\D/g, ''); it.skuAuto = false; }
+  var c = $('c' + i); if(c) c.innerHTML = calcText(it);
+  recalc();
+}
+function setCat(i, cat){
+  var it = items[i]; it.cat = cat;
+  if(cat === 'alt'){ it.disc = '15'; it.discType = 'pct'; it.discAuto = true; }
+  else if(it.discAuto){ it.disc = ''; it.discAuto = false; }
+  renderRows(); recalc();
+}
+function setDT(i, type){
+  var it = items[i];
+  it.discType = type === 'baht' ? 'baht' : 'pct'; it.discAuto = false;
+  it.disc = String(it.disc).replace(/\s*(บาท|บ\.?|฿|%)\s*$/, '');
+  var inp = $('d' + i); if(inp) inp.value = it.disc;
+  var c = $('c' + i); if(c) c.innerHTML = calcText(it);
+  recalc();
+}
+
+/* ---- totals ---- */
+var T = { sub:0, line:0, extra:0, after:0, vat:0, grand:0 };
+function recalc(){
+  var sub = 0, line = 0, i;
+  for(i = 0; i < items.length; i++){ sub += lineGross(items[i]); line += lineDiscount(items[i]); }
+  var on = $('discOn').checked, type = $('discType').value, raw = num($('discVal').value);
+  var base = Math.max(sub - line, 0);
+  var extra = on ? Math.min(type === 'pct' ? base * raw / 100 : raw, base) : 0;
+  var after = Math.max(sub - line - extra, 0);
+  var vat = $('vatOn').checked ? after * 0.07 : 0;
+  T = { sub:sub, line:line, extra:extra, after:after, vat:vat, grand:after + vat };
+  $('tSub').innerHTML = fmt(sub); $('tLine').innerHTML = fmt(line); $('tExtra').innerHTML = fmt(extra);
+  $('tAfter').innerHTML = fmt(after); $('tVat').innerHTML = fmt(T.vat); $('tGrand').innerHTML = fmt(T.grand);
+  $('tSay').innerHTML = '(' + bahtText(T.grand) + ')';
+  scheduleSave();
+}
+
+/* ---- the printed sheet (rebuilt a moment after every change, and right before printing) ---- */
+function buildSheet(){
+  var n = items.length, size = n <= 5 ? 'xl' : n <= 8 ? 'lg' : n <= 12 ? 'md' : 'sm';
+  var sh = $('sheet'); sh.className = (size === 'sm' ? '' : 'fill ') + size;
+  var bits = [];
+  if($('sTax').value) bits.push('เลขประจำตัวผู้เสียภาษี ' + esc($('sTax').value));
+  if($('sBranch').value) bits.push('สาขาที่ ' + esc($('sBranch').value));
+  if($('sPhone').value) bits.push('โทร ' + esc($('sPhone').value));
+  var h = '<div class="ph"><div class="pl"><b class="pb">' + esc($('sBrand').value) + '</b><div>' + esc($('sTag').value) + '</div><div class="ps">' +
+    (esc($('sLegal').value) ? esc($('sLegal').value) + '<br>' : '') + (esc($('sAddr').value) ? esc($('sAddr').value) + '<br>' : '') + bits.join(' · ') +
+    '</div></div><div class="pr"><div class="pt">ใบเสนอราคา</div><div>QUOTATION</div><div>เลขที่ ' + esc($('dNo').value) + '</div><div>วันที่ ' + esc($('dDate').value) +
+    '</div><div>ยืนราคา ' + esc($('dValid').value) + ' วัน</div></div></div>';
+  h += '<div class="pc"><b>ลูกค้า:</b> ' + esc($('cName').value) + ' &nbsp; <b>โทร:</b> ' + esc($('cPhone').value) + ' &nbsp; <b>รถ:</b> ' + esc($('cCar').value) + '</div>';
+  h += '<table class="pi"><thead><tr><th style="width:4%">#</th><th style="width:12%">SKU</th><th>รายการสินค้า</th><th style="width:7%">จำนวน</th><th style="width:7%">หน่วย</th>' +
+    '<th style="width:12.5%">ราคาขาย/หน่วย</th><th style="width:11.5%">ราคารวม</th><th style="width:10%">ส่วนลด</th><th style="width:12%">ราคาสุทธิ</th></tr></thead><tbody>';
+  for(var i = 0; i < n; i++){
+    var it = items[i], p = hasPrice(it);
+    h += '<tr><td class="c">' + (i + 1) + '</td><td class="c k">' + esc(it.sku) + '</td><td>' + esc(it.name) + '</td><td class="c">' + esc(it.qty) + '</td><td class="c">' + esc(it.unit) +
+      '</td><td class="n">' + (p ? fmt(sellPrice(it)) : '') + '</td><td class="n">' + (p ? fmt(lineGross(it)) : '') + '</td><td class="n">' + esc(discLabel(it)) +
+      '</td><td class="n"><b>' + (p ? fmt(lineNet(it)) : '') + '</b></td></tr>';
+  }
+  h += '</tbody></table>';
+  var tw = '<div>รวมราคาสินค้า <span>' + fmt(T.sub) + '</span></div>';
+  if(T.line > 0) tw += '<div>ส่วนลดรายการ <span>' + fmt(T.line) + '</span></div>';
+  if($('discOn').checked && T.extra > 0) tw += '<div>ส่วนลดเพิ่มเติม <span>' + fmt(T.extra) + '</span></div>';
+  if(T.line + T.extra > 0) tw += '<div>ยอดหลังหักส่วนลด <span>' + fmt(T.after) + '</span></div>';
+  if($('vatOn').checked) tw += '<div>ภาษีมูลค่าเพิ่ม 7% <span>' + fmt(T.vat) + '</span></div>';
+  if($('showTot').checked) tw += '<div class="g">ยอดรวมสุทธิ <span>' + fmt(T.grand) + '</span></div><div class="say">(' + bahtText(T.grand) + ')</div>';
+  h += '<div class="tw">' + tw + '</div>';
+  h += '<div class="pin"><div class="sg"><div>' + esc($('apr').value) + '<i>ลงชื่อผู้ประเมินราคา / วันที่</i></div><div>' + esc($('apv').value) + '<i>ลงชื่อผู้อนุมัติ / วันที่</i></div></div>' +
+    '<div class="pn">' + ($('notes').value ? '<b>หมายเหตุ:</b> ' + esc($('notes').value) : '') + '</div></div>';
+  sh.innerHTML = h;
+}
+function doPrint(){ buildSheet(); window.print(); }
+if(window.addEventListener) window.addEventListener('beforeprint', buildSheet);
+
+/* ---- saving (localStorage may be missing or blocked on old phones; everything still works without it) ---- */
+function collect(){
+  var s = { items: items, discOn: $('discOn').checked, discType: $('discType').value, vatOn: $('vatOn').checked, showTot: $('showTot').checked };
+  for(var i = 0; i < FIELDS.length; i++) s[FIELDS[i]] = $(FIELDS[i]).value;
+  return s;
+}
+function scheduleSave(){
+  if(saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){
+    try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(collect())); }catch(e){}
+  }, 400);
+  if(printTimer) clearTimeout(printTimer);
+  printTimer = setTimeout(buildSheet, 300);
+}
+function shopDefaults(){
+  var d = { sBrand:'AUTO 1', sTag:'อะไหล่แท้ - อะไหล่เทียบ คุณภาพมั่นใจ',
+    sLegal:'บริษัท ซีอาร์ซี ไทวัสดุ จำกัด (สาขาออโต้วัน ฟิวเจอร์พาร์ครังสิต)', sAddr:'94/6 ถนนพหลโยธิน ต.ประชาธิปัตย์ อ.ธัญบุรี จ.ปทุมธานี 12130',
+    sTax:'', sBranch:'00109', sPhone:'' };
+  try{                                              // reuse what was set in the full version on this device
+    var m = JSON.parse(localStorage.getItem(MAIN_KEY));
+    if(m){
+      if(m.shopTag) d.sTag = m.shopTag; if(m.shopLegalName) d.sLegal = m.shopLegalName; if(m.shopAddress) d.sAddr = m.shopAddress;
+      if(m.shopTaxId) d.sTax = m.shopTaxId; if(m.shopBranchCode) d.sBranch = m.shopBranchCode; if(m.shopPhone) d.sPhone = m.shopPhone;
+    }
+  }catch(e){}
+  return d;
+}
+function fresh(keepShop){
+  var shop = {}, k;
+  if(keepShop){ var ids = ['sBrand','sTag','sLegal','sAddr','sTax','sBranch','sPhone']; for(k = 0; k < ids.length; k++) shop[ids[k]] = $(ids[k]).value; }
+  else shop = shopDefaults();
+  for(k in shop) if(shop.hasOwnProperty(k)) $(k).value = shop[k];
+  var blank = ['cName','cPhone','cCar','discVal','apr','apv','notes'];
+  for(k = 0; k < blank.length; k++) $(blank[k]).value = '';
+  $('dNo').value = docNo(); $('dDate').value = todayStr(); $('dValid').value = '7';
+  $('discOn').checked = false; $('vatOn').checked = false; $('showTot').checked = true; $('discType').value = 'pct';
+  items = [];
+}
+function resetForm(){
+  if(!window.confirm('ล้างฟอร์มและเริ่มใบเสนอราคาใหม่? (ข้อมูลร้านยังอยู่)')) return;
+  fresh(true); $('msg').innerHTML = ''; renderRows(); recalc();
+}
+function load(){
+  var s = null;
+  try{ s = JSON.parse(localStorage.getItem(DRAFT_KEY)); }catch(e){}
+  fresh(false);
+  if(s && typeof s === 'object'){
+    for(var i = 0; i < FIELDS.length; i++) if(s[FIELDS[i]] !== undefined && s[FIELDS[i]] !== null) $(FIELDS[i]).value = s[FIELDS[i]];
+    $('discOn').checked = !!s.discOn; $('vatOn').checked = !!s.vatOn; $('showTot').checked = s.showTot !== false;
+    if(s.discType) $('discType').value = s.discType;
+    if(s.items && s.items.length !== undefined){
+      for(var j = 0; j < s.items.length; j++){ var b = blankItem(), o = s.items[j]; for(var f in b) if(b.hasOwnProperty(f) && o && o[f] !== undefined) b[f] = o[f]; items.push(b); }
+    }
+  }
+}
+function wire(){
+  for(var i = 0; i < FIELDS.length; i++){ var el = $(FIELDS[i]); if(FIELDS[i] !== 'discVal'){ el.oninput = scheduleSave; } }
+  $('showTot').onclick = recalc;
+}
+buildSkuIndex(); load(); wire(); renderRows(); recalc(); buildSheet();
+</script>
+</body>
+</html>
