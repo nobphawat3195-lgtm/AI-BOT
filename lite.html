@@ -8,40 +8,69 @@
 <!-- LITE: one file, no images, no web fonts, no animation, no external requests. Plain ES5. -->
 <style>
 *{-webkit-box-sizing:border-box;box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:#fff;color:#000;font:16px/1.5 Tahoma,Thonburi,"Noto Sans Thai","Droid Sans Thai","Leelawadee UI",sans-serif}
-.wrap{max-width:720px;margin:0 auto;padding:10px}
-.top{border-bottom:3px solid #000;padding-bottom:8px;margin-bottom:12px}
-.top h1{font-size:22px;margin:0;line-height:1.2}
-.top p{margin:4px 0 0;font-size:14px}
-.top a{color:#000;font-weight:bold}
-.box{border:2px solid #000;padding:10px;margin:0 0 12px}
-.box h2{font-size:17px;margin:0 0 6px;padding-bottom:4px;border-bottom:1px solid #000}
-label{display:block;font-weight:bold;font-size:15px;margin:8px 0 2px}
-input[type=text],textarea,select{display:block;width:100%;font:inherit;color:#000;background:#fff;border:2px solid #000;border-radius:0;padding:8px;min-height:44px;margin:0}
-textarea{min-height:70px;resize:vertical}
-input[type=text]:focus,textarea:focus,select:focus{outline:3px solid #000;outline-offset:1px}
+/* LITE look: monochrome HUD. Only flat colours, borders and two static gradients:
+   no blur, no shadows, no animation, no web fonts, nothing an old phone struggles with. */
+html{-webkit-text-size-adjust:100%;background:#000}
+body{margin:0;color:#fff;background-color:#000;
+  background-image:-webkit-linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),-webkit-linear-gradient(left,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:24px 24px;
+  font:16px/1.5 Tahoma,Thonburi,"Noto Sans Thai","Droid Sans Thai","Leelawadee UI",sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:12px}
+.mono,.calc,.tot span,#tGrand{font-family:"Courier New",Courier,monospace;letter-spacing:.5px}
+a{color:#fff}
+.top{position:relative;border:1px solid #fff;padding:14px 14px 12px;margin-bottom:16px;background:#000}
+.top:before,.top:after{content:"";position:absolute;width:14px;height:14px;border-color:#fff;border-style:solid}
+.top:before{top:-5px;left:-5px;border-width:3px 0 0 3px}
+.top:after{bottom:-5px;right:-5px;border-width:0 3px 3px 0}
+.top .tag{display:inline-block;font:bold 11px/1 "Courier New",Courier,monospace;letter-spacing:2px;background:#fff;color:#000;padding:4px 6px;margin-bottom:8px}
+.top h1{font-size:30px;line-height:1.05;margin:0;letter-spacing:3px;font-weight:bold}
+.top h1 em{font-style:normal;border:2px solid #fff;padding:0 6px;margin-left:4px;font-size:22px;vertical-align:4px;letter-spacing:4px}
+.top h1 small{display:block;font-size:15px;letter-spacing:1px;font-weight:normal;margin-top:6px;color:#bdbdbd}
+.top .ruler{height:8px;margin:10px 0 8px;border-bottom:1px solid #fff;
+  background-image:-webkit-linear-gradient(left,#fff 1px,transparent 1px);background-image:linear-gradient(90deg,#fff 1px,transparent 1px);background-size:12px 6px;background-repeat:repeat-x;background-position:0 100%}
+.top .stat{font:12px/1.5 "Courier New",Courier,monospace;letter-spacing:1px;color:#bdbdbd}
+.top .stat b{color:#fff}
+.top .links{margin-top:8px;font-size:14px}
+.top .links a{display:inline-block;border:1px solid #fff;padding:6px 10px;margin:4px 6px 0 0;text-decoration:none;font-weight:bold}
+.box{position:relative;border:1px solid #fff;padding:22px 12px 12px;margin:22px 0 14px;background:#000}
+.box:before{content:"";position:absolute;top:-1px;right:-1px;width:28px;height:6px;background:#fff}
+.box h2{position:absolute;top:-13px;left:10px;margin:0;padding:0 8px;background:#000;font-size:16px;line-height:24px;letter-spacing:.5px}
+.box h2 .no{display:inline-block;background:#fff;color:#000;font:bold 13px/20px "Courier New",Courier,monospace;padding:0 6px;margin-right:8px;letter-spacing:1px}
+.box h2 small{font-weight:normal;color:#bdbdbd;font-size:13px}
+label{display:block;font-size:13px;letter-spacing:.5px;color:#bdbdbd;margin:10px 0 3px}
+input[type=text],textarea,select{display:block;width:100%;font:inherit;color:#fff;background:#0b0b0b;border:1px solid #8a8a8a;border-radius:0;padding:9px 10px;min-height:46px;margin:0}
+textarea{min-height:72px;resize:vertical}
+input[type=text]:focus,textarea:focus,select:focus{outline:none;border-color:#fff;background:#000;-webkit-box-shadow:inset 0 0 0 1px #fff;box-shadow:inset 0 0 0 1px #fff}
+input::-webkit-input-placeholder,textarea::-webkit-input-placeholder{color:#6f6f6f}
+input::placeholder,textarea::placeholder{color:#6f6f6f}
+select option{background:#000;color:#fff}
 table.pair{width:100%;table-layout:fixed;border-collapse:collapse}
-table.pair td{vertical-align:top;padding:0 8px 0 0}
-table.pair td+td{padding:0 0 0 8px}
-.btn{display:block;width:100%;min-height:46px;font:bold 17px Tahoma,Thonburi,"Noto Sans Thai",sans-serif;background:#000;color:#fff;border:2px solid #000;border-radius:0;padding:8px;margin:8px 0 0;text-align:center;cursor:pointer}
-.btn.w{background:#fff;color:#000}
-.btn.s{display:inline-block;width:auto;min-height:38px;font-size:15px;margin:0;padding:4px 12px}
-.chk{display:block;margin:10px 0 4px;font-weight:bold}
-.chk input{width:22px;height:22px;vertical-align:middle;margin:0 8px 0 0}
-.it{border:2px solid #000;margin:0 0 10px;padding:8px}
-.it .hd{overflow:hidden;margin-bottom:2px}
-.it .hd b{float:left;line-height:38px}
-.it .hd .btn{float:right}
-.calc{margin-top:8px;padding:6px 8px;border:1px dashed #000;font-size:15px}
-.calc b{font-size:17px}
-.tot{border:2px solid #000}
-.tot div{overflow:hidden;padding:6px 8px;border-bottom:1px solid #000}
-.tot div span{float:right;font-weight:bold}
-.tot .g{background:#000;color:#fff;font-size:20px;border:0}
-.note{font-size:14px}
-.say{font-size:14px;margin-top:6px}
-#msg{min-height:22px;font-weight:bold;margin:6px 0}
+table.pair td{vertical-align:top;padding:0 6px 0 0}
+table.pair td+td{padding:0 0 0 6px}
+.btn{display:block;width:100%;min-height:50px;font:bold 16px Tahoma,Thonburi,"Noto Sans Thai",sans-serif;letter-spacing:1px;background:#fff;color:#000;border:1px solid #fff;border-radius:0;padding:10px;margin:10px 0 0;text-align:center;cursor:pointer}
+.btn:active{background:#000;color:#fff}
+.btn.w{background:#000;color:#fff}
+.btn.w:active{background:#fff;color:#000}
+.btn.s{display:inline-block;width:auto;min-height:34px;font-size:13px;margin:0;padding:4px 12px;letter-spacing:1px}
+.chk{display:block;margin:12px 0 4px;font-size:15px;color:#fff;letter-spacing:0}
+.chk input{width:22px;height:22px;vertical-align:middle;margin:0 10px 0 0;accent-color:#fff}
+.it{border:1px solid #8a8a8a;margin:0 0 12px;padding:0 10px 10px;background:#050505}
+.it .hd{overflow:hidden;margin:0 -10px 4px;background:#fff;color:#000;padding:4px 6px 4px 10px}
+.it .hd b{float:left;line-height:34px;font:bold 14px/34px "Courier New",Courier,monospace;letter-spacing:2px}
+.it .hd .btn{float:right;background:#000;color:#fff;border-color:#000}
+.calc{margin-top:10px;padding:8px 10px;border-left:3px solid #fff;background:#111;font-size:14px;line-height:1.6;color:#d6d6d6}
+.calc b{font-size:17px;color:#fff}
+.tot{border:1px solid #fff}
+.tot div{overflow:hidden;padding:8px 10px;border-bottom:1px dashed #555;font-size:15px;color:#d6d6d6}
+.tot div span{float:right;color:#fff;font-weight:bold}
+.tot .g{border:0;border-top:1px solid #fff;padding:12px 10px;color:#fff;font-size:15px;letter-spacing:1px}
+.tot .g span{font-size:28px;line-height:1}
+.note{font-size:13px;color:#9e9e9e}
+.say{font-size:13px;margin-top:6px;color:#bdbdbd}
+#msg{min-height:22px;font:bold 14px "Courier New",Courier,monospace;margin:8px 0}
+#msg:empty{display:none}
+.foot{margin-top:18px;padding-top:10px;border-top:1px solid #444;font:12px "Courier New",Courier,monospace;color:#8a8a8a;letter-spacing:1px}
 #sheet{display:none}
 @media print{
   @page{size:A4;margin:9mm}
@@ -84,12 +113,15 @@ table.pair td+td{padding:0 0 0 8px}
 <body>
 <div class="wrap">
   <div class="top">
-    <h1>AUTO 1 LITE <small>ใบเสนอราคา</small></h1>
-    <p>เวอร์ชันขาวดำ เบา ใช้ได้กับโทรศัพท์รุ่นเก่า &nbsp;|&nbsp; <a href="quotation.html">เวอร์ชันเต็ม</a> &nbsp;|&nbsp; <a href="guide.html">วิธีใช้</a></p>
+    <span class="tag">QUOTATION SYSTEM</span>
+    <h1>AUTO 1<em>LITE</em><small>ใบเสนอราคา · เวอร์ชันเบา สำหรับโทรศัพท์ทุกรุ่น</small></h1>
+    <div class="ruler"></div>
+    <div class="stat">STATUS <b>READY</b> · MODE <b>MONO</b> · DATA <b>ON DEVICE</b></div>
+    <div class="links"><a href="quotation.html">เวอร์ชันเต็ม</a><a href="guide.html">วิธีใช้</a></div>
   </div>
 
   <div class="box">
-    <h2>1. ข้อมูลร้าน (ตั้งครั้งเดียว จำไว้ในเครื่อง)</h2>
+    <h2><span class="no">01</span>ข้อมูลร้าน <small>ตั้งครั้งเดียว</small></h2>
     <label for="sBrand">ชื่อร้าน (หัวใบ)</label><input type="text" id="sBrand">
     <label for="sTag">คำโปรย</label><input type="text" id="sTag">
     <label for="sLegal">ชื่อนิติบุคคล (ตามใบกำกับภาษี)</label><input type="text" id="sLegal">
@@ -102,7 +134,7 @@ table.pair td+td{padding:0 0 0 8px}
   </div>
 
   <div class="box">
-    <h2>2. ลูกค้าและเอกสาร</h2>
+    <h2><span class="no">02</span>ลูกค้าและเอกสาร</h2>
     <label for="cName">ชื่อลูกค้า</label><input type="text" id="cName" placeholder="ชื่อ-นามสกุล / ชื่อร้าน">
     <table class="pair"><tr>
       <td><label for="cPhone">เบอร์โทรลูกค้า</label><input type="text" id="cPhone" inputmode="tel"></td>
@@ -116,7 +148,7 @@ table.pair td+td{padding:0 0 0 8px}
   </div>
 
   <div class="box">
-    <h2>3. รายการสินค้า</h2>
+    <h2><span class="no">03</span>รายการสินค้า</h2>
     <label for="paste">วางข้อความราคา บรรทัดละ 1 รายการ (เช่น โช๊คอัพหน้า TOKICO ราคา 1480)</label>
     <textarea id="paste" placeholder="วางข้อความที่นี่"></textarea>
     <button type="button" class="btn w" onclick="parsePaste()">แปลงเป็นรายการ</button>
@@ -127,7 +159,7 @@ table.pair td+td{padding:0 0 0 8px}
   </div>
 
   <div class="box">
-    <h2>4. ส่วนลด ภาษี และยอดรวม</h2>
+    <h2><span class="no">04</span>ส่วนลด ภาษี ยอดรวม</h2>
     <label class="chk"><input type="checkbox" id="discOn" onclick="recalc()">ส่วนลดเพิ่มเติม (ทั้งบิล)</label>
     <table class="pair"><tr>
       <td><input type="text" id="discVal" inputmode="decimal" oninput="recalc()" placeholder="0"></td>
@@ -141,13 +173,13 @@ table.pair td+td{padding:0 0 0 8px}
       <div>ส่วนลดเพิ่มเติม <span id="tExtra">0.00</span></div>
       <div>ยอดหลังหักส่วนลด <span id="tAfter">0.00</span></div>
       <div>ภาษีมูลค่าเพิ่ม 7% <span id="tVat">0.00</span></div>
-      <div class="g">ยอดรวมสุทธิ <span id="tGrand">0.00</span></div>
+      <div class="g">ยอดรวมสุทธิ · NET <span id="tGrand">0.00</span></div>
     </div>
     <div class="say" id="tSay"></div>
   </div>
 
   <div class="box">
-    <h2>5. ลงชื่อและหมายเหตุ</h2>
+    <h2><span class="no">05</span>ลงชื่อและหมายเหตุ</h2>
     <label for="apr">ชื่อผู้ประเมินราคา</label><input type="text" id="apr">
     <label for="apv">ชื่อผู้อนุมัติ</label><input type="text" id="apv">
     <label for="notes">หมายเหตุ / เงื่อนไข</label><textarea id="notes" placeholder="เช่น ราคานี้มีผล 7 วันนับจากวันที่ออกใบเสนอราคา"></textarea>
@@ -156,6 +188,7 @@ table.pair td+td{padding:0 0 0 8px}
   <button type="button" class="btn" onclick="doPrint()">พิมพ์ / บันทึกเป็น PDF (A4)</button>
   <button type="button" class="btn w" onclick="resetForm()">ล้างฟอร์ม (เริ่มใบใหม่)</button>
   <p class="note">ข้อมูลเก็บในเครื่องนี้เท่านั้น ถ้าล้างข้อมูลเบราว์เซอร์ ข้อมูลจะหาย</p>
+  <div class="foot">AUTO 1 // LITE · PRINT A4 B/W · NO NETWORK NEEDED</div>
 </div>
 
 <div id="sheet"></div>
@@ -345,7 +378,7 @@ function calcText(it){
 }
 function rowHtml(it, i){
   var isB = parseDisc(it).baht;
-  return '<div class="it"><div class="hd"><b>รายการที่ ' + (i + 1) + '</b><button type="button" class="btn w s" onclick="delRow(' + i + ')">ลบ</button></div>' +
+  return '<div class="it"><div class="hd"><b>ITEM ' + (i < 9 ? '0' : '') + (i + 1) + '</b><button type="button" class="btn w s" onclick="delRow(' + i + ')">ลบ</button></div>' +
     '<label>ชื่อสินค้า/อะไหล่</label><input type="text" value="' + esc(it.name) + '" oninput="U(' + i + ',\'name\',this.value)">' +
     '<table class="pair"><tr><td><label>รหัส SKU</label><input type="text" id="k' + i + '" inputmode="numeric" value="' + esc(it.sku) + '" oninput="U(' + i + ',\'sku\',this.value)"></td>' +
     '<td><label>จำนวน</label><input type="text" inputmode="numeric" value="' + esc(it.qty) + '" oninput="U(' + i + ',\'qty\',this.value)"></td></tr></table>' +
