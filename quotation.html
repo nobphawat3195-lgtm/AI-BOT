@@ -94,6 +94,7 @@ html,body{background:var(--bg);color:var(--ink);font-family:var(--font)}
 .brand-tag{font-size:12px;color:#bcd3f7;margin-top:2px;outline:none}
 .brand-name:empty::before,.brand-tag:empty::before{content:attr(data-ph);color:#7f9ac2}
 .branch-info{font-size:11px;color:#cfe0fb;margin-bottom:8px}
+.shop-small{display:none}   /* paper only: the shop's company details, small, under the logo */
 .branch-info span[contenteditable]{outline:none}
 .branch-info span[contenteditable]:empty::before{content:attr(data-ph);color:#8fa9d1}
 
@@ -1774,6 +1775,58 @@ body[data-view="quote"] .live-bg *,body[data-view="quote"] .live-bg *::before{an
   textarea.notes{min-height:26px;font-size:11.5px}
 }
 @media print{
+  /* ── company details become small print under the logo; the customer gets the full width ── */
+  .shop-small{display:block;font-size:8.5px;line-height:1.35;color:#cfe0fb;margin-top:3px;max-width:340px}
+  .shop-small div{overflow-wrap:anywhere}
+  .fromto-grid{grid-template-columns:1fr!important}
+  .fromto-grid .party-card:first-child{display:none!important}
+  .fromto-grid .party-card + .party-card{border-left:none!important}
+  .fromto-grid .party-card{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:18px;align-items:start}
+  .party-card > .party-label,.party-card > .field,.party-card > .field-row2{grid-column:1}
+  .party-card > .car-photo-row{grid-column:2;grid-row:1 / span 3;margin:0}
+  .fromto-grid .pmirror,.fromto-grid .field input{font-size:14px}
+  .photo-box.has-photo{width:230px;height:140px;border-radius:6px}
+
+  /* ── item table: wider discount column, and letters sized to the number of rows so the sheet is used ── */
+  table.items th:nth-child(1){width:3.2%!important}
+  table.items th:nth-child(2){width:12%!important}
+  table.items th:nth-child(3){width:auto!important;min-width:0!important}
+  table.items th:nth-child(4){width:6.6%!important}
+  table.items th:nth-child(5){width:6.6%!important}
+  table.items th:nth-child(7){width:12.6%!important}
+  table.items th:nth-child(8){width:11.6%!important}
+  table.items th:nth-child(9){width:10%!important}
+  table.items th:nth-child(10){width:12%!important}
+  table.items td:nth-child(2) .cell-print{white-space:nowrap}
+  html[data-psize="xl"] table.items{font-size:14.5px}
+  html[data-psize="xl"] table.items td{padding:10px 5px}
+  html[data-psize="xl"] table.items th{font-size:11.5px;padding:9px 3px}
+  html[data-psize="xl"] .trow{font-size:14px;padding:5px 10px}
+  html[data-psize="xl"] .grand .gl{font-size:16px}
+  html[data-psize="xl"] .grand .gv{font-size:26px}
+  html[data-psize="xl"] .bahttext{font-size:12px}
+  html[data-psize="xl"] .sign-line{height:42px}
+  html[data-psize="xl"] textarea.notes{min-height:60px}
+  html[data-psize="lg"] table.items{font-size:14px}
+  html[data-psize="lg"] table.items td{padding:6px 5px}
+  html[data-psize="lg"] table.items th{font-size:11.5px;padding:8px 3px}
+  html[data-psize="lg"] .trow{font-size:13px;padding:4px 10px}
+  html[data-psize="lg"] .grand .gv{font-size:24px}
+  html[data-psize="lg"] .sign-line{height:34px}
+  html[data-psize="lg"] textarea.notes{min-height:44px}
+  html[data-psize="md"] table.items{font-size:13px}
+  html[data-psize="md"] table.items td{padding:3.5px 4px}
+  html[data-psize="md"] table.items th{font-size:11px;padding:6px 3px}
+  html[data-psize="md"] .trow{font-size:12.5px;padding:3px 10px}
+  html[data-psize="md"] .grand .gv{font-size:22px}
+  html[data-psize="md"] .sign-line{height:28px}
+  html[data-psize="xl"] table.items input,html[data-psize="lg"] table.items input,html[data-psize="md"] table.items input{font-size:inherit}
+  /* a short quotation still fills the sheet: totals follow the table, signatures and notes sit at the foot of the page */
+  #doc{display:flex;flex-direction:column;min-height:270mm}
+  #doc > .section:not(:last-child){flex:1 1 auto;display:flex;flex-direction:column}
+  #doc > .section:not(:last-child) .sign-grid{margin-top:auto;padding-top:10px}
+  html[data-psize="sm"] #doc{min-height:0}
+
   .live-bg{display:none!important}
   table.items td,table.items td .cell-print,table.items .row-total{color:#0b1526!important}
   table.items th{color:#0b1526!important;font-weight:600}
@@ -2109,6 +2162,7 @@ body[data-view="quote"] .live-bg *,body[data-view="quote"] .live-bg *::before{an
         <div style="min-width:0">
           <div class="brand-name" id="shopName" contenteditable="true" data-ph="ชื่อร้านอะไหล่รถยนต์ของคุณ"></div>
           <div class="brand-tag" id="shopTag" contenteditable="true" data-ph="อะไหล่แท้ - อะไหล่เทียบ คุณภาพมั่นใจ"></div>
+          <div class="shop-small" id="shopSmall" aria-hidden="true"></div>
           <label class="logo-edit no-print">🖼 เปลี่ยนโลโก้ร้าน<input type="file" accept="image/*" style="display:none" id="logoInput" onchange="handleLogo(event)"></label>
         </div>
       </div>
@@ -3143,12 +3197,31 @@ function save(){
   }, 300);
 }
 
+let shopSmallKey = '';
 function syncPrintMirrors(){
   document.querySelectorAll('.pmirror').forEach(m=>{
     const src = document.getElementById(m.dataset.for);
     if(src) m.textContent = src.value;
   });
+  // company details: small print under the logo (paper only)
+  const g = id => ((document.getElementById(id) || {}).value || '').trim();
+  const bits = [];
+  if(g('shopTaxId')) bits.push('เลขประจำตัวผู้เสียภาษี ' + g('shopTaxId'));
+  if(g('shopBranchCode')) bits.push('สาขาที่ ' + g('shopBranchCode'));
+  if(g('shopPhone')) bits.push('โทร ' + g('shopPhone'));
+  const lines = [g('shopLegalName'), g('shopAddress').replace(/\s*\n\s*/g, ' '), bits.join(' · ')].filter(Boolean);
+  const key = lines.join('\n'), sm = document.getElementById('shopSmall');
+  if(sm && key !== shopSmallKey){
+    shopSmallKey = key;
+    sm.replaceChildren(...lines.map(t => { const d = document.createElement('div'); d.textContent = t; return d; }));
+  }
+  // letters on paper are sized to the number of rows, so a short quotation fills the sheet
+  const n = typeof items !== 'undefined' ? items.length : 0;
+  document.documentElement.dataset.psize = n <= 5 ? 'xl' : n <= 8 ? 'lg' : n <= 12 ? 'md' : 'sm';
+  const box = document.getElementById('photoBox');
+  if(box) box.classList.toggle('has-photo', !!photoDataUrl);
 }
+window.addEventListener('beforeprint', syncPrintMirrors);
 
 function syncBrandChrome(){
   const src = document.getElementById('logoImg').src;
