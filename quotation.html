@@ -208,6 +208,10 @@ table.items .cat-select{
   color:var(--sub);font-size:9.5px;padding:2px 3px;font-family:var(--font);outline:none;
 }
 table.items .cat-select:hover{border-color:var(--line)}
+table.items .disc-stack{display:flex;align-items:center;gap:4px}
+table.items .disc-stack input{min-width:0;flex:1 1 auto}
+table.items .disc-type{flex:0 0 auto;width:54px;border:1px solid var(--line2);border-radius:6px;background:#fff;color:var(--sub);font-size:11.5px;padding:5px 2px;font-family:var(--font);outline:none;cursor:pointer}
+table.items .disc-type:hover{border-color:var(--line)}
 .row-total{font-weight:600;text-align:right;padding-right:10px;white-space:nowrap}
 .del-btn{background:none;border:none;color:var(--red);font-size:15px;cursor:pointer;opacity:.6;padding:4px}
 .del-btn:hover{opacity:1}
@@ -1316,6 +1320,8 @@ table.items td.sku-auto input{color:#a9c8ff}
 table.items .sell-price,table.items .row-gross{color:#eef2f8;font-variant-numeric:tabular-nums}
 .row-total{color:#ffffff!important;font-size:15.5px;font-variant-numeric:tabular-nums}
 table.items .cat-select{font-size:11.5px;color:#eef2f8;background:rgba(4,9,20,.85);border-color:rgba(213,220,230,.3)}
+table.items .disc-type{color:#eef2f8;background:rgba(4,9,20,.85);border-color:rgba(213,220,230,.3)}
+table.items .disc-type option{background:#0d1a30;color:#e8f1ff}
 table.items td.cost-cell{min-width:140px}
 
 /* icons: a more specific base rule makes every .stat-card span a block */
@@ -1491,6 +1497,7 @@ body[data-view="settings"] .live-bg,body[data-view="contact"] .live-bg{--dim:.72
 .lb-img{display:block;width:100%;height:100%;object-fit:fill;user-select:none}
 .lb-frame.kb{animation:lbKen var(--dur,18s) ease-in-out forwards}
 .lb-frame.kb.loop{animation-iteration-count:infinite;animation-direction:alternate;animation-fill-mode:none}
+body[data-view="quote"] .live-bg *,body[data-view="quote"] .live-bg *::before{animation-play-state:paused}   /* the editor gets a still backdrop */
 .lb-scene:not(.on):not(.leaving) .lb-frame,
 .lb-scene:not(.on):not(.leaving) .lb-glow,
 .lb-scene:not(.on):not(.leaving) .lb-sweep,
@@ -1667,7 +1674,7 @@ body[data-view="settings"] .live-bg,body[data-view="contact"] .live-bg{--dim:.72
   .pmirrored{display:none!important}
   /* inputs clip; on paper print a wrapping text copy of the cell instead */
   .cell-in{display:none!important}
-  .cell-print{display:block!important;white-space:normal;word-break:break-word;line-height:1.35}
+  .cell-print{display:block!important;white-space:normal;word-break:normal;overflow-wrap:anywhere;line-height:1.35}
   table.items td.num .cell-print{text-align:right}
   table.items td.center .cell-print{text-align:center}
   /* an empty SKU / description still prints as a line to write on */
@@ -1728,21 +1735,22 @@ body[data-view="settings"] .live-bg,body[data-view="contact"] .live-bg{--dim:.72
   table.items{font-size:12px;min-width:0!important;table-layout:fixed}
   /* Give the description every spare millimetre so an ordinary part name
      stays on one line; only a genuinely long one wraps. */
-  table.items th:nth-child(1){width:24px!important}
-  table.items th:nth-child(2){width:76px!important}
-  table.items th:nth-child(3){width:auto!important}
-  table.items th:nth-child(4){width:46px!important}
-  table.items th:nth-child(5){width:44px!important}
-  table.items th:nth-child(7){width:90px!important}
-  table.items th:nth-child(8){width:82px!important}
-  table.items th:nth-child(9){width:56px!important}
-  table.items th:nth-child(10){width:90px!important}
+  table.items{width:100%!important}
+  table.items th:nth-child(1){width:3.2%!important}
+  table.items th:nth-child(2){width:10%!important}
+  table.items th:nth-child(3){width:auto!important;min-width:0!important}
+  table.items th:nth-child(4){width:6.6%!important}
+  table.items th:nth-child(5){width:6.2%!important}
+  table.items th:nth-child(7){width:12.8%!important}
+  table.items th:nth-child(8){width:11.4%!important}
+  table.items th:nth-child(9){width:8.5%!important}
+  table.items th:nth-child(10){width:11.8%!important}
   /* figures must never wrap or clip */
   table.items td.num,table.items td.center,
   table.items td.num .cell-print{white-space:nowrap}
   table.items .row-gross,table.items .row-total,table.items .sell-price{white-space:nowrap}
   table.items th{padding:5px 5px;font-size:10.5px;letter-spacing:0;white-space:nowrap}
-  table.items td{padding:2px 6px;border:1px solid #c6d0e0}
+  table.items td{padding:2px 4px;border:1px solid #c6d0e0}
   table.items input{padding:1px 4px;font-size:12px}
   table.items tr{break-inside:avoid;page-break-inside:avoid}
   table.items input,.field input,.field textarea,.trow input,.trow select{border-color:transparent!important;background:transparent!important;box-shadow:none!important;-webkit-appearance:none!important;appearance:none!important}
@@ -2248,7 +2256,7 @@ body[data-view="settings"] .live-bg,body[data-view="contact"] .live-bg{--dim:.72
             <th class="num no-print" style="width:80px">ราคาทุน</th>
             <th class="num" style="width:82px">ราคาขาย/หน่วย</th>
             <th class="num" style="width:88px">ราคารวม</th>
-            <th class="num" style="width:74px">ส่วนลด (%)</th>
+            <th class="num" style="width:124px">ส่วนลด</th>
             <th class="num" style="width:92px">ราคาสุทธิ</th>
             <th class="no-print" style="width:50px"></th>
           </tr>
@@ -2517,13 +2525,14 @@ function sellPrice(it){
 }
 function lineGross(it){ return (parseFloat(it.qty)||0) * sellPrice(it); }
 // A plain number in the line discount cell is a percentage ("10" = 10%).
-// A baht amount is still possible with a baht suffix ("500บ" / "500บาท").
+// A baht amount: pick บาท in the row's selector, or type a baht suffix ("500บ" / "500บาท").
 // Never more than the line itself.
 function parseDisc(it){
   const raw = String(it.disc ?? '').trim();
-  const baht = /(บาท|บ\.?|฿)$/.test(raw);
+  const sufBaht = /(บาท|บ\.?|฿)$/.test(raw), sufPct = /%$/.test(raw);
   const n = parseFloat(raw.replace(/(บาท|บ\.?|฿|%)$/,'').replace(/,/g,''));
-  return { n: isNaN(n) || n <= 0 ? 0 : n, baht };
+  // a typed suffix wins; otherwise the row's % / บาท selector decides
+  return { n: isNaN(n) || n <= 0 ? 0 : n, baht: sufBaht || (!sufPct && it.discType === 'baht') };
 }
 function lineDiscount(it){
   const { n, baht } = parseDisc(it);
@@ -2535,7 +2544,7 @@ function lineNet(it){ return lineGross(it) - lineDiscount(it); }
 function discLabel(it){
   if(!lineDiscount(it)) return '';
   const { n, baht } = parseDisc(it);
-  return baht ? fmt(lineDiscount(it)) : n.toLocaleString('th-TH',{maximumFractionDigits:2}) + '%';
+  return baht ? fmt(lineDiscount(it)) + ' บ' : n.toLocaleString('th-TH',{maximumFractionDigits:2}) + '%';
 }
 // kept as the "what this line contributes" figure used by the totals
 function rowTotal(it){ return lineNet(it); }
@@ -2736,7 +2745,7 @@ function renderItems(){
       ${costCell}
       ${sellCell}
       <td class="num row-gross">${priced ? fmt(lineGross(it)) : ''}</td>
-      <td class="num"><input class="num cell-in" type="text" inputmode="decimal" placeholder="0" value="${escapeHtml(String(it.disc ?? ''))}" oninput="updateItem(${i},'disc',this.value)"><span class="cell-print">${escapeHtml(discLabel(it))}</span></td>
+      <td class="num"><div class="disc-stack"><input class="num cell-in" type="text" inputmode="decimal" placeholder="0" value="${escapeHtml(String(it.disc ?? ''))}" oninput="updateItem(${i},'disc',this.value)"><select class="disc-type no-print" title="ส่วนลดเป็น % หรือเป็นบาท" onchange="setDiscType(${i},this.value)"><option value="pct"${parseDisc(it).baht ? '' : ' selected'}>%</option><option value="baht"${parseDisc(it).baht ? ' selected' : ''}>บาท</option></select></div><span class="cell-print">${escapeHtml(discLabel(it))}</span></td>
       <td class="row-total">${priced ? fmt(lineNet(it)) : ''}</td>
       <td class="no-print center row-actions">
         <button class="ins-btn" onclick="insertRowAfter(${i})" title="แทรกแถวใหม่ใต้แถวนี้">+</button>
@@ -2749,11 +2758,31 @@ function renderItems(){
 
 function updateItem(i,field,val){
   items[i][field] = val;
-  if(field === 'disc') items[i].discAuto = false;   // typed by hand
+  if(field === 'disc'){
+    items[i].discAuto = false;                       // typed by hand
+    const raw = String(val).trim();
+    if(/(บาท|บ\.?|฿)$/.test(raw)) items[i].discType = 'baht';
+    else if(/%$/.test(raw)) items[i].discType = 'pct';
+    const sel = document.getElementById('itemsBody').children[i]?.querySelector('.disc-type');
+    if(sel) sel.value = items[i].discType === 'baht' ? 'baht' : 'pct';
+  }
   if(field === 'name') autoFillSku(i);
   renderRowValuesOnly(i);
+  recalc();                                          // recalc() saves
+}
+
+// The % / บาท selector beside a line's discount. A suffix typed earlier ("500บ")
+// is stripped so the selector and the number can never disagree.
+function setDiscType(i,type){
+  const it = items[i];
+  it.discType = type === 'baht' ? 'baht' : 'pct';
+  it.discAuto = false;
+  it.disc = String(it.disc ?? '').replace(/\s*(บาท|บ\.?|฿|%)\s*$/,'');
+  const row = document.getElementById('itemsBody').children[i];
+  const inp = row && row.querySelector('.cell-in.num[placeholder="0"]');
+  if(inp) inp.value = it.disc;
+  renderRowValuesOnly(i);
   recalc();
-  save();
 }
 
 // The 1.7 category carries its own 15% off, written into the discount cell
@@ -2762,7 +2791,7 @@ function updateItem(i,field,val){
 function setCat(i,cat){
   const it = items[i];
   it.cat = cat;
-  if(cat === 'alt'){ it.disc = String(ALT_DISCOUNT*100); it.discAuto = true; }
+  if(cat === 'alt'){ it.disc = String(ALT_DISCOUNT*100); it.discType = 'pct'; it.discAuto = true; }
   else if(it.discAuto){ it.disc = ''; it.discAuto = false; }
   renderItems();
   recalc();
@@ -3824,7 +3853,7 @@ function mountLiveBg(){
     ctx.globalCompositeOperation = 'source-over';
   }
 
-  let raf = 0, last = 0, ax = 0, ay = 0, wroteHolder = '', wroteGfx = '';
+  let raf = 0, last = 0, ax = 0, ay = 0, wroteHolder = '', wroteGfx = '', idled = false;
   function tick(now){
     raf = requestAnimationFrame(tick);
     const dt = Math.min(.1, Math.max(.001, (now - last) / 1000)); last = now; clock += dt;
@@ -3832,6 +3861,9 @@ function mountLiveBg(){
     if(ema > .034 && quality > .4) quality = .4;                 // slow device: fewer particles
     if(ema < .022 && quality < 1) quality = Math.min(1, quality + .002);
     const m = prefs.motion, calm = document.body.dataset.view === 'quote';
+    // typing a quotation: no particles, no parallax, no per-frame work at all
+    if(calm){ if(!idled){ idled = true; if(ctx) ctx.clearRect(0, 0, cvs.width, cvs.height); } return; }
+    idled = false;
 
     if(cur >= 0 && !busy && scenes.length > 1){
       sceneT += dt;
