@@ -71,8 +71,35 @@ table.pair td+td{padding:0 0 0 6px}
 #msg{min-height:22px;font:bold 14px "Courier New",Courier,monospace;margin:8px 0}
 #msg:empty{display:none}
 .foot{margin-top:18px;padding-top:10px;border-top:1px solid #444;font:12px "Courier New",Courier,monospace;color:#8a8a8a;letter-spacing:1px}
+/* quick jump strip */
+.jump{overflow:hidden;margin:-4px 0 6px;font:bold 12px/1 "Courier New",Courier,monospace;letter-spacing:1px}
+.jump a{float:left;width:20%;text-align:center;text-decoration:none;border:1px solid #555;border-left-width:0;padding:10px 0;color:#fff;background:#000}
+.jump a:first-child{border-left-width:1px}
+.jump a span{display:block;font:11px Tahoma,Thonburi,"Noto Sans Thai",sans-serif;letter-spacing:0;margin-top:4px;color:#bdbdbd}
+/* collapsible shop card */
+.sum{font-size:14px;color:#d6d6d6;line-height:1.5}
+.sum b{color:#fff}
+.box .tog{position:absolute;top:-14px;right:36px;background:#000;color:#fff;border:1px solid #fff;font:bold 12px Tahoma,Thonburi,"Noto Sans Thai",sans-serif;padding:3px 10px;min-height:26px;cursor:pointer}
+/* quantity stepper */
+table.step{width:100%;table-layout:fixed;border-collapse:collapse}
+table.step td{padding:0}
+table.step td.b{width:44px}
+table.step button{display:block;width:44px;height:46px;background:#fff;color:#000;border:1px solid #fff;font:bold 22px/1 Tahoma,sans-serif;padding:0;cursor:pointer;border-radius:0}
+table.step button:active{background:#000;color:#fff}
+table.step input{text-align:center;border-left:0;border-right:0}
+/* always-visible total + print */
+#bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:#fff;color:#000;border-top:2px solid #000}
+#bar .in{max-width:720px;margin:0 auto;padding:6px 12px;overflow:hidden}
+#bar .t{float:left;line-height:1.15;padding-top:2px}
+#bar .t small{display:block;font-size:12px}
+#bar .t b{font:bold 22px "Courier New",Courier,monospace;letter-spacing:.5px}
+#bar .btn{float:right;width:auto;min-height:44px;margin:0;padding:8px 16px;background:#000;color:#fff;border-color:#000}
+body.typing #bar{display:none}
+body{padding-bottom:70px}
 #sheet{display:none}
 @media print{
+  #bar{display:none!important}
+  body{padding-bottom:0}
   @page{size:A4;margin:9mm}
   html,body{background:#fff}
   .wrap{display:none!important}
@@ -119,9 +146,13 @@ table.pair td+td{padding:0 0 0 6px}
     <div class="stat">STATUS <b>READY</b> · MODE <b>MONO</b> · DATA <b>ON DEVICE</b></div>
     <div class="links"><a href="quotation.html">เวอร์ชันเต็ม</a><a href="guide.html">วิธีใช้</a></div>
   </div>
+  <div class="jump"><a href="#sec1">01<span>ร้าน</span></a><a href="#sec2">02<span>ลูกค้า</span></a><a href="#sec3">03<span>รายการ</span></a><a href="#sec4">04<span>ยอดรวม</span></a><a href="#sec5">05<span>ลงชื่อ</span></a></div>
 
-  <div class="box">
+  <div class="box" id="sec1">
     <h2><span class="no">01</span>ข้อมูลร้าน <small>ตั้งครั้งเดียว</small></h2>
+    <button type="button" class="tog" id="shopTog" onclick="toggleShop()">แก้ไข</button>
+    <div class="sum" id="shopSum"></div>
+    <div id="shopBody">
     <label for="sBrand">ชื่อร้าน (หัวใบ)</label><input type="text" id="sBrand">
     <label for="sTag">คำโปรย</label><input type="text" id="sTag">
     <label for="sLegal">ชื่อนิติบุคคล (ตามใบกำกับภาษี)</label><input type="text" id="sLegal">
@@ -131,9 +162,10 @@ table.pair td+td{padding:0 0 0 6px}
       <td><label for="sBranch">สาขาที่</label><input type="text" id="sBranch" inputmode="numeric"></td>
       <td><label for="sPhone">เบอร์โทร</label><input type="text" id="sPhone" inputmode="tel"></td>
     </tr></table>
+    </div>
   </div>
 
-  <div class="box">
+  <div class="box" id="sec2">
     <h2><span class="no">02</span>ลูกค้าและเอกสาร</h2>
     <label for="cName">ชื่อลูกค้า</label><input type="text" id="cName" placeholder="ชื่อ-นามสกุล / ชื่อร้าน">
     <table class="pair"><tr>
@@ -147,7 +179,7 @@ table.pair td+td{padding:0 0 0 6px}
     <label for="dValid">ยืนราคา (วัน)</label><input type="text" id="dValid" inputmode="numeric">
   </div>
 
-  <div class="box">
+  <div class="box" id="sec3">
     <h2><span class="no">03</span>รายการสินค้า</h2>
     <label for="paste">วางข้อความราคา บรรทัดละ 1 รายการ (เช่น โช๊คอัพหน้า TOKICO ราคา 1480)</label>
     <textarea id="paste" placeholder="วางข้อความที่นี่"></textarea>
@@ -158,7 +190,7 @@ table.pair td+td{padding:0 0 0 6px}
     <p class="note">ราคาทุนใช้คำนวณในเครื่องเท่านั้น ไม่พิมพ์ลงใบเสนอราคา หมวด &quot;ปกติ&quot; = ทุน × 1.5 &nbsp; &quot;+7% ×1.7 −15%&quot; = (ทุน × 1.07) × 1.7 แล้วลด 15%</p>
   </div>
 
-  <div class="box">
+  <div class="box" id="sec4">
     <h2><span class="no">04</span>ส่วนลด ภาษี ยอดรวม</h2>
     <label class="chk"><input type="checkbox" id="discOn" onclick="recalc()">ส่วนลดเพิ่มเติม (ทั้งบิล)</label>
     <table class="pair"><tr>
@@ -178,7 +210,7 @@ table.pair td+td{padding:0 0 0 6px}
     <div class="say" id="tSay"></div>
   </div>
 
-  <div class="box">
+  <div class="box" id="sec5">
     <h2><span class="no">05</span>ลงชื่อและหมายเหตุ</h2>
     <label for="apr">ชื่อผู้ประเมินราคา</label><input type="text" id="apr">
     <label for="apv">ชื่อผู้อนุมัติ</label><input type="text" id="apv">
@@ -190,6 +222,8 @@ table.pair td+td{padding:0 0 0 6px}
   <p class="note">ข้อมูลเก็บในเครื่องนี้เท่านั้น ถ้าล้างข้อมูลเบราว์เซอร์ ข้อมูลจะหาย</p>
   <div class="foot">AUTO 1 // LITE · PRINT A4 B/W · NO NETWORK NEEDED</div>
 </div>
+
+<div id="bar"><div class="in"><div class="t"><small id="bCount">0 รายการ · ยอดรวมสุทธิ</small><b id="bGrand">0.00</b></div><button type="button" class="btn" onclick="doPrint()">พิมพ์ A4</button></div></div>
 
 <div id="sheet"></div>
 
@@ -362,6 +396,7 @@ function parsePaste(){
   box.value = '';
   $('msg').innerHTML = added ? 'เพิ่ม ' + added + ' รายการแล้ว' : 'ไม่พบรายการที่แยกได้ ลองตรวจข้อความอีกครั้ง';
   renderRows(); recalc();
+  if(added && $('rows').scrollIntoView) $('rows').scrollIntoView(true);
 }
 
 /* ---- rows ---- */
@@ -381,7 +416,9 @@ function rowHtml(it, i){
   return '<div class="it"><div class="hd"><b>ITEM ' + (i < 9 ? '0' : '') + (i + 1) + '</b><button type="button" class="btn w s" onclick="delRow(' + i + ')">ลบ</button></div>' +
     '<label>ชื่อสินค้า/อะไหล่</label><input type="text" value="' + esc(it.name) + '" oninput="U(' + i + ',\'name\',this.value)">' +
     '<table class="pair"><tr><td><label>รหัส SKU</label><input type="text" id="k' + i + '" inputmode="numeric" value="' + esc(it.sku) + '" oninput="U(' + i + ',\'sku\',this.value)"></td>' +
-    '<td><label>จำนวน</label><input type="text" inputmode="numeric" value="' + esc(it.qty) + '" oninput="U(' + i + ',\'qty\',this.value)"></td></tr></table>' +
+    '<td><label>จำนวน</label><table class="step"><tr><td class="b"><button type="button" aria-label="ลดจำนวน" onclick="stepQty(' + i + ',-1)">−</button></td>' +
+    '<td><input type="text" id="q' + i + '" inputmode="numeric" value="' + esc(it.qty) + '" oninput="U(' + i + ',\'qty\',this.value)"></td>' +
+    '<td class="b"><button type="button" aria-label="เพิ่มจำนวน" onclick="stepQty(' + i + ',1)">+</button></td></tr></table></td></tr></table>' +
     '<table class="pair"><tr><td><label>หน่วย</label><input type="text" value="' + esc(it.unit) + '" oninput="U(' + i + ',\'unit\',this.value)"></td>' +
     '<td><label>หมวดราคา</label><select onchange="setCat(' + i + ',this.value)">' + catOpts(it.cat) + '</select></td></tr></table>' +
     '<label>' + (it.cat === 'direct' ? 'ราคาขาย/หน่วย' : 'ราคาทุน') + '</label><input type="text" inputmode="decimal" value="' + esc(it.cost) + '" oninput="U(' + i + ',\'cost\',this.value)">' +
@@ -395,7 +432,30 @@ function renderRows(){
   $('rows').innerHTML = s || '<p class="note">ยังไม่มีรายการ วางข้อความราคาด้านบน หรือกด + เพิ่มรายการ</p>';
 }
 function addRow(){ items.push(blankItem()); renderRows(); recalc(); }
-function delRow(i){ items.splice(i, 1); renderRows(); recalc(); }
+function delRow(i){
+  if(items[i] && items[i].name && !window.confirm('ลบรายการ "' + items[i].name + '"?')) return;
+  items.splice(i, 1); renderRows(); recalc();
+}
+function stepQty(i, d){
+  var q = Math.max(0, Math.round(num(items[i].qty)) + d);
+  var el = $('q' + i); if(el) el.value = String(q);
+  U(i, 'qty', String(q));
+}
+/* shop card: folded to one summary line once it is filled in */
+var shopOpen = false;
+function shopSummary(){
+  var t = '<b>' + esc($('sBrand').value || '—') + '</b>';
+  if($('sLegal').value) t += '<br>' + esc($('sLegal').value);
+  if($('sBranch').value) t += ' · สาขา ' + esc($('sBranch').value);
+  $('shopSum').innerHTML = t;
+}
+function toggleShop(force){
+  shopOpen = force === undefined ? !shopOpen : force;
+  $('shopBody').style.display = shopOpen ? 'block' : 'none';
+  $('shopSum').style.display = shopOpen ? 'none' : 'block';
+  $('shopTog').innerHTML = shopOpen ? 'ซ่อน' : 'แก้ไข';
+  if(!shopOpen) shopSummary();
+}
 function U(i, f, v){
   var it = items[i]; it[f] = v;
   if(f === 'disc'){
@@ -441,6 +501,7 @@ function recalc(){
   $('tSub').innerHTML = fmt(sub); $('tLine').innerHTML = fmt(line); $('tExtra').innerHTML = fmt(extra);
   $('tAfter').innerHTML = fmt(after); $('tVat').innerHTML = fmt(T.vat); $('tGrand').innerHTML = fmt(T.grand);
   $('tSay').innerHTML = '(' + bahtText(T.grand) + ')';
+  $('bGrand').innerHTML = fmt(T.grand); $('bCount').innerHTML = items.length + ' รายการ · ยอดรวมสุทธิ';
   scheduleSave();
 }
 
@@ -539,7 +600,13 @@ function wire(){
   for(var i = 0; i < FIELDS.length; i++){ var el = $(FIELDS[i]); if(FIELDS[i] !== 'discVal'){ el.oninput = scheduleSave; } }
   $('showTot').onclick = recalc;
 }
+function typing(on){ var c = document.body.className.replace(/\s*typing/g, ''); document.body.className = on ? c + ' typing' : c; }
+if(document.addEventListener){
+  document.addEventListener('focus', function(e){ var t = e.target && e.target.tagName; if(t === 'INPUT' || t === 'TEXTAREA') typing(true); }, true);
+  document.addEventListener('blur', function(e){ var t = e.target && e.target.tagName; if(t === 'INPUT' || t === 'TEXTAREA') typing(false); }, true);
+}
 buildSkuIndex(); load(); wire(); renderRows(); recalc(); buildSheet();
+toggleShop(!($('sBrand').value && $('sLegal').value));
 </script>
 </body>
 </html>
