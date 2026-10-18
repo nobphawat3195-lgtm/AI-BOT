@@ -1788,15 +1788,19 @@ body[data-view="quote"] .live-bg *,body[data-view="quote"] .live-bg *::before{an
   .photo-box.has-photo{width:230px;height:140px;border-radius:6px}
 
   /* ── item table: wider discount column, and letters sized to the number of rows so the sheet is used ── */
-  table.items th:nth-child(1){width:3.2%!important}
-  table.items th:nth-child(2){width:12%!important}
+  /* numbers need far less room than names: the money columns are trimmed so SKU and description get it */
+  table.items th:nth-child(1){width:3%!important}
+  table.items th:nth-child(2){width:13%!important}
   table.items th:nth-child(3){width:auto!important;min-width:0!important}
-  table.items th:nth-child(4){width:6.6%!important}
-  table.items th:nth-child(5){width:6.6%!important}
-  table.items th:nth-child(7){width:12.6%!important}
-  table.items th:nth-child(8){width:11.6%!important}
-  table.items th:nth-child(9){width:10%!important}
-  table.items th:nth-child(10){width:12%!important}
+  table.items th:nth-child(4){width:5.6%!important}
+  table.items th:nth-child(5){width:5.6%!important}
+  table.items th:nth-child(7){width:11%!important}
+  table.items th:nth-child(8){width:10.5%!important}
+  table.items th:nth-child(9){width:8.5%!important}
+  table.items th:nth-child(10){width:11%!important}
+  html[data-psize="xl"] table.items td.num,html[data-psize="xl"] table.items td.row-total{font-size:13.5px}
+  table.items th{white-space:normal!important;line-height:1.2;font-size:11px!important;padding-left:2px!important;padding-right:2px!important}
+  html[data-psize="lg"] table.items td.num,html[data-psize="lg"] table.items td.row-total{font-size:13px}
   table.items td:nth-child(2) .cell-print{white-space:nowrap}
   html[data-psize="xl"] table.items{font-size:14.5px}
   html[data-psize="xl"] table.items td{padding:10px 5px}
@@ -2304,7 +2308,7 @@ body[data-view="quote"] .live-bg *,body[data-view="quote"] .live-bg *::before{an
         <thead>
           <tr>
             <th style="width:26px">#</th>
-            <th class="center" style="width:100px">SKU</th>
+            <th class="center" style="width:128px">SKU</th>
             <th>รายการสินค้า</th>
             <th class="center" style="width:56px">จำนวน</th>
             <th class="center" style="width:58px">หน่วย</th>
