@@ -114,13 +114,16 @@ body{padding-bottom:70px}
   #sheet .pc{margin:8px 0;padding:6px 8px;border:1px solid #000;font-size:14px}
   #sheet table.pi{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}
   #sheet table.pi th,#sheet table.pi td{border:1px solid #000;padding:2px 4px;vertical-align:middle;overflow:hidden}
-  #sheet table.pi th{font-size:10.5px;font-weight:bold;background:#fff;border-bottom:2px solid #000}
+  #sheet table.pi th{font-size:10.5px;font-weight:bold;background:#fff;border-bottom:2px solid #000;line-height:1.2}
+  #sheet table.pi th{padding-left:2px!important;padding-right:2px!important}
+  #sheet.xl table.pi th,#sheet.lg table.pi th{font-size:11px!important}
   #sheet table.pi td.c{text-align:center}
   #sheet table.pi td.n{text-align:right;white-space:nowrap}
   #sheet table.pi td.k{white-space:nowrap}
   #sheet table.pi tr{page-break-inside:avoid}
   #sheet.xl table.pi{font-size:14.5px} #sheet.xl table.pi td{padding:10px 5px} #sheet.xl table.pi th{font-size:11.5px;padding:8px 3px}
   #sheet.lg table.pi{font-size:14px} #sheet.lg table.pi td{padding:6px 5px} #sheet.lg table.pi th{font-size:11.5px;padding:7px 3px}
+  #sheet.xl table.pi td.n{font-size:13.5px} #sheet.lg table.pi td.n{font-size:13px}
   #sheet.md table.pi{font-size:13px} #sheet.md table.pi td{padding:3.5px 4px}
   #sheet .tw{width:46%;margin:8px 0 0 54%;border:1px solid #000;page-break-inside:avoid}
   #sheet .tw div{overflow:hidden;padding:3px 8px;border-bottom:1px solid #000}
@@ -518,8 +521,8 @@ function buildSheet(){
     '</div></div><div class="pr"><div class="pt">ใบเสนอราคา</div><div>QUOTATION</div><div>เลขที่ ' + esc($('dNo').value) + '</div><div>วันที่ ' + esc($('dDate').value) +
     '</div><div>ยืนราคา ' + esc($('dValid').value) + ' วัน</div></div></div>';
   h += '<div class="pc"><b>ลูกค้า:</b> ' + esc($('cName').value) + ' &nbsp; <b>โทร:</b> ' + esc($('cPhone').value) + ' &nbsp; <b>รถ:</b> ' + esc($('cCar').value) + '</div>';
-  h += '<table class="pi"><thead><tr><th style="width:4%">#</th><th style="width:12%">SKU</th><th>รายการสินค้า</th><th style="width:7%">จำนวน</th><th style="width:7%">หน่วย</th>' +
-    '<th style="width:12.5%">ราคาขาย/หน่วย</th><th style="width:11.5%">ราคารวม</th><th style="width:10%">ส่วนลด</th><th style="width:12%">ราคาสุทธิ</th></tr></thead><tbody>';
+  h += '<table class="pi"><thead><tr><th style="width:3%">#</th><th style="width:13%">SKU</th><th>รายการสินค้า</th><th style="width:5.6%">จำนวน</th><th style="width:5.6%">หน่วย</th>' +
+    '<th style="width:11%">ราคาขาย/หน่วย</th><th style="width:10.5%">ราคารวม</th><th style="width:8.5%">ส่วนลด</th><th style="width:11%">ราคาสุทธิ</th></tr></thead><tbody>';
   for(var i = 0; i < n; i++){
     var it = items[i], p = hasPrice(it);
     h += '<tr><td class="c">' + (i + 1) + '</td><td class="c k">' + esc(it.sku) + '</td><td>' + esc(it.name) + '</td><td class="c">' + esc(it.qty) + '</td><td class="c">' + esc(it.unit) +
