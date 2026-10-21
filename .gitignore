@@ -1,0 +1,28 @@
+# virtual environments
+.venv/
+venv/
+env/
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# secrets — never commit a real token
+.env
+*.env
+!.env.example
+
+# runtime state
+*.db
+*.sqlite
+*.sqlite3
+best_params.json
+nohup.out
+*.log
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
