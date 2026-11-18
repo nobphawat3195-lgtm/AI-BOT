@@ -6,21 +6,18 @@
 <title>วิธีใช้งานใบเสนอราคา AUTO 1</title>
 <meta name="description" content="วิดีโอสั้น 8 ขั้นตอน สอนใช้ระบบใบเสนอราคา AUTO 1 ตั้งแต่วางราคา คิดส่วนลด VAT จนพิมพ์ A4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#050b18;--bg2:#091428;--card:#0c1a33;--line:rgba(150,185,255,.16);
-  --ink:#eef4ff;--sub:#a6b6d0;--blue:#3d7bff;--blue2:#1e4fd8;--ice:#cfe3ff;--gold:#ffc84a;--ok:#35d49a;
-  --font:'Kanit','Sarabun',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --bg:#f4f6fb;--bg2:#fff;--card:#fff;--line:#e2e8f0;
+  --ink:#0f172a;--sub:#52627a;--blue:#1d4ed8;--blue2:#1e40af;--ice:#1e293b;--gold:#b45309;--ok:#059669;
+  --font:'IBM Plex Sans Thai','Noto Sans Thai','Sarabun','Leelawadee UI','Thonburi',Tahoma,sans-serif;
 }
 *{box-sizing:border-box;margin:0}
 html{-webkit-text-size-adjust:100%}
 body{
   font-family:var(--font);color:var(--ink);line-height:1.6;min-height:100vh;
-  background:
-    radial-gradient(900px 520px at 80% -6%,rgba(46,107,255,.28),transparent 62%),
-    radial-gradient(700px 480px at 6% 40%,rgba(30,79,216,.18),transparent 64%),
-    linear-gradient(180deg,#07122a 0%,#050b18 60%,#030710 100%);
+  background:#f4f6fb;
   background-color:var(--bg);
 }
 a{color:inherit}
@@ -28,46 +25,46 @@ a{color:inherit}
 
 /* top bar */
 .top{display:flex;align-items:center;gap:14px;padding:16px 0;flex-wrap:wrap}
-.logo{width:42px;height:42px;border-radius:11px;background:linear-gradient(145deg,#ffd45e,#f2a900);color:#0a1630;display:grid;place-items:center;font-weight:700;font-size:13px;letter-spacing:-.5px;box-shadow:0 6px 18px rgba(255,190,50,.25)}
-.brand b{display:block;font-size:17px;letter-spacing:.5px}
-.brand span{display:block;font-size:10.5px;letter-spacing:2.4px;color:#7f9dcb;text-transform:uppercase}
+.logo{width:42px;height:42px;border-radius:11px;background:#1d4ed8;color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;letter-spacing:-.5px}
+.brand b{display:block;font-size:17px}
+.brand span{display:block;font-size:12px;color:#64748b}
 .sp{flex:1}
-.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font);font-size:14px;font-weight:500;text-decoration:none;color:#06101f;
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font);font-size:14px;font-weight:600;text-decoration:none;color:#fff;
   padding:10px 18px;border-radius:11px;border:0;cursor:pointer;
-  background:linear-gradient(180deg,#f7fbff,#c9d8ee);box-shadow:0 8px 22px rgba(60,120,255,.22),inset 0 0 0 1px rgba(255,255,255,.5)}
+  background:#1d4ed8;box-shadow:0 8px 18px rgba(29,78,216,.22)}
 .btn:hover{filter:brightness(1.06)}
-.btn.ghost{background:rgba(14,28,54,.8);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
 .btn:focus-visible,.bar:focus-visible,.cbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
 h1{font-size:clamp(26px,4.6vw,44px);line-height:1.15;font-weight:600;margin:8px 0 8px}
-h1 em{font-style:normal;background:linear-gradient(90deg,#8fb8ff,#ffd27a);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1 em{font-style:normal;color:#1d4ed8}
 .lead{color:var(--sub);max-width:640px;font-size:15.5px}
 
 /* ── the reel ── */
-.reel{margin:22px 0 10px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(14,28,54,.92),rgba(7,15,32,.92));
-  box-shadow:0 30px 80px rgba(0,0,0,.45);overflow:hidden}
+.reel{margin:22px 0 10px;border-radius:22px;border:1px solid var(--line);background:#fff;
+  box-shadow:0 16px 40px rgba(15,23,42,.06);overflow:hidden}
 .bars{display:flex;gap:5px;padding:14px 16px 0}
 .bar{flex:1;height:22px;border:0;background:none;cursor:pointer;padding:9px 0}
-.bar i{display:block;height:4px;border-radius:4px;background:rgba(160,190,240,.22);position:relative;overflow:hidden}
-.bar i::after{content:'';position:absolute;inset:0;width:0;background:linear-gradient(90deg,#4f8bff,#ffd27a);border-radius:4px}
+.bar i{display:block;height:4px;border-radius:4px;background:#e2e8f0;position:relative;overflow:hidden}
+.bar i::after{content:'';position:absolute;inset:0;width:0;background:#1d4ed8;border-radius:4px}
 .bar.done i::after{width:100%}
 .bar.on i::after{animation:fill var(--dur,8s) linear forwards}
 @keyframes fill{to{width:100%}}
 .stage{position:relative;min-height:430px}
 .scene{display:none;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:26px;align-items:center;padding:18px 26px 22px}
 .scene.on{display:grid}
-.cap .no{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
+.cap .no{display:inline-block;font-size:12px;letter-spacing:.04em;color:var(--gold);margin-bottom:6px}
 .cap h2{font-size:clamp(21px,3vw,29px);font-weight:600;line-height:1.25;margin-bottom:10px}
-.cap p{color:#c8d4ea;font-size:15.5px}
-.cap p b{color:#fff;font-weight:600}
-.tip{margin-top:14px;padding:10px 13px;border-radius:12px;background:rgba(255,200,74,.08);border:1px solid rgba(255,200,74,.28);color:#ffe3a1;font-size:13.5px}
+.cap p{color:#334155;font-size:15.5px}
+.cap p b{color:#0f172a;font-weight:600}
+.tip{margin-top:14px;padding:10px 13px;border-radius:12px;background:#fffbeb;border:1px solid #f5e0a8;color:#92400e;font-size:13.5px}
 .cap .pop{animation:none}
 .scene.on .cap>*{animation:capin .7s cubic-bezier(.22,1,.36,1) both}
 .scene.on .cap>*:nth-child(2){animation-delay:.08s}.scene.on .cap>*:nth-child(3){animation-delay:.16s}.scene.on .cap>*:nth-child(4){animation-delay:.24s}
 @keyframes capin{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
 
 .ctrl{display:flex;align-items:center;gap:8px;padding:0 16px 16px}
-.cbtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(14,28,54,.9);color:var(--ink);cursor:pointer;display:grid;place-items:center}
+.cbtn{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;display:grid;place-items:center}
 .cbtn:hover{background:rgba(40,75,150,.5)}
 .cbtn svg{width:18px;height:18px;fill:currentColor}
 .count{margin-left:auto;font-size:13px;color:var(--sub)}
@@ -168,21 +165,21 @@ h1 em{font-style:normal;background:linear-gradient(90deg,#8fb8ff,#ffd27a);-webki
 /* ── written guide ── */
 h3.sec{font-size:clamp(21px,3vw,27px);font-weight:600;margin:46px 0 14px}
 .steps{display:grid;gap:12px;counter-reset:s;list-style:none;padding:0}
-.steps li{counter-increment:s;display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px 18px;border-radius:16px;border:1px solid var(--line);background:rgba(10,22,44,.78)}
-.steps li::before{content:counter(s);width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:600;color:#06101f;background:linear-gradient(145deg,#ffd45e,#f2a900)}
+.steps li{counter-increment:s;display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px 18px;border-radius:16px;border:1px solid var(--line);background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.steps li::before{content:counter(s);width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:600;color:#fff;background:#1d4ed8}
 .steps b{display:block;font-size:17px;margin-bottom:2px}
-.steps p,.steps ul{color:#c0cde4;font-size:15px}
+.steps p,.steps ul{color:#334155;font-size:15px}
 .steps ul{padding-left:18px;margin-top:4px}
-.steps code,.faq code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:rgba(61,123,255,.16);border:1px solid rgba(120,170,255,.3);padding:1px 6px;border-radius:6px;color:#dbe8ff}
+.steps code,.faq code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#eef3ff;border:1px solid #d5e2ff;padding:1px 6px;border-radius:6px;color:#1e3a8a}
 .faq{display:grid;gap:10px}
-.faq details{border-radius:14px;border:1px solid var(--line);background:rgba(10,22,44,.78);padding:2px 16px}
+.faq details{border-radius:14px;border:1px solid var(--line);background:#fff;padding:2px 16px}
 .faq summary{cursor:pointer;padding:13px 0;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:10px}
 .faq summary::after{content:'+';color:var(--gold);font-size:20px;line-height:1}
 .faq details[open] summary::after{content:'−'}
-.faq p{color:#c0cde4;font-size:15px;padding:0 0 14px}
+.faq p{color:#334155;font-size:15px;padding:0 0 14px}
 .eg{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
 .eg th,.eg td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}
-.eg th{color:#9db4dc;font-weight:500}.eg td:last-child,.eg th:last-child{text-align:right}
+.eg th{color:#475569;font-weight:500}.eg td:last-child,.eg th:last-child{text-align:right}
 .eg-wrap{overflow-x:auto}
 footer{margin:44px 0 36px;padding-top:20px;border-top:1px solid var(--line);display:flex;gap:12px;flex-wrap:wrap;align-items:center;color:var(--sub);font-size:13.5px}
 
@@ -210,7 +207,7 @@ footer{margin:44px 0 36px;padding-top:20px;border-top:1px solid var(--line);disp
 <div class="wrap">
   <header class="top">
     <div class="logo">AUTO<br>1</div>
-    <div class="brand"><b>AUTO 1</b><span>Quotation guide</span></div>
+    <div class="brand"><b>AUTO 1</b><span>คู่มือใบเสนอราคา</span></div>
     <div class="sp"></div>
     <a class="btn" href="quotation.html">เปิดระบบใบเสนอราคา →</a>
   </header>
@@ -228,7 +225,7 @@ footer{margin:44px 0 36px;padding-top:20px;border-top:1px solid var(--line);disp
           <span class="no">ขั้นที่ 1 / 8</span>
           <h2>เปิดเว็บ แล้วกด “+ สร้างใบเสนอราคา”</h2>
           <p>จากหน้าแรกกดปุ่ม <b>+ สร้างใบเสนอราคา</b> หรือเลือกเมนู <b>ใบเสนอราคา</b> ด้านบน ระบบจะเปิดแบบฟอร์มเปล่า พร้อมเลขที่เอกสารและวันที่ให้ทันที</p>
-          <div class="tip">💡 เปิดจากมือถือ แท็บเล็ต หรือคอมก็ได้ ไม่ต้องติดตั้งโปรแกรม</div>
+          <div class="tip">💡 บนมือถือมีแถบเมนูลัดด้านล่างจอ และปุ่มสลับโหมดมืดอยู่มุมขวาบน เปิดจากแท็บเล็ตหรือคอมได้เหมือนกัน ไม่ต้องติดตั้งโปรแกรม</div>
         </div>
         <div class="screen"><div class="m" style="--x0:70%;--y0:18%;--x1:24%;--y1:72%">
           <div class="nav pop"><span class="lg">AUTO 1</span><span>หน้าแรก</span><span>บริการ</span><span class="hl">ใบเสนอราคา</span><span>ลูกค้า</span></div>
@@ -354,8 +351,8 @@ footer{margin:44px 0 36px;padding-top:20px;border-top:1px solid var(--line);disp
         <div class="cap">
           <span class="no">ขั้นที่ 7 / 8</span>
           <h2>พิมพ์ หรือบันทึกเป็น PDF</h2>
-          <p>กด <b>พิมพ์ / บันทึกเป็น PDF</b> ด้านบน ใบเสนอราคาจะพอดี <b>A4 หน้าเดียว</b> ในหน้าต่างพิมพ์เลือกเครื่องพิมพ์ หรือเลือกปลายทาง <b>บันทึกเป็น PDF</b> เพื่อส่งทาง LINE/อีเมล ก่อนพิมพ์อย่าลืมกรอกชื่อ <b>ผู้ประเมินราคา</b> และ <b>ผู้อนุมัติ</b></p>
-          <div class="tip">💡 การกดพิมพ์จะบันทึกใบนี้ลง “ประวัติใบเสนอราคา” ให้อัตโนมัติ</div>
+          <p>กด <b>พิมพ์ / บันทึกเป็น PDF</b> ด้านบน ใบเสนอราคาจะพอดี <b>A4 หน้าเดียว</b> ในหน้าต่างพิมพ์เลือกเครื่องพิมพ์ หรือเลือกปลายทาง <b>บันทึกเป็น PDF</b> เพื่อส่งทาง LINE/อีเมล บนมือถือแถบลอยด้านล่างแสดงยอดรวมและปุ่ม <b>พิมพ์ / PDF</b> ตลอด ไม่ต้องเลื่อนขึ้นไปหาปุ่ม ก่อนพิมพ์อย่าลืมกรอกชื่อ <b>ผู้ประเมินราคา</b> และ <b>ผู้อนุมัติ</b></p>
+          <div class="tip">💡 การกดพิมพ์จะบันทึกใบนี้ลง “ประวัติใบเสนอราคา” ให้อัตโนมัติ ขั้นตอนด้านบนของฟอร์ม (ลูกค้า → รายการ → ส่วนลดและ VAT → ตรวจและพิมพ์) กดแล้วเลื่อนไปจุดนั้นให้</div>
         </div>
         <div class="screen"><div class="m" style="--x0:92%;--y0:6%;--x1:68.4%;--y1:26.4%;padding:3.2cqw">
           <div class="pg">
@@ -409,7 +406,7 @@ footer{margin:44px 0 36px;padding-top:20px;border-top:1px solid var(--line);disp
 
   <h3 class="sec">อ่านเป็นข้อ ๆ</h3>
   <ol class="steps">
-    <li><div><b>เปิดแบบฟอร์มใบเสนอราคา</b><p>กด <code>+ สร้างใบเสนอราคา</code> ที่หน้าแรก หรือเมนู <code>ใบเสนอราคา</code> ระบบออกเลขที่เอกสารและวันที่ให้ (แก้ได้) พร้อมช่อง “ยืนราคา … วัน”</p></div></li>
+    <li><div><b>เปิดแบบฟอร์มใบเสนอราคา</b><p>กด <code>+ สร้างใบเสนอราคา</code> ที่หน้าแรก หรือเมนู <code>ใบเสนอราคา</code> บนมือถือกดแถบล่าง “ใบราคา” ได้เลย ระบบออกเลขที่เอกสารและวันที่ให้ (แก้ได้) พร้อมช่อง “ยืนราคา … วัน” จากนั้นเดินตามขั้น ลูกค้า → รายการ → ส่วนลดและ VAT → ตรวจและพิมพ์</p></div></li>
     <li><div><b>กรอกข้อมูลร้านและลูกค้า</b><ul><li>ร้านค้า: ชื่อนิติบุคคล ที่อยู่ เลขผู้เสียภาษี สาขา เบอร์โทร (ตั้งครั้งเดียว ระบบจำไว้)</li><li>ลูกค้า: ชื่อ เบอร์โทร รุ่นรถ/ทะเบียน และรูปรถ (ถ้ามี)</li><li>เปลี่ยนโลโก้ได้ที่ปุ่ม <code>🖼 เปลี่ยนโลโก้ร้าน</code></li></ul></div></li>
     <li><div><b>ใส่รายการสินค้า</b><p>วางข้อความราคาในกล่อง “วางข้อความราคาที่ได้มา” บรรทัดละ 1 รายการ แล้วกด <code>➕ แปลงเป็นรายการ</code> หรือกด <code>+ เพิ่มรายการ</code> แล้วพิมพ์เอง ใช้ช่อง “จำนวนต่อชิ้น (ทุกแถว)” เพื่อตั้งจำนวนพร้อมกันทั้งตาราง ถ้าชื่อสินค้าตรงกับคลังรหัส SKU ระบบเติมรหัสให้</p></div></li>
     <li><div><b>เลือกหมวดราคาและปรับราคา</b><p>ราคาขายคิดจากราคาทุน ปกติ ทุน × 1.5 หรือหมวด <code>+7% ×1.7 −15%</code> ซึ่งใส่ส่วนลด 15% ให้อัตโนมัติ แก้ราคาขายตรง ๆ ในช่องได้เช่นกัน</p>
@@ -418,7 +415,7 @@ footer{margin:44px 0 36px;padding-top:20px;border-top:1px solid var(--line);disp
         <tr><td>1,000</td><td>+7% ×1.7 −15%</td><td>1,819.00 (ลด 15%)</td><td>1,546.15</td></tr></tbody></table></div></div></li>
     <li><div><b>ใส่ส่วนลด</b><ul><li>รายแถว: พิมพ์ตัวเลขแล้วเลือก <code>%</code> หรือ <code>บาท</code> ที่กล่องข้างช่อง (หรือพิมพ์ <code>5%</code> / <code>500บ</code> ต่อท้ายเอง)</li><li>ทั้งบิล: ติ๊ก “ส่วนลดเพิ่มเติม” ใส่ตัวเลข แล้วเลือก <code>บาท</code> หรือ <code>%</code></li></ul></div></li>
     <li><div><b>เลือก VAT และการแสดงยอด</b><p>ติ๊ก “คิดภาษีมูลค่าเพิ่ม (VAT 7%)” ถ้าต้องบวกภาษีขาย ติ๊กออก “รวมราคาสุทธิ” ถ้าไม่ต้องการให้ยอดรวมขึ้นในใบที่พิมพ์</p></div></li>
-    <li><div><b>ตรวจ แล้วพิมพ์ / บันทึก PDF</b><p>กรอกชื่อผู้ประเมินราคาและผู้อนุมัติ ใส่หมายเหตุ (เช่น ยืนราคา 7 วัน) แล้วกด <code>พิมพ์ / บันทึกเป็น PDF</code> เลือกกระดาษ A4 ถ้าจะส่งไฟล์ ให้เลือกปลายทาง “บันทึกเป็น PDF” ปุ่ม <code>ล้างฟอร์ม</code> ใช้เริ่มใบใหม่</p></div></li>
+    <li><div><b>ตรวจ แล้วพิมพ์ / บันทึก PDF</b><p>กรอกชื่อผู้ประเมินราคาและผู้อนุมัติ ใส่หมายเหตุ (เช่น ยืนราคา 7 วัน) แล้วกด <code>พิมพ์ / บันทึกเป็น PDF</code> เลือกกระดาษ A4 ถ้าจะส่งไฟล์ ให้เลือกปลายทาง “บันทึกเป็น PDF” บนมือถือใช้แถบลอย <code>พิมพ์ / PDF</code> ได้เลย ปุ่ม <code>ล้างฟอร์ม</code> ใช้เริ่มใบใหม่ ถ้ายังไม่ใส่ชื่อลูกค้า ระบบจะเตือนแต่ยังพิมพ์ได้</p></div></li>
     <li><div><b>ดูย้อนหลังและตั้งค่า</b><p>เมนู <code>ประวัติใบเสนอราคา</code>, <code>จัดการลูกค้า</code>, <code>รายงาน</code> สรุปจากใบที่พิมพ์แล้ว ส่วน <code>ตั้งค่าระบบ</code> (เมนูผู้ใช้มุมขวาบน) ใช้แก้ข้อมูลร้าน ฟอนต์ คลังรหัส SKU และพื้นหลังเคลื่อนไหว</p></div></li>
   </ol>
 
@@ -430,10 +427,14 @@ footer{margin:44px 0 36px;padding-top:20px;border-top:1px solid var(--line);disp
     <details><summary>ส่วนลดแบบบาทตั้งอย่างไร</summary><p>ที่ช่องส่วนลดของแถว เลือก <code>บาท</code> ในกล่องข้างตัวเลข (ค่าตั้งต้นคือ %) หรือพิมพ์ตัวเลขตามด้วย <code>บ</code> เช่น <code>500บ</code> ก็ได้ ระบบจะสลับกล่องเลือกให้เอง</p></details>
     <details><summary>พื้นหลังเคลื่อนไหวทำให้เครื่องช้าหรือรบกวนสายตา</summary><p>ไปที่ ตั้งค่าระบบ → พื้นหลังเคลื่อนไหว ลดความแรงเป็น 0 (นิ่ง) หรือปิดทั้งหมด หน้าใบเสนอราคาลดเอฟเฟกต์ลงเองอยู่แล้ว และพื้นหลังไม่ถูกพิมพ์ ถ้าเครื่องตั้งค่าลดการเคลื่อนไหวไว้ ระบบจะแสดงภาพนิ่งให้เอง</p></details>
     <details><summary>พิมพ์แล้วเกิน 1 หน้า A4</summary><p>ลดจำนวนรายการหรือย่อหมายเหตุให้สั้นลง ใบเสนอราคาออกแบบให้พอดี A4 หน้าเดียวสำหรับรายการจำนวนปกติ</p></details>
+    <details><summary>โหมดมืดอยู่ตรงไหน</summary><p>ในเวอร์ชันเต็ม กดปุ่มพระจันทร์หรือพระอาทิตย์มุมขวาบน ระบบจำค่าไว้ในเครื่องนี้ โหมดสว่างเป็นค่าเริ่มต้น อ่านง่ายตอนกรอกกลางวัน</p></details>
+    <details><summary>โทรศัพท์รุ่นเก่าเปิดเวอร์ชันเต็มแล้วช้า</summary><p>เปิดหน้า <a href="lite.html">เวอร์ชัน LITE</a> เป็นหน้าขาวดำแยกไฟล์ ไม่มีภาพเคลื่อนไหว ไม่โหลดฟอนต์จากอินเทอร์เน็ต แต่คิดราคา ส่วนลด และ VAT ด้วยกฎเดียวกัน และพิมพ์ A4 ได้เหมือนกัน</p></details>
+    <details><summary>บนมือถือตารางรายการเลื่อนออกจอ</summary><p>เวอร์ชันเต็มบนจอแคบจะเรียงแต่ละรายการเป็นการ์ด ไม่ต้องเลื่อนซ้ายขวา เวอร์ชัน LITE ทำเป็นการ์ดอยู่แล้วตั้งแต่แรก</p></details>
   </div>
 
   <footer>
     <a class="btn" href="quotation.html">เปิดระบบใบเสนอราคา →</a>
+    <a class="btn ghost" href="lite.html">เวอร์ชัน LITE</a>
     <button class="btn ghost" onclick="window.print()">พิมพ์คู่มือนี้</button>
     <span>AUTO 1 · Future Park Rangsit</span>
   </footer>
