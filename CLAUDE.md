@@ -65,6 +65,8 @@ Plain CSS custom properties on `:root`, redefined per layer (there is no token f
 
 Current visual direction: **navy + chrome/silver + electric blue, yellow/gold as the accent**. Map Figma colour styles/variables onto these names; add a new variable only when no existing one fits, and put it in the layer where it is used. In `@media print` the same variables are reset to a white paper palette (`--ink:#0f1e33; --bg:#fff; …`), so anything that uses variables prints correctly for free; hard-coded colours do not.
 
+Since PR #58 the screen defaults to a light card theme (`html[data-theme="light"]` rules, toggle saved in `auto1UiTheme`) and the default document font is IBM Plex Sans Thai with Thai fallbacks; the dark AMG look is the optional dark theme.
+
 Typography: Thai-first. Fonts come from one Google Fonts `<link>` (Kanit, Sarabun, Prompt, Mitr, Itim, Srisakdi, Chonburi, Charmonman, Trirong, Chakra Petch). Body is `var(--font)`. Never set document text with a hard-coded family; `setFont(name)` swaps `--font` at runtime.
 
 Spacing, radii and shadows are literal px values per component (no scale tokens). Typical: radii 7–16px, panels 14–22px, shadow `var(--glow)`.
@@ -128,7 +130,7 @@ Size comes from the parent (`.btn .ico{width:17px;height:17px}`, `.tn-bell .ico`
 - **Line discount** (`parseDisc`): each row has a `%` / `บาท` selector (`it.discType`, default pct, `setDiscType`); a typed suffix wins and syncs the selector (`5%` = 5%, `500บ` = 500 baht). The selector is `.no-print`; paper shows the label (`5%` or `500.00 บ`). **Overall discount**: checkbox + number + `บาท`/`%` select. Then **VAT 7%** (checkbox) on the discounted total; `ยอดรวมสุทธิ` plus Thai baht-text (`bahtText`). Sample check: costs 1,480 + 650, 5% overall, VAT → 3,195.00 / 3,035.25 / 212.47 / 3,247.72.
 - Cost price and price-category columns are `.no-print`; they never appear on paper.
 - **Print = one A4 page.** `@media print` forces `#view-quote` only, white paper palette, hides the whole motion layer. Item-table columns are **percentages** (phones print with a narrow layout width, px columns overflow); the description column takes the rest so ordinary part names stay on one line. On paper the shop card is hidden and its details print as small text under the logo (`#shopSmall`, filled by `syncPrintMirrors`); the customer card spans the sheet with a large car photo (`.photo-box.has-photo`). `syncPrintMirrors` also sets `html[data-psize]` (xl/lg/md/sm by row count) which scales the table letters, and `#doc` pins signatures/notes to the page foot so short quotations fill the A4. After any layout change, print the quote to PDF and confirm 1 page.
-- Persistence is `localStorage` only, per device: `autoPartsQuotationDraft`, `autoPartsSkuCatalog`, `autoPartsQuoteHistory`, `auto1LiveBg`. Wrap access in try/catch; never rename a key without a migration.
+- Persistence is `localStorage` only, per device: `autoPartsQuotationDraft`, `autoPartsSkuCatalog`, `autoPartsQuoteHistory`, `auto1LiveBg`, `auto1UiTheme` (light/dark screen theme; light is the default since PR #58), and `autoPartsLiteDraft` for lite.html. Wrap access in try/catch; never rename a key without a migration.
 - Public JS hooks used by markup `onclick`/tests: `recalc`, `showView`, `parsePasteText`, `setCat`, `AUTO1_BG` (`set`, `next`, `show`, `preload`, `prefs`). Keep their names.
 
 ## 9. Translating a Figma frame, step by step

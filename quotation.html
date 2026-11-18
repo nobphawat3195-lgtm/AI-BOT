@@ -1831,6 +1831,11 @@ body[data-view="quote"] .live-bg *,body[data-view="quote"] .live-bg *::before{an
   #doc > .section:not(:last-child){flex:1 1 auto;display:flex;flex-direction:column}
   #doc > .section:not(:last-child) .sign-grid{margin-top:auto;padding-top:10px}
   html[data-psize="sm"] #doc{min-height:0}
+  /* long quotations: rows as tight as they can be while still readable, so 16 lines still fit one A4 */
+  html[data-psize="sm"] table.items td{padding:1px 4px}
+  html[data-psize="sm"] table.items .cell-print{line-height:1.22}
+  html[data-psize="sm"] .fromto-grid .party-card{padding-top:4px;padding-bottom:4px}
+  html[data-psize="sm"] .banner{padding-top:6px!important;padding-bottom:6px!important}
 
   .live-bg{display:none!important}
   table.items td,table.items td .cell-print,table.items .row-total{color:#0b1526!important}
@@ -1978,7 +1983,8 @@ body[data-view="quote"] .live-bg *,body[data-view="quote"] .live-bg *::before{an
     #view-quote table.items .cost-stack,#view-quote table.items .disc-stack{width:100%}
     .paste-row{flex-direction:column}
     .paste-row textarea,.paste-row .btn,.sku-actions .btn,.sku-actions .upload-btn{width:100%}
-    .rowcount-bar .btn{flex:1}
+    .rowcount-bar .btn{flex:1 1 140px;white-space:nowrap}   /* each button keeps its label on one line; they wrap as a whole */
+    .rowcount-bar label{flex:1 1 100%}
   }
 
   /* ── light theme: the day-to-day look ── */
