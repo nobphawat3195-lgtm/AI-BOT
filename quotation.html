@@ -4777,7 +4777,17 @@ function mountIntro(){
 /* The AI film loop (assets/video) plays over the scene photo once the page has settled.
    Skipped for reduced motion, Save-Data and when the background is switched off; the photo
    stays underneath, so a missing or blocked video just leaves the still scene. */
-const LB_VIDEO = { lg:'assets/video/auto1-workshop.mp4', sm:'assets/video/auto1-workshop-sm.mp4' };
+// one clip per visit, taking turns (auto1BgClip remembers the last one so the next visit shows the other)
+const LB_VIDEOS = [
+  { lg:'assets/video/auto1-workshop.mp4', sm:'assets/video/auto1-workshop-sm.mp4' },
+  { lg:'assets/video/auto1-suspension.mp4', sm:'assets/video/auto1-suspension-sm.mp4' }
+];
+const LB_VIDEO = (() => {
+  let i = 0;
+  try { i = (parseInt(localStorage.getItem('auto1BgClip') || '-1', 10) + 1) % LB_VIDEOS.length; localStorage.setItem('auto1BgClip', String(i)); }
+  catch(e){ i = Math.floor(Math.random() * LB_VIDEOS.length); }
+  return LB_VIDEOS[i] || LB_VIDEOS[0];
+})();
 function mountBgVideo(){
   const holder = document.getElementById('lbScenes'), root = document.getElementById('liveBg');
   const saveData = !!(navigator.connection && navigator.connection.saveData);
