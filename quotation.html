@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ระบบใบเสนอราคาอะไหล่รถยนต์</title>
-<script>try{document.documentElement.dataset.theme=localStorage.getItem('auto1UiTheme')==='dark'?'dark':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
+<script>try{var t=localStorage.getItem('auto1UiTheme');if(t!=='dark'&&t!=='light')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='light'}</script>
 <script>try{var d=new Date().toISOString().slice(0,10);if(localStorage.getItem('auto1IntroDay')!==d&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('intro')}catch(e){}</script>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Kanit:wght@200;300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Mitr:wght@300;400;500;600;700&family=Itim&family=Srisakdi:wght@400;700&family=Chonburi&family=Charmonman:wght@400;700&family=Trirong:wght@300;400;500;600;700&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -2038,8 +2038,8 @@ body[data-view="quote"] .lb-cine{opacity:.45}
   html[data-theme="light"]{
     --bg:#f4f6fb;--ink:#0f172a;--sub:#52627a;
     --line:#e2e8f0;--line2:#eef2f6;
-    --blue:#1d4ed8;--blue2:#2563eb;--cyan:#0369a1;
-    --gold:#1d4ed8;--amber:#1d4ed8;--champagne:#1e293b;
+    --blue:#9a6d14;--blue2:#c49a3c;--cyan:#8a6a2a;
+    --gold:#9a6d14;--amber:#9a6d14;--champagne:#1e293b;
     --card:#ffffff;--panel:#ffffff;
     --input-bg:#ffffff;
     --th-bg:#f8fafc;--th-ink:#475569;
@@ -2098,14 +2098,14 @@ body[data-view="quote"] .lb-cine{opacity:.45}
   html[data-theme="light"] .section-label,
   html[data-theme="light"] .stat-foot-note{color:#64748b!important}
   html[data-theme="light"] .tn-item{color:#475569!important;font-size:14px}
-  html[data-theme="light"] .tn-item:hover{color:#1d4ed8!important}
+  html[data-theme="light"] .tn-item:hover{color:#9a6d14!important}
   html[data-theme="light"] .tn-item.on{
-    color:#1d4ed8!important;background:#eef3ff!important;box-shadow:none!important;
+    color:#9a6d14!important;background:#f7efdc!important;box-shadow:none!important;
   }
   html[data-theme="light"] .tn-bell{
     color:#334155!important;background:#fff!important;border:1px solid #e2e8f0!important;
   }
-  html[data-theme="light"] .tn-avatar{background:#1d4ed8!important;color:#fff!important;box-shadow:none!important}
+  html[data-theme="light"] .tn-avatar{background:#9a6d14!important;color:#fff!important;box-shadow:none!important}
   html[data-theme="light"] .tn-bell-pop,
   html[data-theme="light"] .tn-user-pop{
     background:#fff!important;border:1px solid #e2e8f0!important;color:#334155!important;
@@ -2120,10 +2120,10 @@ body[data-view="quote"] .lb-cine{opacity:.45}
 
   html[data-theme="light"] .btn-print{
     color:#fff!important;text-shadow:none!important;
-    box-shadow:0 1px 2px rgba(15,23,42,.06),0 8px 20px rgba(29,78,216,.28)!important;
+    box-shadow:0 1px 2px rgba(15,23,42,.06),0 8px 20px rgba(154,109,20,.28)!important;
   }
   html[data-theme="light"] .btn-print::before{display:none!important}
-  html[data-theme="light"] .btn-print::after{background:#1d4ed8!important}
+  html[data-theme="light"] .btn-print::after{background:#9a6d14!important}
   html[data-theme="light"] .btn-print:hover{filter:brightness(1.05)}
   html[data-theme="light"] .btn-ghost,
   html[data-theme="light"] .btn-ghost:hover,
@@ -2134,7 +2134,7 @@ body[data-view="quote"] .lb-cine{opacity:.45}
   }
   html[data-theme="light"] .btn-danger{background:#fff!important;color:#e11d48!important;border:1px solid #fecdd3!important}
   html[data-theme="light"] .add-row-btn{
-    background:#fff!important;color:#1d4ed8!important;border:1.5px dashed #93b4f5!important;min-height:48px;
+    background:#fff!important;color:#9a6d14!important;border:1.5px dashed #dcc58c!important;min-height:48px;
   }
 
   html[data-theme="light"] .stat-card,
@@ -2155,7 +2155,7 @@ body[data-view="quote"] .lb-cine{opacity:.45}
   html[data-theme="light"] .service-card:hover{
     background:#fff!important;
     box-shadow:0 10px 28px rgba(15,23,42,.08)!important;
-    border-color:#c9d7ee!important;
+    border-color:#e6d6ae!important;
   }
   html[data-theme="light"] .stat-card span,
   html[data-theme="light"] .service-card span,
@@ -2165,7 +2165,7 @@ body[data-view="quote"] .lb-cine{opacity:.45}
   html[data-theme="light"] .rr-date{color:#52627a!important}
   html[data-theme="light"] .stat-ico,
   html[data-theme="light"] .service-card .sc-ico{
-    background:#eef3ff!important;color:#1d4ed8!important;border-color:transparent!important;
+    background:#f7efdc!important;color:#9a6d14!important;border-color:transparent!important;
     box-shadow:none!important;
   }
   html[data-theme="light"] .note-banner{color:#334155!important}
@@ -2180,8 +2180,8 @@ body[data-view="quote"] .lb-cine{opacity:.45}
   html[data-theme="light"] .contact-row,
   html[data-theme="light"] .recent-row{border-bottom-color:#eef2f6!important}
   html[data-theme="light"] .rep-bar-track{background:#e8eef8}
-  html[data-theme="light"] .rep-bar-fill{background:linear-gradient(90deg,#1d4ed8,#60a5fa)!important}
-  html[data-theme="light"] .linklike,.sf-links a{color:#1d4ed8}
+  html[data-theme="light"] .rep-bar-fill{background:linear-gradient(90deg,#9a6d14,#e7c96f)!important}
+  html[data-theme="light"] .linklike,.sf-links a{color:#9a6d14}
   html[data-theme="light"] .lb-row,
   html[data-theme="light"] .lb-row output,
   html[data-theme="light"] .lb-now{color:#334155!important}
@@ -2198,8 +2198,8 @@ body[data-view="quote"] .lb-cine{opacity:.45}
   html[data-theme="light"] .sign-label,
   html[data-theme="light"] .bahttext,
   html[data-theme="light"] .photo-empty{color:#64748b!important}
-  html[data-theme="light"] .party-label{color:#1d4ed8!important}
-  html[data-theme="light"] .shop-fold{color:#1d4ed8}
+  html[data-theme="light"] .party-label{color:#9a6d14!important}
+  html[data-theme="light"] .shop-fold{color:#9a6d14}
   html[data-theme="light"] .field input,
   html[data-theme="light"] .field textarea,
   html[data-theme="light"] .rowcount-bar input[type=number],
@@ -2213,7 +2213,7 @@ body[data-view="quote"] .lb-cine{opacity:.45}
   html[data-theme="light"] .field input:focus,
   html[data-theme="light"] .field textarea:focus,
   html[data-theme="light"] table.items input:focus{
-    border-color:#1d4ed8!important;box-shadow:0 0 0 3px rgba(29,78,216,.16)!important;background:#fff!important;
+    border-color:#9a6d14!important;box-shadow:0 0 0 3px rgba(154,109,20,.16)!important;background:#fff!important;
   }
   html[data-theme="light"] .paste-bar,
   html[data-theme="light"] .rowcount-bar,
@@ -2238,26 +2238,26 @@ body[data-view="quote"] .lb-cine{opacity:.45}
   html[data-theme="light"] table.items tbody tr:hover td{background:#f4f7ff!important}
   html[data-theme="light"] table.items input{color:#0f172a!important}
   html[data-theme="light"] table.items input::placeholder{color:#94a3b8!important}
-  html[data-theme="light"] table.items td.sku-auto input{color:#1d4ed8!important}
+  html[data-theme="light"] table.items td.sku-auto input{color:#9a6d14!important}
   html[data-theme="light"] .row-total,
   html[data-theme="light"] table.items .sell-price,
   html[data-theme="light"] table.items .row-gross{color:#0f172a!important}
   html[data-theme="light"] .grand{border-top-color:#0f172a!important}
   html[data-theme="light"] .grand .gv{
     background:none!important;-webkit-background-clip:border-box;background-clip:border-box;
-    -webkit-text-fill-color:#1d4ed8;color:#1d4ed8!important;filter:none!important;
+    -webkit-text-fill-color:#9a6d14;color:#9a6d14!important;filter:none!important;
   }
   html[data-theme="light"] .sign-line{border-bottom-color:#cbd5e1!important}
   html[data-theme="light"] .qflow button{background:#fff;color:#334155;border-color:#d5dde8}
-  html[data-theme="light"] .qflow button.on{background:#1d4ed8;color:#fff;border-color:transparent}
+  html[data-theme="light"] .qflow button.on{background:#9a6d14;color:#fff;border-color:transparent}
   html[data-theme="light"] .tabbar{background:rgba(255,255,255,.97);border-top-color:#e6ebf2}
   html[data-theme="light"] .tab-btn{color:#64748b}
-  html[data-theme="light"] .tab-btn.on{color:#1d4ed8;background:#eef3ff}
+  html[data-theme="light"] .tab-btn.on{color:#9a6d14;background:#f7efdc}
   html[data-theme="light"] .mbar{
     background:#fff;color:#0f172a;border-color:#e6ebf2;box-shadow:0 12px 36px rgba(15,23,42,.12);
   }
   html[data-theme="light"] .mbar .t small{color:#64748b}
-  html[data-theme="light"] .mbar .t b{color:#1d4ed8}
+  html[data-theme="light"] .mbar .t b{color:#9a6d14}
   html[data-theme="light"] .form-alert{background:#fff1f2;color:#9f1239;border-color:#fecdd3}
   html[data-theme="light"] #view-quote table.items tr{
     background:#fff;border-color:#e6ebf2;box-shadow:0 8px 22px rgba(15,23,42,.04);
@@ -2273,6 +2273,61 @@ body[data-view="quote"] .lb-cine{opacity:.45}
 }
 
 
+/* ═══════════════════════════════════════════════════════════════
+   THEMES — light "pearl & gold", dark "AMG chrome". Wow on the home page,
+   calm and cheap everywhere else (opaque cards, frozen backdrop).
+   ═══════════════════════════════════════════════════════════════ */
+@media screen{
+  /* ── light: pearl & gold ── */
+  html[data-theme="light"]{--pearl:#faf6ee;--pearl2:#f3ecdf;--gold-1:#e9cf8c;--gold-2:#c49a3c;--gold-3:#9a6d14;--ink-1:#1c1a17}
+  html[data-theme="light"] body{background:var(--pearl)!important;color:var(--ink-1)}
+  html[data-theme="light"] .live-bg{background:
+      radial-gradient(1100px 700px at 85% -10%,rgba(233,207,140,.55),transparent 60%),
+      radial-gradient(900px 640px at -10% 30%,rgba(214,224,240,.7),transparent 62%),
+      radial-gradient(800px 600px at 60% 110%,rgba(240,222,190,.7),transparent 60%),
+      linear-gradient(180deg,#fbf8f2,#f4eee3)!important}
+  html[data-theme="light"] .lb-scenes{opacity:.16!important;filter:grayscale(.55) sepia(.35)}
+  html[data-theme="light"] .lb-shade{opacity:0!important}
+  html[data-theme="light"] .lb-graphics,html[data-theme="light"] .lb-icons,html[data-theme="light"] .lb-fx{opacity:.18!important;filter:sepia(1) saturate(2.2) hue-rotate(-12deg)}
+  html[data-theme="light"] body::before{opacity:.10!important}
+  /* pearl sheen: soft gold light drifting across the page (home only, see below) */
+  html[data-theme="light"] .lb-cine .cb{background:linear-gradient(180deg,rgba(233,200,120,.42),rgba(233,207,140,.12) 45%,transparent 80%)}
+  html[data-theme="light"] .lb-cine .ck{background:radial-gradient(circle,rgba(255,236,190,.95),rgba(233,207,140,.35) 55%,transparent 70%)}
+  html[data-theme="light"] .lb-cine .cs{background:linear-gradient(100deg,transparent 40%,rgba(255,240,205,.5) 49%,rgba(255,255,255,.8) 50%,rgba(255,240,205,.5) 51%,transparent 60%)}
+  html[data-theme="light"] .lb-cine .cf{background:linear-gradient(90deg,transparent,rgba(214,170,80,.0) 10%,rgba(214,170,80,.85) 46%,#fff7e0 50%,rgba(214,170,80,.85) 54%,transparent);box-shadow:0 0 18px 4px rgba(214,170,80,.4)}
+  html[data-theme="light"] .lb-cine .co{background:radial-gradient(circle,rgba(255,250,235,.95),rgba(233,200,120,.4) 18%,rgba(214,170,80,.1) 45%,transparent 70%)}
+  html[data-theme="light"] .lb-cine .cv{background:radial-gradient(120% 90% at 50% 40%,transparent 60%,rgba(196,154,60,.16) 100%)}
+  /* cards: white pearl with a gold hairline */
+  html[data-theme="light"] .lb-on .stat-card,html[data-theme="light"] .lb-on .panel-card,html[data-theme="light"] .lb-on .service-card,
+  html[data-theme="light"] .topnav,html[data-theme="light"] .toolbar,html[data-theme="light"] .site-foot,html[data-theme="light"] .sku-bar,
+  html[data-theme="light"] .doc{background:#fffdf9!important;border:1px solid #eadcbc!important;
+    box-shadow:0 1px 2px rgba(60,45,15,.05),0 14px 34px rgba(120,90,30,.10)!important}
+  html[data-theme="light"] .lb-on .stat-card:hover,html[data-theme="light"] .lb-on .service-card:hover{border-color:#d9bd77!important;box-shadow:0 18px 44px rgba(150,110,30,.18)!important}
+  html[data-theme="light"] .tn-name,html[data-theme="light"] .view-head h2,html[data-theme="light"] .lb-on .view-head h2,
+  html[data-theme="light"] .panel-head,html[data-theme="light"] .stat-card b,html[data-theme="light"] .service-card b{
+    color:var(--ink-1)!important;-webkit-text-fill-color:var(--ink-1)!important;text-shadow:none!important}
+  html[data-theme="light"] .lb-on .view-head p,html[data-theme="light"] .lb-on .stat-foot-note,html[data-theme="light"] .lb-on .section-label{color:#6b5d45!important;text-shadow:none!important}
+  html[data-theme="light"] .tn-sub{color:#9a6d14!important}
+  html[data-theme="light"] .btn-print{background:linear-gradient(135deg,#f3dc9a 0%,#c49a3c 48%,#9a6d14 100%)!important;color:#1c1a17!important;border:0!important;
+    box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 10px 24px rgba(154,109,20,.32)!important}
+  html[data-theme="light"] .btn-print::after{background:#9a6d14!important}
+  html[data-theme="light"] .stat-ico,html[data-theme="light"] .service-card .sc-ico{background:linear-gradient(145deg,#fbf3df,#f1e2bb)!important;color:#9a6d14!important}
+  html[data-theme="light"] .tn-avatar{background:linear-gradient(135deg,#e9cf8c,#9a6d14)!important}
+  /* home hero stays the dark showpiece, framed in gold */
+  html[data-theme="light"] .hero,html[data-theme="light"] .clip{box-shadow:0 0 0 1px rgba(214,170,80,.55),0 30px 70px rgba(80,60,20,.25)!important}
+
+  /* ── dark: AMG chrome, richer ── */
+  html[data-theme="dark"] .lb-on .stat-card,html[data-theme="dark"] .lb-on .panel-card,html[data-theme="dark"] .lb-on .service-card{
+    background:linear-gradient(180deg,#0f1d38,#0a1428)!important;   /* opaque: the backdrop never has to be re-blended under them */
+    box-shadow:0 0 0 1px rgba(190,205,230,.16) inset,0 18px 46px rgba(0,0,0,.45)!important}
+  html[data-theme="dark"] .view-head h2,html[data-theme="dark"] .tn-name{
+    background:linear-gradient(180deg,#ffffff 0%,#d3dbe6 52%,#8e9aad 54%,#eef2f7 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+  /* ── wow on the home page, calm everywhere else ── */
+  body:not([data-view="home"]) .lb-cine i:not(.cv){display:none}
+  body:not([data-view="home"]) .live-bg *,body:not([data-view="home"]) .live-bg *::before{animation-play-state:paused!important}
+  body[data-view="home"] .lb-cine{opacity:1}
+}
 /* ═══════════════════════════════════════════════════════════════
    PAPER SHEET — professional print layout (last layer, wins over all of the above).
    Ink on white: nothing relies on a background colour, so the sheet still reads when
@@ -3728,10 +3783,10 @@ function setShopFold(collapsed){
   btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
 }
 
-function applyTheme(mode){
+function applyTheme(mode, remember = true){
   const m = mode === 'dark' ? 'dark' : 'light';
   document.documentElement.dataset.theme = m;
-  try{ localStorage.setItem('auto1UiTheme', m); }catch(e){}
+  if(remember){ try{ localStorage.setItem('auto1UiTheme', m); }catch(e){} }   // only a tap on the toggle is remembered; otherwise follow the device
   const btn = document.getElementById('tnTheme');
   if(btn){
     const dark = m === 'dark';
@@ -4567,7 +4622,7 @@ function mountLiveBg(){
     if(!ctx) return;
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cvs.width, cvs.height);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const m = prefs.motion, calm = document.body.dataset.view === 'quote';
+    const m = prefs.motion, calm = document.body.dataset.view !== 'home';
     // dust, drifting up through the bay
     if(quality > .5 && m > 0){
       const a0 = calm ? .45 : 1;
@@ -4611,7 +4666,7 @@ function mountLiveBg(){
     ema = ema * .96 + dt * .04;
     if(ema > .034 && quality > .4) quality = .4;                 // slow device: fewer particles
     if(ema < .022 && quality < 1) quality = Math.min(1, quality + .002);
-    const m = prefs.motion, calm = document.body.dataset.view === 'quote';
+    const m = prefs.motion, calm = document.body.dataset.view !== 'home';
     // typing a quotation: no particles, no parallax, no per-frame work at all
     if(calm){ if(!idled){ idled = true; if(ctx) ctx.clearRect(0, 0, cvs.width, cvs.height); } return; }
     idled = false;
@@ -4730,7 +4785,7 @@ function mountBgVideo(){
   v.src = window.matchMedia('(max-width:700px)').matches ? LB_VIDEO.sm : LB_VIDEO.lg;
   holder.appendChild(v);
   const sync = () => {
-    const calm = document.body.dataset.view === 'quote' || document.visibilityState !== 'visible' || (root && root.classList.contains('off'));
+    const calm = document.body.dataset.view !== 'home' || document.visibilityState !== 'visible' || (root && root.classList.contains('off'));
     if(calm) v.pause(); else { const p = v.play(); if(p && p.catch) p.catch(() => {}); }
   };
   new MutationObserver(sync).observe(document.body, { attributes:true, attributeFilter:['data-view'] });
@@ -5047,7 +5102,7 @@ function mountQuoteFlow(){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
-  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light', false);
   const themeBtn = document.getElementById('tnTheme');
   if(themeBtn) themeBtn.addEventListener('click', toggleTheme);
   mountNav();
