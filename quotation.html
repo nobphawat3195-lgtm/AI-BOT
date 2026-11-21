@@ -2298,6 +2298,15 @@ body[data-view="quote"] .lb-cine{opacity:.45}
   .hero.has-film .cine-blueprint{opacity:1}
   .hero.has-film .clip-hud .hud-box{fill:rgba(5,11,23,.62)}
   .hero.has-film .cine-copy{text-shadow:0 1px 14px rgba(2,6,14,.6)}
+  /* backup panel + home nudge */
+  .backup-card{margin-top:22px}
+  .backup-what{margin:10px 0 14px;font-size:14px;line-height:1.75;color:var(--sub)}
+  .backup-what b{color:var(--ink);font-weight:600}
+  .backup-actions .btn{display:inline-flex;align-items:center;gap:8px}
+  .backup-status{margin:10px 0 0;font-size:14px;min-height:1.4em}
+  .backup-nudge{display:block;margin:10px 0 0;padding:9px 14px;border-radius:12px;border:1px solid rgba(224,160,40,.55);background:rgba(255,200,97,.16);color:var(--ink);font:inherit;font-size:14px;text-align:left;cursor:pointer;width:fit-content;max-width:100%}
+  .backup-nudge[hidden]{display:none}
+  html[data-theme="light"] .backup-nudge{background:#fff6df;color:#5a4310;border-color:#e3c57a}
   @media (max-width:640px){
     .hero.has-film .cine-blueprint{display:none}
     .hero-film{object-position:58% 40%}
@@ -2727,6 +2736,7 @@ html.intro #cineIntro{display:flex}
       </div>
     </div>
     <p class="stat-foot-note no-print">ตัวเลขทั้งหมดนับจากใบเสนอราคาที่กดพิมพ์จากเครื่องนี้เท่านั้น — เริ่มจาก 0 และโตขึ้นตามการใช้งานจริง</p>
+    <button class="backup-nudge no-print" id="backupNudge" type="button" data-view="settings" hidden></button>
 
     <div class="dash-grid no-print">
       <div class="panel-card reveal">
@@ -3131,6 +3141,17 @@ html.intro #cineIntro{display:flex}
       <button class="service-card reveal" onclick="showView('quote');setTimeout(()=>document.getElementById('fontSelect')?.scrollIntoView({behavior:'smooth',block:'center'}),380)">
         <span class="sc-ico"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></span><b>ฟอนต์เอกสาร</b><span>เลือกฟอนต์ที่ใช้แสดงและพิมพ์ใบเสนอราคา</span>
       </button>
+    </div>
+    <div class="panel-card backup-card" id="backupCard">
+      <div class="panel-head">สำรองข้อมูล / กู้คืน</div>
+      <p class="panel-sub">ข้อมูลทั้งหมดเก็บอยู่ในเบราว์เซอร์ของเครื่องนี้เท่านั้น ถ้าล้างเบราว์เซอร์หรือเปลี่ยนเครื่อง ข้อมูลจะหาย กด “สำรองข้อมูล” เพื่อเก็บเป็นไฟล์ แล้วส่งเข้า LINE หรือ Google Drive ไว้ เวลาเปลี่ยนเครื่องให้กด “กู้คืนจากไฟล์” ข้อมูลในไฟล์จะถูกรวมเข้ากับของเดิม ไม่ลบของที่มีอยู่</p>
+      <div class="backup-what" id="backupWhat">—</div>
+      <div class="lb-actions backup-actions">
+        <button class="btn btn-print" id="backupSave" type="button"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>สำรองข้อมูล</button>
+        <button class="btn btn-ghost" id="backupLoad" type="button"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>กู้คืนจากไฟล์</button>
+        <input type="file" id="backupFile" accept=".json,application/json" hidden>
+      </div>
+      <p class="backup-status" id="backupStatus" role="status"></p>
     </div>
     <div class="panel-card lb-settings">
       <div class="panel-head">พื้นหลังเคลื่อนไหว (อู่ AUTO 1)</div>
@@ -4880,6 +4901,7 @@ function mountMotion(){
    log. Every screen that reads it says so.
    ═══════════════════════════════════════════════════════════════ */
 const HISTORY_KEY = 'autoPartsQuoteHistory';
+const HISTORY_MAX = 2000;
 
 function loadHistory(){
   try{
@@ -4904,7 +4926,7 @@ function logQuoteToHistory(){
   };
   const hist = loadHistory();
   hist.unshift(entry);
-  if(hist.length > 500) hist.length = 500;   // a device-local log, not a database
+  if(hist.length > HISTORY_MAX) hist.length = HISTORY_MAX;   // a device-local log, not a database
   try{ localStorage.setItem(HISTORY_KEY, JSON.stringify(hist)); }catch(e){}
 }
 
@@ -4919,6 +4941,7 @@ const DEVICE_LOCAL_NOTE = 'ข้อมูลชุดนี้เก็บอ�
 
 function renderHomeStats(){
   const hist = loadHistory();
+  renderBackupNudge(hist);
   const totalQuotes = hist.length;
   const totalValue = hist.reduce((s,h)=>s+(h.grandTotal||0),0);
   const custKeySet = new Set(hist.map(h => (h.custName+'|'+h.custPhone).trim()).filter(k => k !== '|'));
@@ -5036,6 +5059,142 @@ function renderReports(){
    ═══════════════════════════════════════════════════════════════ */
 const VIEWS = ['home','services','quote','customers','history','reports','settings','contact'];
 
+/* ═══════════════════════════════════════════════════════════════
+   BACKUP / RESTORE — everything lives in this browser only, so the
+   shop can save it as one JSON file (to LINE / Drive) and load it on
+   any device. Restoring MERGES: history by id (newest first), SKU
+   pairs by name (this device wins), the draft/shop details only when
+   this device has none yet. Nothing already here is deleted.
+   ═══════════════════════════════════════════════════════════════ */
+const BACKUP_KEY = 'auto1LastBackup';
+const BACKUP_NUDGE_DAYS = 7;
+
+function readJSON(key){ try{ return JSON.parse(localStorage.getItem(key)); }catch(e){ return null; } }
+function lastBackupDate(){ try{ return localStorage.getItem(BACKUP_KEY) || ''; }catch(e){ return ''; } }
+function daysSince(iso){ const t = Date.parse(iso); return isNaN(t) ? Infinity : (Date.now() - t) / 864e5; }
+
+function backupSummary(){
+  const hist = loadHistory();
+  const custom = Array.isArray(readJSON(SKU_STORE_KEY)) ? readJSON(SKU_STORE_KEY).length : 0;
+  const cust = new Set(hist.map(h => (h.custName+'|'+h.custPhone).trim()).filter(k => k !== '|')).size;
+  return { quotes: hist.length, customers: cust, sku: custom };
+}
+
+function renderBackupPanel(){
+  const what = document.getElementById('backupWhat');
+  if(!what) return;
+  const n = backupSummary(), last = lastBackupDate();
+  what.innerHTML = `ในเครื่องนี้มี: ใบเสนอราคา <b>${n.quotes.toLocaleString('th-TH')}</b> ใบ · ลูกค้า <b>${n.customers.toLocaleString('th-TH')}</b> ราย · คลัง SKU ที่นำเข้าเอง <b>${n.sku.toLocaleString('th-TH')}</b> รายการ · ข้อมูลร้านและใบที่กำลังทำ<br>สำรองล่าสุด: <b>${last ? fmtDate(last) : 'ยังไม่เคยสำรอง'}</b>`;
+}
+
+function renderBackupNudge(hist){
+  const el = document.getElementById('backupNudge');
+  if(!el) return;
+  const last = lastBackupDate(), d = daysSince(last);
+  const show = hist.length > 0 && d >= BACKUP_NUDGE_DAYS;
+  el.hidden = !show;
+  if(show) el.textContent = last
+    ? `⚠️ ไม่ได้สำรองข้อมูลมา ${Math.floor(d)} วัน — แตะเพื่อสำรองเก็บไว้`
+    : '⚠️ ข้อมูลยังไม่เคยถูกสำรอง ถ้าล้างเบราว์เซอร์หรือเปลี่ยนเครื่องจะหาย — แตะเพื่อสำรอง';
+}
+
+function backupStatus(msg){ const el = document.getElementById('backupStatus'); if(el) el.textContent = msg; }
+
+function exportBackup(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(collectState())); }catch(e){}   // latest edits first
+  const data = {
+    app: 'AUTO1-quotation', version: 1, exportedAt: new Date().toISOString(),
+    history: loadHistory(),
+    sku: readJSON(SKU_STORE_KEY),
+    draft: readJSON(STORAGE_KEY),
+    prefs: { liveBg: readJSON(LB_KEY) }
+  };
+  const blob = new Blob([JSON.stringify(data)], { type:'application/json' });
+  const name = `AUTO1-backup-${new Date().toISOString().slice(0,10)}.json`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  try{ localStorage.setItem(BACKUP_KEY, data.exportedAt); }catch(e){}
+  const n = backupSummary();
+  backupStatus(`✅ บันทึกไฟล์ ${name} แล้ว (ใบเสนอราคา ${n.quotes} ใบ) — ส่งไฟล์นี้เข้า LINE หรือ Google Drive เก็บไว้`);
+  renderBackupPanel(); renderBackupNudge(loadHistory());
+}
+
+function mergeBackup(data){
+  if(!data || data.app !== 'AUTO1-quotation' || !Array.isArray(data.history)) throw new Error('bad');
+  const out = { added:0, sku:0, draft:false };
+  // history: union by id, newest first
+  const hist = loadHistory(), ids = new Set(hist.map(h => h.id));
+  for(const h of data.history){
+    if(!h || typeof h !== 'object' || !h.id || ids.has(h.id)) continue;
+    ids.add(h.id); hist.push(h); out.added++;
+  }
+  hist.sort((a,b) => String(b.date||'').localeCompare(String(a.date||'')));
+  if(hist.length > HISTORY_MAX) hist.length = HISTORY_MAX;
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+  // SKU: pairs from this device first, then any name the file adds
+  if(Array.isArray(data.sku) && data.sku.length){
+    const mine = Array.isArray(readJSON(SKU_STORE_KEY)) ? readJSON(SKU_STORE_KEY) : [];
+    const seen = new Set(mine.map(p => normThai(p[1])));
+    for(const p of data.sku){
+      if(!Array.isArray(p) || p.length < 2) continue;
+      const k = normThai(p[1]); if(!k || seen.has(k)) continue;
+      seen.add(k); mine.push([String(p[0]), String(p[1])]); out.sku++;
+    }
+    if(out.sku){ localStorage.setItem(SKU_STORE_KEY, JSON.stringify(mine)); skuPairs = mine; buildSkuIndex(); updateSkuCount(); }
+  }
+  // draft: shop details field by field (a field still at its default or blank takes the file's value),
+  // and the quotation in progress only when this device has none of its own
+  if(data.draft && typeof data.draft === 'object'){
+    const cur = readJSON(STORAGE_KEY) || {}, src = data.draft, sd = shopDefaults();
+    const blank = v => String(v == null ? '' : v).trim() === '';
+    const shopKeys = Object.keys(sd).concat(['shopPhone']);
+    let changed = false;
+    for(const k of shopKeys){
+      if(blank(src[k])) continue;
+      if(blank(cur[k]) || cur[k] === sd[k]){ if(cur[k] !== src[k]){ cur[k] = src[k]; changed = true; } }
+    }
+    if(src.logoDataUrl && (!cur.logoDataUrl || cur.logoDataUrl === DEFAULT_LOGO_SRC) && src.logoDataUrl !== DEFAULT_LOGO_SRC){ cur.logoDataUrl = src.logoDataUrl; changed = true; }
+    const busy = (Array.isArray(cur.items) && cur.items.some(it => it && !blank(it.name))) || !blank(cur.custName);
+    if(!busy){
+      for(const k of Object.keys(src)) if(!shopKeys.includes(k) && k !== 'logoDataUrl'){ cur[k] = src[k]; changed = true; }
+    }
+    if(changed){ localStorage.setItem(STORAGE_KEY, JSON.stringify(cur)); out.draft = true; }
+  }
+  if(data.prefs && data.prefs.liveBg && !readJSON(LB_KEY)){ try{ localStorage.setItem(LB_KEY, JSON.stringify(data.prefs.liveBg)); }catch(e){} }
+  return out;
+}
+
+function importBackup(file){
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = () => {
+    let res;
+    try{ res = mergeBackup(JSON.parse(String(r.result))); }
+    catch(e){
+      backupStatus(e && e.name === 'QuotaExceededError'
+        ? '⚠️ พื้นที่เก็บข้อมูลของเบราว์เซอร์เต็ม กู้คืนไม่สำเร็จ'
+        : '⚠️ ไฟล์นี้ไม่ใช่ไฟล์สำรองของ AUTO 1 หรือไฟล์เสียหาย');
+      return;
+    }
+    if(res.draft) load();
+    renderBackupPanel(); renderHomeStats();
+    backupStatus(`✅ กู้คืนแล้ว: เพิ่มใบเสนอราคา ${res.added} ใบ` + (res.sku ? ` · SKU ${res.sku} รายการ` : '') + (res.draft ? ' · ข้อมูลร้านและใบที่กำลังทำ' : '') + ' — ของเดิมในเครื่องยังอยู่ครบ');
+  };
+  r.onerror = () => backupStatus('⚠️ อ่านไฟล์ไม่ได้');
+  r.readAsText(file);
+}
+
+function mountBackup(){
+  const save = document.getElementById('backupSave'), loadBtn = document.getElementById('backupLoad'), inp = document.getElementById('backupFile');
+  if(!save) return;
+  save.addEventListener('click', exportBackup);
+  loadBtn.addEventListener('click', () => inp.click());
+  inp.addEventListener('change', () => { importBackup(inp.files && inp.files[0]); inp.value = ''; });
+  renderBackupPanel();
+}
+
 function showView(name){
   if(!VIEWS.includes(name)) name = 'home';
   document.body.dataset.view = name;
@@ -5057,6 +5216,7 @@ function showView(name){
   if(name === 'history') renderHistoryView();
   if(name === 'customers') renderCustomersView();
   if(name === 'home') renderHomeStats();
+  if(name === 'settings') renderBackupPanel();
   if(name === 'contact') mountContactView();
   scanReveals();
   closePopovers();
@@ -5116,10 +5276,12 @@ function mountNav(){
     if(confirm('ล้างข้อมูลทั้งหมดที่เก็บไว้ในเครื่องนี้ ได้แก่ ประวัติใบเสนอราคา รายชื่อลูกค้า และคลังรหัส SKU ที่นำเข้าเอง — ยืนยันหรือไม่?')){
       localStorage.removeItem(HISTORY_KEY);
       localStorage.removeItem(SKU_STORE_KEY);
+      localStorage.removeItem(BACKUP_KEY);
       location.reload();
     }
   });
 
+  mountBackup();
   window.addEventListener('hashchange', () => showView(location.hash.slice(1)));
   showView(location.hash.slice(1) || 'home');
 }
