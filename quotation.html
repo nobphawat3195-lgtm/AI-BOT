@@ -1594,7 +1594,53 @@ body[data-view="quote"] .live-bg *,body[data-view="quote"] .live-bg *::before{an
   .lb-graphics .tr{stroke-opacity:.2}
 }
 /* stillness: reduce-motion users, "still" mode and motion = 0 */
-@media (prefers-reduced-motion:reduce){.live-bg *,.live-bg *::before,.live-bg *::after{animation:none!important;transition:none!important}.lb-fx{display:none}}
+/* ── CINEMATIC PASS: the workshop as a film opening ──
+   Big, slow, layered motion that only ever moves transform/opacity:
+   god rays swaying from the roof lights, an anamorphic lens flare that crosses
+   the frame, out-of-focus bokeh drifting up, a wide light sweep, and a vignette. */
+.lb-cine{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.lb-cine i{position:absolute;display:block;will-change:transform,opacity}
+/* god rays */
+.lb-cine .cb{top:-30vh;height:150vh;width:22vw;min-width:160px;left:var(--x);
+  background:linear-gradient(180deg,rgba(170,205,255,.34),rgba(120,170,255,.10) 45%,transparent 78%);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 35%,#000 65%,transparent);mask-image:linear-gradient(90deg,transparent,#000 35%,#000 65%,transparent);
+  transform-origin:50% 0;opacity:.0;animation:cineRay var(--t,16s) ease-in-out var(--d,0s) infinite}
+.lb-cine .b1{--x:8%;--t:17s;--r0:-14deg;--r1:-6deg}
+.lb-cine .b2{--x:38%;--t:21s;--d:-7s;--r0:9deg;--r1:16deg;width:16vw}
+.lb-cine .b3{--x:68%;--t:19s;--d:-12s;--r0:-4deg;--r1:7deg;width:26vw}
+@keyframes cineRay{0%{opacity:.15;transform:rotate(var(--r0))}50%{opacity:.75;transform:rotate(var(--r1))}100%{opacity:.15;transform:rotate(var(--r0))}}
+/* bokeh */
+.lb-cine .ck{left:var(--x);bottom:-12vh;width:var(--s);height:var(--s);border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,rgba(190,215,255,.55),rgba(120,170,255,.18) 55%,transparent 70%);
+  opacity:0;animation:cineBokeh var(--t) linear var(--d) infinite}
+.lb-cine .k1{--x:6%;--s:90px;--t:26s;--d:-3s}
+.lb-cine .k2{--x:21%;--s:46px;--t:19s;--d:-11s}
+.lb-cine .k3{--x:37%;--s:130px;--t:31s;--d:-20s}
+.lb-cine .k4{--x:55%;--s:60px;--t:23s;--d:-6s}
+.lb-cine .k5{--x:71%;--s:110px;--t:29s;--d:-15s}
+.lb-cine .k6{--x:86%;--s:52px;--t:21s;--d:-2s}
+.lb-cine .k7{--x:94%;--s:150px;--t:34s;--d:-24s;filter:hue-rotate(160deg)}
+@keyframes cineBokeh{0%{opacity:0;transform:translate3d(0,0,0) scale(.8)}12%{opacity:.7}70%{opacity:.45}100%{opacity:0;transform:translate3d(4vw,-120vh,0) scale(1.15)}}
+/* wide light sweep across the whole frame */
+.lb-cine .cs{inset:-20%;background:linear-gradient(100deg,transparent 40%,rgba(185,215,255,.16) 48%,rgba(255,255,255,.22) 50%,rgba(185,215,255,.16) 52%,transparent 60%);
+  transform:translateX(-70%);animation:cineSweep 14s cubic-bezier(.6,0,.3,1) 2s infinite}
+@keyframes cineSweep{0%{transform:translateX(-70%)}45%,100%{transform:translateX(70%)}}
+/* anamorphic flare: a thin horizontal streak with a hot core, crossing every few seconds */
+.lb-cine .cf{left:-60vw;top:34%;width:60vw;height:3px;border-radius:3px;
+  background:linear-gradient(90deg,transparent,rgba(90,160,255,.0) 10%,rgba(120,185,255,.85) 46%,#fff 50%,rgba(120,185,255,.85) 54%,transparent);
+  box-shadow:0 0 18px 4px rgba(80,150,255,.45);opacity:0;animation:cineFlare 11s ease-in-out 1s infinite}
+.lb-cine .co{left:-14vw;top:calc(34% - 7vw);width:14vw;height:14vw;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.9),rgba(140,190,255,.35) 18%,rgba(80,140,255,.08) 45%,transparent 70%);
+  opacity:0;animation:cineFlare 11s ease-in-out 1.15s infinite}
+@keyframes cineFlare{0%{opacity:0;transform:translateX(0)}8%{opacity:1}42%{opacity:.9}55%,100%{opacity:0;transform:translateX(175vw)}}
+/* film vignette + letterbox shading */
+.lb-cine .cv{inset:0;background:
+  radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(0,3,10,.55) 100%),
+  linear-gradient(180deg,rgba(0,3,10,.55),transparent 12%,transparent 88%,rgba(0,3,10,.6))}
+body[data-view="quote"] .lb-cine{opacity:.45}
+@media (max-width:700px){.lb-cine .b3,.lb-cine .k5,.lb-cine .k6,.lb-cine .k7{display:none}.lb-cine .cb{width:40vw}}
+.lb-still .lb-cine i:not(.cv){display:none}
+@media (prefers-reduced-motion:reduce){.live-bg *,.live-bg *::before,.live-bg *::after{animation:none!important;transition:none!important}.lb-fx{display:none}.lb-cine i:not(.cv){display:none}}
 .lb-still *,.lb-still *::before,.lb-still *::after{animation:none!important;transition:none!important}
 .lb-still .lb-fx{display:none}
 
@@ -1827,7 +1873,7 @@ body[data-view="quote"] .live-bg *,body[data-view="quote"] .live-bg *::before{an
   html[data-psize="md"] .sign-line{height:28px}
   html[data-psize="xl"] table.items input,html[data-psize="lg"] table.items input,html[data-psize="md"] table.items input{font-size:inherit}
   /* a short quotation still fills the sheet: totals follow the table, signatures and notes sit at the foot of the page */
-  #doc{display:flex;flex-direction:column;min-height:270mm}
+  #doc{display:flex;flex-direction:column;min-height:248mm}   /* 248mm, not 270: iPad/iPhone print adds its own header and footer margins */
   #doc > .section:not(:last-child){flex:1 1 auto;display:flex;flex-direction:column}
   #doc > .section:not(:last-child) .sign-grid{margin-top:auto;padding-top:10px}
   html[data-psize="sm"] #doc{min-height:0}
@@ -2006,19 +2052,19 @@ body[data-view="quote"] .live-bg *,body[data-view="quote"] .live-bg *::before{an
   html[data-theme="light"] body::before{opacity:.18}
   html[data-theme="light"] .aurora{opacity:.15}
   html[data-theme="light"] .live-bg{
-    background:#e8eef6!important;
+    background:#050b17!important;
   }
   html[data-theme="light"] .lb-shade{
     opacity:1!important;
-    background:linear-gradient(180deg,rgba(244,246,251,.93),rgba(244,246,251,.9) 42%,rgba(244,246,251,.96))!important;
+    background:linear-gradient(180deg,rgba(4,9,20,.50),rgba(4,9,20,.30) 40%,rgba(4,9,20,.72))!important;
   }
-  html[data-theme="light"] .lb-graphics,
-  html[data-theme="light"] .lb-icons{opacity:.35}
+  html[data-theme="light"] body[data-view="quote"] .lb-shade{background:linear-gradient(180deg,rgba(4,9,20,.72),rgba(4,9,20,.62))!important}
   html[data-theme="light"] .lb-on .stat-foot-note,
   html[data-theme="light"] .lb-on .section-label,
   html[data-theme="light"] .lb-on .view-head p{
-    color:#52627a!important;text-shadow:none!important;
+    color:#d6e2f5!important;text-shadow:0 1px 3px rgba(0,0,0,.6)!important;
   }
+  html[data-theme="light"] .lb-on .view-head h2{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 2px 10px rgba(0,0,0,.55)!important}
 
   html[data-theme="light"] .topnav,
   html[data-theme="light"] .toolbar,
@@ -2225,6 +2271,85 @@ body[data-view="quote"] .live-bg *,body[data-view="quote"] .live-bg *::before{an
   html[data-theme="light"] table.items .disc-type option{background:#fff;color:#0f172a}
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   PAPER SHEET — professional print layout (last layer, wins over all of the above).
+   Ink on white: nothing relies on a background colour, so the sheet still reads when
+   Safari / iOS prints with "print backgrounds" turned off.
+   ═══════════════════════════════════════════════════════════════ */
+@media print{
+  /* header: white letterhead with a navy rule instead of a dark banner */
+  .banner{background:#fff!important;color:#0f1e33!important;border:0!important;border-bottom:2px solid #0f2a4a!important;
+    border-radius:0!important;box-shadow:none!important;padding:0 0 9px!important;margin:0 0 8px!important;align-items:center!important}
+  .banner::before,.banner::after{display:none!important}
+  .banner-mechanic{display:none!important}
+  .brand{gap:12px!important;align-items:center!important}
+  .brand-logo{width:56px!important;height:56px!important;border-radius:10px!important;box-shadow:none!important;border:1px solid #e2e8f0}
+  .brand-name{color:#0f2a4a!important;font-size:21px!important;font-weight:700!important;letter-spacing:.5px;text-shadow:none!important;-webkit-text-fill-color:#0f2a4a!important;background:none!important}
+  .brand-tag{color:#475569!important;font-size:10.5px!important;margin-top:1px!important}
+  .shop-small{color:#334155!important;font-size:8.8px!important;line-height:1.4!important;margin-top:4px!important;max-width:360px}
+  .doc-meta{text-align:right!important;color:#0f1e33!important}
+  .branch-info{color:#64748b!important;font-size:9.5px!important;margin-bottom:2px!important}
+  .doc-title{color:#0f2a4a!important;font-size:25px!important;font-weight:700!important;letter-spacing:1px!important;line-height:1.1!important;text-shadow:none!important;-webkit-text-fill-color:#0f2a4a!important;background:none!important}
+  .doc-title small{display:block;color:#64748b!important;font-size:8.5px!important;letter-spacing:4px!important;margin-top:2px!important;-webkit-text-fill-color:#64748b!important}
+  .doc-fields{margin-top:5px!important;font-size:10px!important;color:#64748b!important}
+  .doc-fields .dfrow{justify-content:flex-end!important;gap:6px!important;margin-top:1px!important;color:#64748b!important}
+  .doc-fields input{color:#0f1e33!important;-webkit-text-fill-color:#0f1e33!important;font-weight:600!important;font-size:11px!important;
+    border:0!important;background:transparent!important;box-shadow:none!important;text-align:right!important;padding:0!important;min-height:0!important;width:auto!important}
+  .doc-fields input::-webkit-calendar-picker-indicator{display:none!important}
+
+  /* customer: one framed line of facts; empty placeholders and on-screen hints never reach paper */
+  .field-hint,#formAlert,.form-alert{display:none!important}
+  .is-invalid{border-color:transparent!important;box-shadow:none!important}
+  .fromto-grid{margin:0 0 4px!important;border:0!important;background:none!important}
+  .fromto-grid .party-card + .party-card,.fromto-grid .party-card:last-child{border:1px solid #cbd5e1!important;border-radius:6px!important;
+    background:#f8fafc!important;padding:7px 12px!important;column-gap:16px!important}
+  .party-label{color:#0f2a4a!important;font-size:9.5px!important;letter-spacing:1.5px!important;margin-bottom:3px!important;font-weight:700!important}
+  .fromto-grid .field label{color:#64748b!important;font-size:9px!important;margin-bottom:0!important}
+  .fromto-grid .pmirror,.fromto-grid .field input{color:#0f1e33!important;-webkit-text-fill-color:#0f1e33!important;font-size:13.5px!important;padding:0 0 2px!important;min-height:0!important}
+  .photo-box:not(.has-photo){display:none!important}
+  .photo-box.has-photo{border:1px solid #cbd5e1!important;border-radius:4px!important;width:200px!important;height:122px!important}
+
+  /* item table */
+  .section-title{color:#0f2a4a!important;font-weight:700!important;letter-spacing:1px!important;margin:8px 0 5px!important}
+  .section-title .bar{background:#0f2a4a!important}
+  table.items{border-collapse:collapse!important;border:1.2px solid #0f2a4a!important}
+  table.items th{background:#e8eef7!important;color:#0f2a4a!important;-webkit-text-fill-color:#0f2a4a!important;border:1px solid #9aa8bd!important;border-bottom:1.5px solid #0f2a4a!important;font-weight:700!important}
+  table.items td{border:1px solid #c3ccd9!important;color:#0f1e33!important}
+  table.items tbody tr:nth-child(even) td{background:#f8fafc!important}
+  table.items td.num,table.items .row-total,table.items .sell-price,table.items .row-gross{font-variant-numeric:tabular-nums;font-size:13px!important;white-space:nowrap}
+  html[data-psize="md"] table.items td.num,html[data-psize="md"] table.items .row-total,
+  html[data-psize="sm"] table.items td.num,html[data-psize="sm"] table.items .row-total{font-size:12px!important}
+  table.items .row-total{font-weight:700!important;padding-right:6px!important}
+
+  /* totals */
+  .totals-wrap{margin-top:8px!important}
+  .totals{border:1px solid #9aa8bd!important;border-radius:0!important;background:#fff!important;box-shadow:none!important;min-width:46%!important}
+  .trow{color:#334155!important;border-bottom:1px solid #e2e8f0!important}
+  .trow span:last-child{color:#0f1e33!important;font-variant-numeric:tabular-nums}
+  .grand{background:#eef3fb!important;border-top:2px solid #0f2a4a!important;border-bottom:1px solid #0f2a4a!important}
+  .grand .gl,.grand .gv{color:#0f2a4a!important;-webkit-text-fill-color:#0f2a4a!important;text-shadow:none!important;background:none!important}
+  .grand .gv{font-variant-numeric:tabular-nums;font-weight:700!important}
+  .bahttext{color:#334155!important;font-style:normal!important;text-align:right}
+
+  /* signatures and notes */
+  .sign-grid{gap:40px!important}
+  .sign-grid .field label{color:#64748b!important;font-size:9.5px!important}
+  .sign-grid .field input{color:#0f1e33!important;-webkit-text-fill-color:#0f1e33!important;text-align:center!important;font-size:12.5px!important}
+  .sign-line{border-bottom:1px solid #334155!important;border-style:none none solid!important}
+  .sign-label{color:#334155!important;text-align:center!important}
+  #doc::after{content:'เอกสารนี้จัดทำโดยระบบใบเสนอราคา AUTO 1 · ราคาอาจเปลี่ยนแปลงหลังพ้นกำหนดยืนราคา';
+    display:block;margin-top:8px;padding-top:5px;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:8.5px;text-align:center}
+  /* long sheets: every millimetre goes to the rows */
+  html[data-psize="sm"] #doc::after{display:none}
+  html[data-psize="sm"] .brand-logo{width:46px!important;height:46px!important}
+  html[data-psize="sm"] .banner{padding-bottom:6px!important;margin-bottom:5px!important}
+  html[data-psize="sm"] .fromto-grid .party-card:last-child{padding:5px 12px!important}
+  html[data-psize="sm"] .section-title{margin:5px 0 3px!important}
+  html[data-psize="sm"] .sign-line{height:18px!important}
+  html[data-psize="sm"] textarea.notes{min-height:16px!important}
+  html[data-psize="sm"] .sign-grid{margin-top:6px!important}
+}
 </style>
 </head>
 <body>
@@ -2234,6 +2359,14 @@ body[data-view="quote"] .live-bg *,body[data-view="quote"] .live-bg *::before{an
 <div class="live-bg no-print" id="liveBg" aria-hidden="true">
   <div class="lb-scenes" id="lbScenes"></div>
   <div class="lb-shade"></div>
+  <!-- cinematic pass: god rays, anamorphic flare, bokeh, light sweep, vignette (CSS only) -->
+  <div class="lb-cine">
+    <i class="cb b1"></i><i class="cb b2"></i><i class="cb b3"></i>
+    <i class="ck k1"></i><i class="ck k2"></i><i class="ck k3"></i><i class="ck k4"></i><i class="ck k5"></i><i class="ck k6"></i><i class="ck k7"></i>
+    <i class="cs"></i>
+    <i class="cf"></i><i class="co"></i>
+    <i class="cv"></i>
+  </div>
 
   <svg class="lb-graphics" id="lbGfx" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" focusable="false">
     <!-- analysis circuits: faint trace, a bright packet travelling along it -->
@@ -3728,7 +3861,7 @@ function syncPrintMirrors(){
   }
   // letters on paper are sized to the number of rows, so a short quotation fills the sheet
   const n = typeof items !== 'undefined' ? items.length : 0;
-  document.documentElement.dataset.psize = n <= 5 ? 'xl' : n <= 8 ? 'lg' : n <= 12 ? 'md' : 'sm';
+  document.documentElement.dataset.psize = n <= 5 ? 'xl' : n <= 7 ? 'lg' : n <= 9 ? 'md' : 'sm';
   const box = document.getElementById('photoBox');
   if(box) box.classList.toggle('has-photo', !!photoDataUrl);
 }
@@ -4229,7 +4362,7 @@ const LB_SCENES = [
      Logo and slogan were painted out of the photo (the site has its own). To bring back several
      scenes, add more entries here; with 2+ scenes they crossfade, with 1 the photo drifts forever. */
   { id:'workshop', label:'โรงซ่อม AUTO 1', ar:1.5, fx:.64, fy:.5,
-    ken:{ x0:'-1.4%', y0:'1%', x1:'1.4%', y1:'-1%', s0:1.1, s1:1.19 },
+    ken:{ x0:'-2.4%', y0:'1.6%', x1:'2.4%', y1:'-1.4%', s0:1.08, s1:1.26 },
     scan:{ x:.64, y:.58, w:.36, h:.27 },
     glows:[
       { x:.778, y:.513, w:.085, c:LB_BLUE, o:.6,  p:3.2 },                      // diagnostic tablet
