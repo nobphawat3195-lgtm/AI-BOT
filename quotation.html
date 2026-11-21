@@ -2291,6 +2291,17 @@ body[data-view="quote"] .lb-cine{opacity:.45}
   /* the AI film: on the home view it shows through clearly in both themes (light keeps a pearl wash) */
   html[data-theme="light"] body[data-view="home"] .lb-scenes{opacity:.62!important;filter:saturate(.9) contrast(1.02)}
   .lb-video{filter:saturate(1.08) contrast(1.04)}
+  /* hero frame: the AI film behind the headline; the drawn car and mechanic give way, the HUD card stays */
+  .hero-film{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%;pointer-events:none;filter:saturate(1.06) contrast(1.05)}
+  .hero.has-film .clip-bg,.hero.has-film .clip-stage,.hero.has-film .clip-fx,.hero.has-film .cine-glow{display:none}
+  .hero.has-film .cine-grid{opacity:.35}
+  .hero.has-film .cine-blueprint{opacity:1}
+  .hero.has-film .clip-hud .hud-box{fill:rgba(5,11,23,.62)}
+  .hero.has-film .cine-copy{text-shadow:0 1px 14px rgba(2,6,14,.6)}
+  @media (max-width:640px){
+    .hero.has-film .cine-blueprint{display:none}
+    .hero-film{object-position:58% 40%}
+  }
   /* small labels that sit straight on the film get a frosted pill so they stay readable */
   body[data-view="home"] .stat-foot-note,body[data-view="home"] #view-home .section-label{display:inline-block;padding:4px 12px;border-radius:999px;background:rgba(255,253,249,.86);color:#3b3326;box-shadow:0 2px 10px rgba(0,0,0,.12)}
   html[data-theme="dark"] body[data-view="home"] .stat-foot-note,html[data-theme="dark"] body[data-view="home"] #view-home .section-label{background:rgba(8,16,34,.82);color:#c9d6e8;box-shadow:0 2px 12px rgba(0,0,0,.35)}
@@ -4424,7 +4435,8 @@ function mountClipFx(){
   const start = () => { if(running) return; running = true; lastMs = 0; lastCarX = null; raf = requestAnimationFrame(frame); };
   const stop = () => { running = false; cancelAnimationFrame(raf); };
   let visible = true;
-  const sync = () => (visible && document.visibilityState === 'visible' && !hero.closest('[hidden]')) ? start() : stop();
+  const sync = () => (visible && document.visibilityState === 'visible' && !hero.closest('[hidden]') && !hero.classList.contains('has-film')) ? start() : stop();
+  new MutationObserver(sync).observe(hero, { attributes:true, attributeFilter:['class'] });   // the hero film takes over
   if('IntersectionObserver' in window){
     new IntersectionObserver(es => { visible = es[0].isIntersecting; sync(); }).observe(hero);
   }
@@ -4779,8 +4791,8 @@ function mountIntro(){
    stays underneath, so a missing or blocked video just leaves the still scene. */
 // one clip per visit, taking turns (auto1BgClip remembers the last one so the next visit shows the other)
 const LB_VIDEOS = [
-  { lg:'assets/video/auto1-workshop.mp4', sm:'assets/video/auto1-workshop-sm.mp4' },
-  { lg:'assets/video/auto1-suspension.mp4', sm:'assets/video/auto1-suspension-sm.mp4' }
+  { lg:'assets/video/auto1-workshop.mp4', sm:'assets/video/auto1-workshop-sm.mp4', poster:'assets/video/auto1-workshop.webp', posterSm:'assets/video/auto1-workshop-sm.webp' },
+  { lg:'assets/video/auto1-suspension.mp4', sm:'assets/video/auto1-suspension-sm.mp4', poster:'assets/video/auto1-suspension.webp', posterSm:'assets/video/auto1-suspension-sm.webp' }
 ];
 const LB_VIDEO = (() => {
   let i = 0;
@@ -4809,9 +4821,43 @@ function mountBgVideo(){
   sync();
 }
 
+/* The same film plays inside the home hero frame, behind the headline. The drawn car/mechanic
+   lines step aside once a frame is ready (the HUD card stays); reduced motion and Save-Data get
+   the still poster; a failed load keeps the drawing. Plays only while the hero is on screen. */
+function mountHeroFilm(){
+  const scene = document.querySelector('.hero.cine .cine-scene'), hero = scene && scene.closest('.hero');
+  if(!scene || !LB_VIDEO) return;
+  const small = window.matchMedia('(max-width:700px)').matches;
+  const saveData = !!(navigator.connection && navigator.connection.saveData);
+  const v = document.createElement('video');
+  v.className = 'hero-film'; v.setAttribute('aria-hidden', 'true');
+  v.muted = true; v.defaultMuted = true; v.loop = true; v.playsInline = true;
+  v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+  const poster = small ? LB_VIDEO.posterSm : LB_VIDEO.poster;
+  const ready = () => hero.classList.add('has-film');
+  if(poster){ v.poster = poster; const im = new Image(); im.onload = ready; im.src = poster; }
+  const glow = scene.querySelector('.cine-glow');
+  scene.insertBefore(v, glow ? glow.nextSibling : scene.firstChild);
+  if(REDUCED || saveData) return;
+  v.preload = 'auto';
+  v.addEventListener('loadeddata', ready, { once:true });
+  v.addEventListener('error', () => { v.removeAttribute('src'); }, { once:true });
+  v.src = small ? LB_VIDEO.sm : LB_VIDEO.lg;
+  let onScreen = true;
+  const sync = () => {
+    const run = onScreen && document.body.dataset.view === 'home' && document.visibilityState === 'visible';
+    if(run){ const p = v.play(); if(p && p.catch) p.catch(() => {}); } else v.pause();
+  };
+  if('IntersectionObserver' in window) new IntersectionObserver(es => { onScreen = es[0].isIntersecting; sync(); }).observe(hero);
+  new MutationObserver(sync).observe(document.body, { attributes:true, attributeFilter:['data-view'] });
+  document.addEventListener('visibilitychange', sync);
+  sync();
+}
+
 function mountMotion(){
   mountIntro();
   mountLiveBg();
+  mountHeroFilm();
   setTimeout(mountBgVideo, 1200);
   mountParallax();
   mountClipFx();
