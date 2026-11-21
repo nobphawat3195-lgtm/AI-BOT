@@ -4812,10 +4812,11 @@ function mountBgVideo(){
   v.src = window.matchMedia('(max-width:700px)').matches ? LB_VIDEO.sm : LB_VIDEO.lg;
   holder.appendChild(v);
   const sync = () => {
-    const calm = document.body.dataset.view !== 'home' || document.visibilityState !== 'visible' || (root && root.classList.contains('off'));
+    const calm = document.body.dataset.view !== 'home' || document.visibilityState !== 'visible' || (root && root.classList.contains('off'))
+      || document.body.classList.contains('hero-film-on');   // one film at a time: the hero's while it is on screen
     if(calm) v.pause(); else { const p = v.play(); if(p && p.catch) p.catch(() => {}); }
   };
-  new MutationObserver(sync).observe(document.body, { attributes:true, attributeFilter:['data-view'] });
+  new MutationObserver(sync).observe(document.body, { attributes:true, attributeFilter:['data-view','class'] });
   if(root) new MutationObserver(sync).observe(root, { attributes:true, attributeFilter:['class'] });
   document.addEventListener('visibilitychange', sync);
   sync();
@@ -4847,8 +4848,9 @@ function mountHeroFilm(){
   const sync = () => {
     const run = onScreen && document.body.dataset.view === 'home' && document.visibilityState === 'visible';
     if(run){ const p = v.play(); if(p && p.catch) p.catch(() => {}); } else v.pause();
+    document.body.classList.toggle('hero-film-on', run);   // the page background film rests meanwhile
   };
-  if('IntersectionObserver' in window) new IntersectionObserver(es => { onScreen = es[0].isIntersecting; sync(); }).observe(hero);
+  if('IntersectionObserver' in window) new IntersectionObserver(es => { onScreen = es[0].isIntersecting; sync(); }, { threshold:.25 }).observe(hero);
   new MutationObserver(sync).observe(document.body, { attributes:true, attributeFilter:['data-view'] });
   document.addEventListener('visibilitychange', sync);
   sync();
