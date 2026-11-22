@@ -6,7 +6,10 @@
 <title>ระบบใบเสนอราคาอะไหล่รถยนต์</title>
 <script>try{var t=localStorage.getItem('auto1UiTheme');if(t!=='dark'&&t!=='light')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme='light'}</script>
 <script>try{var d=new Date().toISOString().slice(0,10);if(localStorage.getItem('auto1IntroDay')!==d&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('intro')}catch(e){}</script>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Kanit:wght@200;300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Mitr:wght@300;400;500;600;700&family=Itim&family=Srisakdi:wght@400;700&family=Chonburi&family=Charmonman:wght@400;700&family=Trirong:wght@300;400;500;600;700&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- only the faces on screen at first paint; the picker's other fonts load on demand (ensureFont) -->
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Kanit:wght@200;300;400&family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --navy0:#0b1a2e; --navy1:#0f2a4a; --navy2:#12345f;
@@ -2298,6 +2301,30 @@ body[data-view="quote"] .lb-cine{opacity:.45}
   .hero.has-film .cine-blueprint{opacity:1}
   .hero.has-film .clip-hud .hud-box{fill:rgba(5,11,23,.62)}
   .hero.has-film .cine-copy{text-shadow:0 1px 14px rgba(2,6,14,.6)}
+  /* wide screens (≥901px): the top bar stays on one row so the sticky header is slim;
+     up to 1600px the menu tightens, the branch name folds into the avatar, and any overflow scrolls sideways */
+  @media (min-width:901px){
+    .topnav{flex-wrap:nowrap!important;gap:12px!important;padding:8px 16px!important}
+    .tn-menu{flex:1 1 auto;min-width:0;flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;justify-content:flex-start}
+    .tn-menu::-webkit-scrollbar{display:none}
+    .tn-menu>.tn-item:first-child{margin-left:auto}.tn-menu>.tn-item:last-child{margin-right:auto}
+    .tn-item{flex-shrink:0}
+  }
+  @media (min-width:901px) and (max-width:1600px){
+    .tn-sub,.tn-user-text,.tn-caret{display:none}
+    .tn-item{padding:8px 8px!important;font-size:12.5px!important}
+  }
+  @media (min-width:901px) and (max-width:1120px){
+    .tn-name{font-size:14px!important;letter-spacing:1px!important}
+    .tn-item{padding:8px 6px!important;font-size:12px!important}
+  }
+  /* finger-sized controls on touch screens (iPad / phones); mouse layouts are untouched */
+  @media (pointer:coarse){
+    .ins-btn,.del-btn{min-width:36px;min-height:36px}
+    .cat-select,#view-quote select{min-height:36px}
+    #view-quote input[type=checkbox],#backupCard input[type=checkbox]{width:22px;height:22px;flex:0 0 22px}
+    #docNo,#docDate,#docValid{min-height:30px}
+  }
   /* backup panel + home nudge */
   .backup-card{margin-top:22px}
   .backup-what{margin:10px 0 14px;font-size:14px;line-height:1.75;color:var(--sub)}
@@ -3214,7 +3241,24 @@ html.intro #cineIntro{display:flex}
 const STORAGE_KEY = 'autoPartsQuotationDraft';
 const DEFAULT_LOGO_SRC = document.getElementById('logoImg').src;
 
+// Picker fonts that are not in the first-paint <link> are fetched the first time they are chosen.
+const FONT_QUERY = {
+  'Noto Sans Thai':'Noto+Sans+Thai:wght@400;500;600;700', 'Kanit':'Kanit:wght@300;400;500;600;700',
+  'Sarabun':'Sarabun:wght@300;400;500;600;700', 'Prompt':'Prompt:wght@300;400;500;600;700',
+  'Mitr':'Mitr:wght@300;400;500;600;700', 'Itim':'Itim', 'Srisakdi':'Srisakdi:wght@400;700',
+  'Chonburi':'Chonburi', 'Charmonman':'Charmonman:wght@400;700', 'Trirong':'Trirong:wght@300;400;500;600;700'
+};
+const fontsLoaded = new Set();
+function ensureFont(name){
+  const q = FONT_QUERY[name];
+  if(!q || fontsLoaded.has(name)) return;
+  fontsLoaded.add(name);
+  const l = document.createElement('link');
+  l.rel = 'stylesheet'; l.href = `https://fonts.googleapis.com/css2?family=${q}&display=swap`;
+  document.head.appendChild(l);
+}
 function setFont(name){
+  ensureFont(name);
   document.documentElement.style.setProperty('--font', `'${name}','Sarabun','Noto Sans Thai','Leelawadee UI','Thonburi',Tahoma,sans-serif`);
   const sel = document.getElementById('fontSelect');
   if(sel) sel.value = name;
@@ -4827,7 +4871,7 @@ function mountBgVideo(){
   if(!LB_VIDEO || !holder || REDUCED || saveData || !window.AUTO1_BG || !AUTO1_BG.prefs.on) return;
   const v = document.createElement('video');
   v.className = 'lb-video'; v.muted = true; v.defaultMuted = true; v.loop = true; v.playsInline = true;
-  v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.preload = 'auto';
+  v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.preload = 'none';   // fetched only when it first plays (the hero film goes first)
   v.addEventListener('playing', () => v.classList.add('on'), { once:true });
   v.addEventListener('error', () => v.remove(), { once:true });
   v.src = window.matchMedia('(max-width:700px)').matches ? LB_VIDEO.sm : LB_VIDEO.lg;
@@ -4864,7 +4908,9 @@ function mountHeroFilm(){
   v.preload = 'auto';
   v.addEventListener('loadeddata', ready, { once:true });
   v.addEventListener('error', () => { v.removeAttribute('src'); }, { once:true });
-  v.src = small ? LB_VIDEO.sm : LB_VIDEO.lg;
+  // the poster paints at once; the film itself waits until the page has finished loading
+  const go = () => { v.src = small ? LB_VIDEO.sm : LB_VIDEO.lg; sync(); };
+  if(document.readyState === 'complete') setTimeout(go, 300); else window.addEventListener('load', () => setTimeout(go, 300), { once:true });
   let onScreen = true;
   const sync = () => {
     const run = onScreen && document.body.dataset.view === 'home' && document.visibilityState === 'visible';
@@ -4874,7 +4920,6 @@ function mountHeroFilm(){
   if('IntersectionObserver' in window) new IntersectionObserver(es => { onScreen = es[0].isIntersecting; sync(); }, { threshold:.25 }).observe(hero);
   new MutationObserver(sync).observe(document.body, { attributes:true, attributeFilter:['data-view'] });
   document.addEventListener('visibilitychange', sync);
-  sync();
 }
 
 function mountMotion(){
