@@ -2325,6 +2325,11 @@ body[data-view="quote"] .lb-cine{opacity:.45}
     #view-quote input[type=checkbox],#backupCard input[type=checkbox]{width:22px;height:22px;flex:0 0 22px}
     #docNo,#docDate,#docValid{min-height:30px}
   }
+  /* sell price box: typed price in ink, cost-based price shown as a grey placeholder */
+  table.items .sell-in::placeholder{color:var(--sub);opacity:.85}
+  table.items .sell-tag{display:block;font-size:10.5px;color:#b7791f;line-height:1.2;margin-top:2px;text-align:right}
+  table.items .sell-tag[hidden]{display:none}
+  table.items .cat-select:disabled{opacity:.45}
   /* backup panel + home nudge */
   .backup-card{margin-top:22px}
   .backup-what{margin:10px 0 14px;font-size:14px;line-height:1.75;color:var(--sub)}
@@ -2484,6 +2489,19 @@ html.intro #cineIntro{display:flex}
 .lb-video.on{opacity:1}
 .lb-still .lb-video{display:none}
 @media print{#cineIntro,.lb-video{display:none!important}}
+
+/* iPad / iPhone Safari honours fixed column widths to the letter, so a long amount (22,000.00) spilled
+   past the cell edge. Auto layout lets the money columns grow to fit their figures and the description
+   gives way; the percentages above stay as hints. Safari also prints taller header/footer margins than
+   Chrome, which pushed the foot note onto a blank page 2 at 248mm. */
+@media print{
+  table.items{table-layout:auto!important}
+  table.items td.num,table.items td.row-total,table.items td.row-gross,table.items th{white-space:nowrap}
+  table.items th{white-space:normal!important}
+  table.items td.num,table.items td.row-total{padding-left:4px!important;padding-right:4px!important}
+  html[data-numlong] table.items td.num,html[data-numlong] table.items td.row-total{font-size:12px!important;letter-spacing:-.15px}
+  #doc{min-height:236mm!important}
+}
 </style>
 </head>
 <body>
@@ -3298,14 +3316,18 @@ function defaultCatalog(){
   ];
 }
 
-function hasPrice(it){
-  const v = it.direct ? it.price : it.cost;
-  return v !== '' && v !== null && v !== undefined && !isNaN(parseFloat(v));
-}
-function sellPrice(it){
-  if(it.direct) return parseFloat(it.price)||0;
+// A sell price typed into the row always wins, as is (no markup, no cost needed).
+// Without one, the price comes from the cost through the row's price category (×1.5 by default).
+const isNumStr = v => v !== '' && v !== null && v !== undefined && !isNaN(parseFloat(v));
+function sellTyped(it){ return isNumStr(it.price); }
+function hasPrice(it){ return sellTyped(it) || isNumStr(it.cost); }
+function markupPrice(it){
   const cat = PRICE_CATS[it.cat] ? it.cat : 'std';
   return PRICE_CATS[cat].calc(parseFloat(it.cost)||0);
+}
+function sellPrice(it){
+  if(sellTyped(it)) return parseFloat(it.price)||0;
+  return markupPrice(it);
 }
 function lineGross(it){ return (parseFloat(it.qty)||0) * sellPrice(it); }
 // A plain number in the line discount cell is a percentage ("10" = 10%).
@@ -3508,23 +3530,15 @@ function renderItems(){
     // A row with no price yet is left visually blank instead of showing 0.00,
     // so untouched rows read as empty lines ready to be written on by hand.
     const priced = hasPrice(it);
-    const costCell = it.direct
-      ? `<td class="num no-print center" style="color:var(--sub)">—</td>`
-      : `<td class="num no-print cost-cell"><div class="cost-stack">
-          <input class="num" type="number" min="0" step="0.01" value="${it.cost}" oninput="updateItem(${i},'cost',this.value)">
-          <select class="cat-select" title="หมวดราคา" onchange="setCat(${i},this.value)">
+    // one layout for every row: cost (optional, never printed) + an always-editable sell price
+    const typed = sellTyped(it);
+    const costLabeled = `<td data-label="ราคาทุน" class="num no-print cost-cell"><div class="cost-stack">
+          <input class="num cost-in" type="number" min="0" step="0.01" placeholder="ทุน (ไม่ใส่ก็ได้)" value="${escapeHtml(String(it.cost ?? ''))}" oninput="updateItem(${i},'cost',this.value)">
+          <select class="cat-select" title="หมวดราคา (ใช้เมื่อไม่ได้พิมพ์ราคาขายเอง)" onchange="setCat(${i},this.value)"${typed ? ' disabled' : ''}>
             ${Object.keys(PRICE_CATS).map(k=>`<option value="${k}"${(it.cat||'std')===k?' selected':''}>${PRICE_CATS[k].label}</option>`).join('')}
           </select>
         </div></td>`;
-    const sellCell = it.direct
-      ? `<td class="num"><input class="num cell-in" type="number" min="0" step="0.01" value="${it.price}" oninput="updateItem(${i},'price',this.value)"><span class="cell-print">${priced ? fmt(sellPrice(it)) : ''}</span></td>`
-      : `<td class="num sell-price">${priced ? fmt(sellPrice(it)) : ''}</td>`;
-    const costLabeled = costCell
-      .replace('<td class="num no-print center"', '<td data-label="ราคาทุน" class="num no-print center"')
-      .replace('<td class="num no-print cost-cell"', '<td data-label="ราคาทุน" class="num no-print cost-cell"');
-    const sellLabeled = sellCell
-      .replace('<td class="num">', '<td data-label="ราคาขาย" class="num">')
-      .replace('<td class="num sell-price">', '<td data-label="ราคาขาย" class="num sell-price">');
+    const sellLabeled = `<td data-label="ราคาขาย" class="num sell-cell"><input class="num cell-in sell-in" type="number" min="0" step="0.01" title="พิมพ์ราคาขายเองได้ (ไม่บวกเพิ่ม) — ลบออกเพื่อกลับไปคิดจากราคาทุน" placeholder="${isNumStr(it.cost) ? fmt(markupPrice(it)) : 'ราคาขาย'}" value="${typed ? escapeHtml(String(it.price)) : ''}" oninput="updateItem(${i},'price',this.value)"><span class="sell-tag no-print"${typed && isNumStr(it.cost) ? '' : ' hidden'}>ราคาตั้งเอง</span><span class="cell-print">${priced ? fmt(sellPrice(it)) : ''}</span></td>`;
     return `
     <tr>
       <td class="center" data-label="#">${i+1}</td>
@@ -3557,6 +3571,12 @@ function updateItem(i,field,val){
     if(sel) sel.value = items[i].discType === 'baht' ? 'baht' : 'pct';
   }
   if(field === 'name') autoFillSku(i);
+  // a hand-typed sell price replaces the category rule, so the alt category's automatic 15% goes with it
+  if(field === 'price' && sellTyped(items[i]) && items[i].discAuto){
+    items[i].disc = ''; items[i].discAuto = false;
+    const din = document.getElementById('itemsBody').children[i]?.querySelector('.disc-stack input');
+    if(din) din.value = '';
+  }
   renderRowValuesOnly(i);
   recalc();                                          // recalc() saves
 }
@@ -3631,10 +3651,13 @@ function renderRowValuesOnly(i){
   put(td[2], it.name);
   put(td[3], String(it.qty ?? ''));
   put(td[4], it.unit);
-  put(td[6], priced ? fmt(sellPrice(it)) : '');   // direct-price rows
+  put(td[6], priced ? fmt(sellPrice(it)) : '');
   put(td[8], discLabel(it));
-  const sellEl = row.querySelector('.sell-price');  // marked-up rows
-  if(sellEl) sellEl.textContent = priced ? fmt(sellPrice(it)) : '';
+  // the sell box: typed price shows as typed; otherwise the cost-based price shows as its placeholder
+  const typed = sellTyped(it), sellIn = row.querySelector('.sell-in');
+  if(sellIn) sellIn.placeholder = isNumStr(it.cost) ? fmt(markupPrice(it)) : 'ราคาขาย';
+  const sel = row.querySelector('.cat-select'); if(sel) sel.disabled = typed;
+  const tag = row.querySelector('.sell-tag'); if(tag) tag.hidden = !(typed && isNumStr(it.cost));
   row.querySelector('.row-gross').textContent = priced ? fmt(lineGross(it)) : '';
   row.querySelector('.row-total').textContent = priced ? fmt(lineNet(it)) : '';
 }
@@ -4033,6 +4056,9 @@ function syncPrintMirrors(){
   // letters on paper are sized to the number of rows, so a short quotation fills the sheet
   const n = typeof items !== 'undefined' ? items.length : 0;
   document.documentElement.dataset.psize = n <= 5 ? 'xl' : n <= 7 ? 'lg' : n <= 9 ? 'md' : 'sm';
+  // six-figure line amounts (100,000.00+) print a size smaller so they never crowd the description
+  if(items.some(it => hasPrice(it) && lineGross(it) >= 100000)) document.documentElement.dataset.numlong = '1';
+  else delete document.documentElement.dataset.numlong;
   const box = document.getElementById('photoBox');
   if(box) box.classList.toggle('has-photo', !!photoDataUrl);
 }
