@@ -2325,12 +2325,19 @@ body[data-view="quote"] .lb-cine{opacity:.45}
     #view-quote input[type=checkbox],#backupCard input[type=checkbox]{width:22px;height:22px;flex:0 0 22px}
     #docNo,#docDate,#docValid{min-height:30px}
   }
-  /* ✎ next to a cost row's sell price, ↺ in a direct row's cost cell */
-  table.items .sell-price{white-space:nowrap}
-  table.items .sell-edit{margin-left:6px;padding:2px 7px;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--sub);font:inherit;font-size:12px;line-height:1.4;cursor:pointer;vertical-align:middle}
-  table.items .sell-edit:hover{color:var(--ink);border-color:var(--blue2)}
-  table.items .use-cost{padding:3px 8px;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--sub);font:inherit;font-size:11.5px;cursor:pointer;white-space:nowrap}
-  @media (pointer:coarse){ table.items .sell-edit{min-width:36px;min-height:32px;font-size:14px} table.items .use-cost{min-height:32px} }
+  /* one price box per row: number + what-it-is select, the resulting sell price under it */
+  table.items .price-one{display:flex;flex-direction:column;gap:4px}
+  table.items .price-one .price-in{width:100%}
+  table.items .price-hint{font-size:11.5px;color:var(--sub);margin-top:3px;text-align:right;white-space:nowrap}
+  table.items .price-hint[hidden]{display:none}
+  @media (max-width:760px){
+    #view-quote table.items td.price-cell{flex-wrap:wrap}
+    #view-quote table.items td.price-cell .price-one{flex-direction:row;gap:8px}
+    #view-quote table.items td.price-cell .price-in{flex:1 1 50%}
+    #view-quote table.items td.price-cell .cat-select{flex:1 1 50%;min-height:44px}
+    #view-quote table.items td.price-cell .price-hint{flex:1 1 100%;padding-left:92px;text-align:left;margin-top:0}
+    #view-quote table.items td.sell-price{display:none!important}   /* the hint under the price box says it */
+  }
   /* backup panel + home nudge */
   .backup-card{margin-top:22px}
   .backup-what{margin:10px 0 14px;font-size:14px;line-height:1.75;color:var(--sub)}
@@ -3014,7 +3021,7 @@ html.intro #cineIntro{display:flex}
             <th>รายการสินค้า</th>
             <th class="center" style="width:56px">จำนวน</th>
             <th class="center" style="width:58px">หน่วย</th>
-            <th class="num no-print" style="width:80px">ราคาทุน</th>
+            <th class="num no-print" style="width:150px">ราคา / ชนิดราคา</th>
             <th class="num" style="width:82px">ราคาขาย/หน่วย</th>
             <th class="num" style="width:88px">ราคารวม</th>
             <th class="num" style="width:124px">ส่วนลด</th>
@@ -3026,7 +3033,7 @@ html.intro #cineIntro{display:flex}
       </table>
       </div>
       <button class="add-row-btn no-print" onclick="addRow()">+ เพิ่มรายการ</button>
-      <div style="font-size:10.5px;color:var(--sub);margin-top:6px" class="no-print">💡 ราคาทุนใช้คำนวณภายในเท่านั้น เลือกหมวดราคาได้ต่อแถวใต้ช่องราคาทุน — «ปกติ» = ทุน×1.5 หรือ «+7% ×1.7 −15%» = (ทุน + VAT 7%) × 1.7 แล้วใส่ส่วนลด 15% ให้ในช่องส่วนลดอัตโนมัติ (7% นี้บวกเข้าในราคาทุน ส่วนช่องติ๊ก VAT 7% ด้านล่างเป็นภาษีขาย ถ้าติ๊กจะบวกเพิ่มอีกชั้นจากยอดรวม) · ช่องส่วนลดพิมพ์ตัวเลขได้เลย นับเป็น % (เช่น 10 = ลด 10%) ถ้าจะลดเป็นบาทให้พิมพ์ต่อท้ายว่า บ (เช่น 500บ) · คอลัมน์ราคาทุน/หมวดราคาจะไม่ปรากฏตอนพิมพ์</div>
+      <div style="font-size:10.5px;color:var(--sub);margin-top:6px" class="no-print">💡 แต่ละแถวมีช่องราคาช่องเดียว พิมพ์ตัวเลขแล้วเลือกข้างช่องว่าเป็นราคาอะไร — «ทุน ×1.5» หรือ «ทุน +7% ×1.7 −15%» = (ทุน + VAT 7%) × 1.7 แล้วใส่ส่วนลด 15% ให้ในช่องส่วนลดอัตโนมัติ หรือ «ราคาเต็ม» = ใช้ตัวเลขนั้นเป็นราคาขายเลย ไม่บวกเพิ่ม (7% นี้บวกเข้าในราคาทุน ส่วนช่องติ๊ก VAT 7% ด้านล่างเป็นภาษีขาย ถ้าติ๊กจะบวกเพิ่มอีกชั้นจากยอดรวม) · ช่องส่วนลดพิมพ์ตัวเลขได้เลย นับเป็น % (เช่น 10 = ลด 10%) ถ้าจะลดเป็นบาทให้พิมพ์ต่อท้ายว่า บ (เช่น 500บ) · ช่องราคา/ชนิดราคาจะไม่ปรากฏตอนพิมพ์ (ใบพิมพ์แสดงเฉพาะราคาขาย)</div>
 
       <label class="show-total-toggle no-print" id="sec-totals" title="ติ๊กออกถ้าไม่ต้องการให้ยอดรวมสุทธิปรากฏในใบที่พิมพ์">
         <input type="checkbox" id="showTotalToggle" checked onchange="toggleShowTotal()">
@@ -3297,9 +3304,13 @@ const PRICE_CATS = {
   // category writes it into the line's discount cell, so the sheet shows it
   alt: { label: '+7% ×1.7 −15%', calc: cost => cost * (1 + ALT_COST_VAT) * ALT_MARKUP },
 };
+// One price box per row; the select beside it says what the number is.
+// 'direct' = the number is the full sell price, used as is (stored in it.price, it.direct = true).
+const PRICE_MODES = [['std','ทุน ×1.5'], ['alt','ทุน +7% ×1.7 −15%'], ['direct','ราคาเต็ม']];
+function priceMode(it){ return it.direct ? 'direct' : (PRICE_CATS[it.cat] ? it.cat : 'std'); }
 const RESET_ROW_COUNT = 0;
 
-function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', price:'', disc:'', direct:true, cat:'std', skuAuto:true }; }
+function blankRow(){ return { sku:'', name:'', qty:1, unit:'ชิ้น', cost:'', price:'', disc:'', direct:false, cat:'std', skuAuto:true }; }
 
 function defaultCatalog(){
   return [
@@ -3319,7 +3330,7 @@ function defaultCatalog(){
 
 // Two kinds of row, as before: a cost row (cost × price category, ×1.5 by default) and a
 // direct row (it.direct) whose sell price is typed as is, with no markup and no cost needed.
-// A cost row can be switched to direct with the ✎ next to its sell price (useDirect), and back (useCost).
+// One price box per row: the select beside it (PRICE_MODES) says which kind the number is.
 const isNumStr = v => v !== '' && v !== null && v !== undefined && !isNaN(parseFloat(v));
 function hasPrice(it){ return isNumStr(it.direct ? it.price : it.cost); }
 function markupPrice(it){
@@ -3531,24 +3542,15 @@ function renderItems(){
     // A row with no price yet is left visually blank instead of showing 0.00,
     // so untouched rows read as empty lines ready to be written on by hand.
     const priced = hasPrice(it);
-    const hadCost = isNumStr(it.cost);
-    const costCell = it.direct
-      ? `<td class="num no-print center" style="color:var(--sub)">${hadCost ? `<button class="use-cost" type="button" onclick="useCost(${i})" title="กลับไปคิดราคาขายจากราคาทุน">↺ ใช้ราคาทุน</button>` : '—'}</td>`
-      : `<td class="num no-print cost-cell"><div class="cost-stack">
-          <input class="num" type="number" min="0" step="0.01" value="${it.cost}" oninput="updateItem(${i},'cost',this.value)">
-          <select class="cat-select" title="หมวดราคา" onchange="setCat(${i},this.value)">
-            ${Object.keys(PRICE_CATS).map(k=>`<option value="${k}"${(it.cat||'std')===k?' selected':''}>${PRICE_CATS[k].label}</option>`).join('')}
+    // one price box + what-it-is select (cost ×1.5 / cost +7% ×1.7 −15% / full price); the sell column shows the result
+    const mode = priceMode(it), val = it.direct ? it.price : it.cost;
+    const costLabeled = `<td data-label="ราคา" class="num no-print price-cell"><div class="price-one">
+          <input class="num price-in" type="number" min="0" step="0.01" inputmode="decimal" placeholder="${mode === 'direct' ? 'ราคาเต็ม' : 'ราคาทุน'}" value="${escapeHtml(String(val ?? ''))}" oninput="updateItem(${i},'${it.direct ? 'price' : 'cost'}',this.value)">
+          <select class="cat-select" title="ตัวเลขนี้คือราคาอะไร" onchange="setCat(${i},this.value)">
+            ${PRICE_MODES.map(([k,l])=>`<option value="${k}"${mode===k?' selected':''}>${l}</option>`).join('')}
           </select>
-        </div></td>`;
-    const sellCell = it.direct
-      ? `<td class="num"><input class="num cell-in" type="number" min="0" step="0.01" value="${it.price}" oninput="updateItem(${i},'price',this.value)"><span class="cell-print">${priced ? fmt(sellPrice(it)) : ''}</span></td>`
-      : `<td class="num sell-price"><span class="sell-val">${priced ? fmt(sellPrice(it)) : ''}</span><button class="sell-edit no-print" type="button" onclick="useDirect(${i})" title="พิมพ์ราคาขายเอง (ไม่บวกเพิ่ม)" aria-label="พิมพ์ราคาขายเอง">✎</button></td>`;
-    const costLabeled = costCell
-      .replace('<td class="num no-print center"', '<td data-label="ราคาทุน" class="num no-print center"')
-      .replace('<td class="num no-print cost-cell"', '<td data-label="ราคาทุน" class="num no-print cost-cell"');
-    const sellLabeled = sellCell
-      .replace('<td class="num">', '<td data-label="ราคาขาย" class="num">')
-      .replace('<td class="num sell-price">', '<td data-label="ราคาขาย" class="num sell-price">');
+        </div><div class="price-hint"${mode !== 'direct' && priced ? '' : ' hidden'}>ขาย ${priced ? fmt(sellPrice(it)) : ''} / หน่วย</div></td>`;
+    const sellLabeled = `<td data-label="ราคาขาย" class="num sell-price"><span class="sell-val">${priced ? fmt(sellPrice(it)) : ''}</span></td>`;
     return `
     <tr>
       <td class="center" data-label="#">${i+1}</td>
@@ -3602,26 +3604,12 @@ function setDiscType(i,type){
 // The 1.7 category carries its own 15% off, written into the discount cell
 // where it is visible on the sheet; switching back removes it again unless
 // it has since been typed over by hand.
-// ✎ on a cost row: type the sell price yourself (starts from the current price, no markup added after).
-function useDirect(i){
-  const it = items[i];
-  it.price = isNumStr(it.cost) ? String(Math.round(markupPrice(it)*100)/100) : '';
-  it.direct = true;
-  if(it.discAuto){ it.disc = ''; it.discAuto = false; }   // the alt category's automatic 15% goes with its rule
-  renderItems(); recalc(); save();
-  const inp = document.getElementById('itemsBody').children[i]?.querySelector('td[data-label="ราคาขาย"] input');
-  if(inp){ inp.focus(); inp.select && inp.select(); }
-}
-// ↺ on a direct row that still has a cost: back to cost × category
-function useCost(i){
-  const it = items[i];
-  it.direct = false; it.price = '';
-  if(it.cat === 'alt' && !String(it.disc ?? '').trim()){ it.disc = String(ALT_DISCOUNT*100); it.discType = 'pct'; it.discAuto = true; }
-  renderItems(); recalc(); save();
-}
+// The select beside the price box says what the number is. Switching keeps the number and re-reads it.
 function setCat(i,cat){
   const it = items[i];
-  it.cat = cat;
+  const v = it.direct ? it.price : it.cost;
+  if(cat === 'direct'){ it.direct = true; it.price = v ?? ''; }
+  else { it.direct = false; it.cost = v ?? ''; it.cat = PRICE_CATS[cat] ? cat : 'std'; }
   if(cat === 'alt'){ it.disc = String(ALT_DISCOUNT*100); it.discType = 'pct'; it.discAuto = true; }
   else if(it.discAuto){ it.disc = ''; it.discAuto = false; }
   renderItems();
@@ -3672,10 +3660,11 @@ function renderRowValuesOnly(i){
   put(td[2], it.name);
   put(td[3], String(it.qty ?? ''));
   put(td[4], it.unit);
-  put(td[6], priced ? fmt(sellPrice(it)) : '');   // direct-price rows
   put(td[8], discLabel(it));
-  const sellEl = row.querySelector('.sell-price .sell-val');  // cost rows
+  const sellEl = row.querySelector('.sell-price .sell-val');
   if(sellEl) sellEl.textContent = priced ? fmt(sellPrice(it)) : '';
+  const hint = row.querySelector('.price-hint');
+  if(hint){ hint.hidden = it.direct || !priced; hint.textContent = `ขาย ${priced ? fmt(sellPrice(it)) : ''} / หน่วย`; }
   row.querySelector('.row-gross').textContent = priced ? fmt(lineGross(it)) : '';
   row.querySelector('.row-total').textContent = priced ? fmt(lineNet(it)) : '';
 }
